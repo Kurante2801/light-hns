@@ -2,9 +2,13 @@ DeriveGamemode("base")
 
 GM.Name = "Light Hide and Seek"
 GM.Author = "Fafy"
+GM.Email = "fafy@gflclan.com"
 
 include("sh_colors.lua")
 AddCSLuaFile("sh_colors.lua")
+
+include("sh_roundmanager.lua")
+AddCSLuaFile("sh_roundmanager.lua")
 
 -- Shared ConVars
 --[[ Max Rounds ]] CreateConVar("has_maxrounds", 5, { FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Rounds until map change")

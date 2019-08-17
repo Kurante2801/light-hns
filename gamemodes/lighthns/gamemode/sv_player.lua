@@ -18,4 +18,10 @@ function GM:PlayerSpawn(ply)
 
 	-- Setting desired color shade
 	ply:SetPlayerColor(self:GetPlayerTeamColor(ply):ToVector())
+
+	self:RoundCheck()
+end
+
+function GM:PlayerDisconnected(ply)
+	self:RoundCheck()
 end
