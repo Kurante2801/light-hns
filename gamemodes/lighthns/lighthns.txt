@@ -1,0 +1,34 @@
+"Light Hide and Seek"
+{
+	"base"			"base"
+	"title"			"Light Hide and Seek"
+	"maps"			"^hns_"
+	"menusystem"	"1"
+	"settings"
+	{
+		1 {
+			"name"		"has_maxrounds"
+			"text"		"Rounds until map change"
+			"type"		"Numeric"
+			"default"	"5"
+		}
+		2 {
+			"name"		"has_timelimit"
+			"text"		"Time to seek (0 is infinite)"
+			"type"		"Numeric"
+			"default"	"270"
+		}
+		3 {
+			"name"		"has_envdmgallowed"
+			"text"		"Will the map hurt players?"
+			"type"		"CheckBox"
+			"default"	"1"
+		}
+		4 {
+			"name"		"has_dyntagging"
+			"text"		"Enable dynamic tag ranges?"
+			"type"		"CheckBox"
+			"default"	"1"
+		}
+	}
+}
