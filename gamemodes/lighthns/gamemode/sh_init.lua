@@ -36,8 +36,10 @@ function GM:CreateTeams()
 end
 
 hook.Add("Tick", "HNS.SeekerBlinded", function()
+	-- Store time left
+	GAMEMODE.TimeLeft = math.abs(timer.TimeLeft("HNS.RoundTimer") || 0)
 	-- See if seeker is blinded
-	if GAMEMODE.RoundState == ROUND_ACTIVE && GetConVar("has_timelimit"):GetInt() < (timer.TimeLeft("HNS.RoundTimer")) then
+	if GAMEMODE.RoundState == ROUND_ACTIVE && GetConVar("has_timelimit"):GetInt() < GAMEMODE.TimeLeft then
 		GAMEMODE.SeekerBlinded = true
 	else
 		GAMEMODE.SeekerBlinded = false

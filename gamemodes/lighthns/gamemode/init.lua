@@ -9,15 +9,15 @@ util.AddNetworkString("HNS.Say")
 util.AddNetworkString("HNS.PlaySound")
 
 -- Sends a table to be unpacked on chat.AddText
-function GM:SendChat(ply, sayTable)
+function GM:SendChat(ply, ...)
 	net.Start("HNS.Say")
-		net.WriteTable(sayTable)
+		net.WriteTable({ ... })
 	net.Send(ply)
 end
 -- Same but to everyone
-function GM:BroadcastChat(sayTable)
+function GM:BroadcastChat(...)
 	net.Start("HNS.Say")
-		net.WriteTable(sayTable)
+		net.WriteTable({ ... })
 	net.Broadcast()
 end
 -- Plays a sound on the client

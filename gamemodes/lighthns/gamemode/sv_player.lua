@@ -49,6 +49,10 @@ function GM:PlayerCanPickupWeapon(ply, weapon)
 end
 
 function GM:PlayerDisconnected(ply)
+	-- Check for seeker avoider
+	if ply:Team() == TEAM_SEEK && team.NumPlayers(TEAM_SEEK) <= 1 then
+		self:BroadcastChat(COLOR_WHITE, "[", Color(220, 20, 60), "HNS", COLOR_WHITE, "] ", ply:Name(), " Avoided seeker! (", Color(220, 20, 60), ply:SteamID(), COLOR_WHITE, ")")
+	end
 	self:RoundCheck()
 end
 

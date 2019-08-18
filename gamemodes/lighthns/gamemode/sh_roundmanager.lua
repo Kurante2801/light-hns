@@ -84,7 +84,7 @@ if SERVER then
 			-- Network
 			self:RoundTimer(GetConVar("has_timelimit"):GetInt() + GetConVar("has_blindtime"):GetInt())
 			-- Advert
-			self:BroadcastChat({ COLOR_WHITE, "[", COLOR_HNS_TAG, "HNS", COLOR_WHITE, "] There's not enough players to start the round..." })
+			self:BroadcastChat(COLOR_WHITE, "[", COLOR_HNS_TAG, "HNS", COLOR_WHITE, "] There's not enough players to start the round...")
 			print("[LHNS] There's not enough players to begin round " .. self.RoundCount .. "!")
 		end
 	end
@@ -99,6 +99,11 @@ if SERVER then
 		-- If a seeker avoided, use one less round to restart the round we just lost
 		if ending == ROUND_ENDLEAVE then
 			self.RoundCount = self.RoundCount - 1
+			-- Advert
+			self:BroadcastChat(COLOR_WHITE, "[", Color(155, 155, 255), "HNS", COLOR_WHITE, "] ", Color(155, 155, 255), "The Hiding Win!")
+			self:BroadcastSound("misc/happy_birthday.wav")
+			-- Log
+			print(string.format("[LHNS] Round %s was aborted! Starting round again.", self.RoundCount + 1))
 			return
 		else
 			if ending == ROUND_ENDTIME then
@@ -107,13 +112,13 @@ if SERVER then
 					ply:AddFrags(GetConVar("has_hidereward"):GetInt())
 				end
 				-- Advert
-				self:BroadcastChat({ COLOR_WHITE, "[", Color(155, 155, 255), "HNS", COLOR_WHITE, "] ", Color(155, 155, 255), "The Hiding Win!" })
+				self:BroadcastChat(COLOR_WHITE, "[", Color(155, 155, 255), "HNS", COLOR_WHITE, "] ", Color(155, 155, 255), "The Hiding Win!")
 				self:BroadcastSound("misc/happy_birthday.wav")
 				-- Log
 				print(string.format("[LHNS] Hiders won round %s with %s hider(s) left.", self.RoundCount, team.NumPlayers(TEAM_HIDE)))
 			elseif ending == ROUND_ENDCAUGHT then
 				-- Advert seekers
-				self:BroadcastChat({ COLOR_WHITE, "[", Color(255, 155, 155), "HNS", COLOR_WHITE, "] ", Color(255, 155, 155), "The Seekers Win!" })
+				self:BroadcastChat(COLOR_WHITE, "[", Color(255, 155, 155), "HNS", COLOR_WHITE, "] ", Color(255, 155, 155), "The Seekers Win!")
 				self:BroadcastSound("misc/happy_birthday.wav")
 				-- Log
 				print(string.format("[LHNS] Seekers won round %s with %s left.", self.RoundCount, string.ToMinutesSeconds(left)))
