@@ -18,23 +18,23 @@ function GM:PlayerSpawn(ply)
 
 	if ply:Team() == TEAM_HIDE then
 		-- Setting desired color shade
-		ply:SetPlayerColor(self:GetTeamColor(TEAM_HIDE, ply:GetInfo("has_hidercolor", "Default")):ToVector())
+		ply:SetPlayerColor(self:GetTeamShade(TEAM_HIDE, ply:GetInfo("has_hidercolor", "Default")):ToVector())
 		-- Setting movement vars
-		ply:SetRunSpeed(GetConVar("has_hiderrunspeed"):GetInt())
-		ply:SetWalkSpeed(GetConVar("has_hiderwalkspeed"):GetInt())
+		ply:SetRunSpeed(self.CVars.HiderRunSpeed:GetInt())
+		ply:SetWalkSpeed(self.CVars.HiderWalkSpeed:GetInt())
 		-- Block flashlight
 		ply:AllowFlashlight(false)
 	else
 		-- Setting desired color shade
-		ply:SetPlayerColor(self:GetTeamColor(TEAM_SEEK, ply:GetInfo("has_seekercolor", "Default")):ToVector())
+		ply:SetPlayerColor(self:GetTeamShade(TEAM_SEEK, ply:GetInfo("has_seekercolor", "Default")):ToVector())
 		-- Setting movement vars
-		ply:SetRunSpeed(GetConVar("has_seekerrunspeed"):GetInt())
-		ply:SetWalkSpeed(GetConVar("has_seekerwalkspeed"):GetInt())
+		ply:SetRunSpeed(self.CVars.SeekerRunSpeed:GetInt())
+		ply:SetWalkSpeed(self.CVars.SeekerWalkSpeed:GetInt())
 		-- Allow flashlight
 		ply:AllowFlashlight(true)
 	end
 	-- Both teams get these
-	ply:SetJumpPower(GetConVar("has_jumppower"):GetInt())
+	ply:SetJumpPower(self.CVars.JumpPower:GetInt())
 	ply:SetCrouchedWalkSpeed(0.4)
 	ply:GodEnable()
 

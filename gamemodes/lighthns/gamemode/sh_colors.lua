@@ -20,7 +20,7 @@ GM.SeekerColors = {
 }
 
 -- Get a valid color shade for a team
-function GM:GetTeamColor(t, k) -- team, key
+function GM:GetTeamShade(t, k) -- team, key
 	if t == TEAM_HIDE then
 		-- If the key is an invalid color, just return the default one
 		return self.HiderColors[k] || self.HiderColors.Default
@@ -32,19 +32,19 @@ function GM:GetTeamColor(t, k) -- team, key
 	end
 end
 
--- Wrapper for GM:GetTeamColor
+-- Wrapper for GM:GetTeamShade
 function GM:GetPlayerTeamColor(ply)
 	if ply:Team() == TEAM_HIDE then
 		if SERVER then
-			return self:GetTeamColor(TEAM_HIDE, ply:GetInfo("has_hidercolor", "Default"))
+			return self:GetTeamShade(TEAM_HIDE, ply:GetInfo("has_hidercolor", "Default"))
 		else
-			return self:GetTeamColor(TEAM_HIDE, GetConVar("has_hidercolor"):GetString())
+			return self:GetTeamShade(TEAM_HIDE, GetConVar("has_hidercolor"):GetString())
 		end
 	elseif ply:Team() == TEAM_SEEK then
 		if SERVER then
-			return self:GetTeamColor(TEAM_SEEK, ply:GetInfo("has_seekercolor", "Default"))
+			return self:GetTeamShade(TEAM_SEEK, ply:GetInfo("has_seekercolor", "Default"))
 		else
-			return self:GetTeamColor(TEAM_SEEK, GetConVar("has_seekercolor"):GetString())
+			return self:GetTeamShade(TEAM_SEEK, GetConVar("has_seekercolor"):GetString())
 		end
 	end
 end

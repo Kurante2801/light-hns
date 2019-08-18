@@ -2,6 +2,8 @@ include("sh_init.lua")
 AddCSLuaFile("sh_init.lua")
 
 AddCSLuaFile("cl_init.lua")
+AddCSLuaFile("cl_fonts.lua")
+AddCSLuaFile("cl_hud.lua")
 
 include("sv_player.lua")
 
