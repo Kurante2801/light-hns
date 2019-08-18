@@ -1,3 +1,6 @@
+COLOR_WHITE = Color(255, 255, 255)
+COLOR_HNS_TAG = Color(150, 100, 200)
+
 GM.HiderColors = {
 	["Default"] = Color(0, 50, 175),
 	["Full Blue"] = Color(0, 0, 255),

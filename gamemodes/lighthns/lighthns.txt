@@ -25,9 +25,27 @@
 			"default"	"1"
 		}
 		4 {
+			"name"		"has_blindtime"
+			"text"		"Time to hide (seekers are blinded)"
+			"type"		"Numeric"
+			"default"	"30"
+		}
+		5 {
 			"name"		"has_dyntagging"
 			"text"		"Enable dynamic tag ranges?"
 			"type"		"CheckBox"
+			"default"	"1"
+		}
+		6 {
+			"name"		"has_hidereward"
+			"text"		"How many points to award hiders per round won"
+			"type"		"Numeric"
+			"default"	"3"
+		}
+		7 {
+			"name"		"has_seekreward"
+			"text"		"How many points to award seekers per hider tag"
+			"type"		"Numeric"
 			"default"	"1"
 		}
 	}
