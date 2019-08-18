@@ -109,6 +109,9 @@ local function GetRoundText()
 	end
 end
 
+local speed, rayEnt, lastLooked, lookedTime, lookedColor
+local crosshair = {}
+
 function GM:HUDPaint()
 	self.SelectedHUD = self.HUDs[self.CVars.HUD:GetInt()] || self.HUDs[2]
 	-- Create avatar
@@ -127,6 +130,38 @@ function GM:HUDPaint()
 			hud.Avatar = nil
 		end
 	end
+
+	-- Fade out names
+	rayEnt = LocalPlayer():GetEyeTrace().Entity
+	if !IsValid(LocalPlayer():GetObserverTarget()) && IsValid(rayEnt) && rayEnt:IsPlayer() && (self.RoundState != ROUND_ACTIVE || rayEnt:GetPos():DistToSqr(LocalPlayer():GetPos()) <= 302500) then
+		-- From murder gamemode
+		lastLooked = rayEnt
+		lookedTime = CurTime()
+	end
+
+	-- Draw name
+	if IsValid(lastLooked) && lookedTime + 2 > CurTime() then
+		lookedColor = ColorAlpha(team.GetColor(lastLooked:Team()), (1 - (CurTime() - lookedTime) / 2) * 255)
+		draw.SimpleTextOutlined(lastLooked:Name(), "DermaLarge", ScrW() / 2, ScrH() / 2 + 50, lookedColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, lookedColor.a))
+		draw.SimpleTextOutlined(team.GetName(lastLooked:Team()), "DermaDefaultBold", ScrW() / 2, ScrH() / 2 + 70, lookedColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, lookedColor.a))
+		if self.CVars.ShowID:GetBool() then
+			draw.SimpleTextOutlined(lastLooked:SteamID(), "DermaDefaultBold", ScrW() / 2, ScrH() / 2 + 84, lookedColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, lookedColor.a))
+		end
+	end
+
+	-- Crosshair
+	if self.CVars.CrosshairEnable:GetBool() then
+		crosshair.Size = self.CVars.CrosshairSize:GetInt()
+		crosshair.Gap = self.CVars.CrosshairGap:GetInt()
+		crosshair.Thick = self.CVars.CrosshairThick:GetInt()
+		crosshair.Color = self.CVars.CrosshairColor:GetString():ToColor()
+		self:DrawCrosshair(ScrW() / 2, ScrH() / 2, crosshair)
+	end
+
+	-- Blind (combined with render hook)
+	if self.SeekerBlinded && LocalPlayer():Team() == TEAM_SEEK then
+		draw.RoundedBox(0, 0, 0, ScrW(), ScrH(), Color(0, 0, 0))
+	end
 end
 
 -- Hide elements
@@ -139,9 +174,11 @@ local hide = {
 }
 
 function GM:HUDShouldDraw(element)
+	if element == "CHudCrosshair" && self.CVars.CrosshairEnable:GetBool() then
+		return false
+	end
 	return !hide[element]
 end
-
 
 -- Blind time
 local mods = {
@@ -160,4 +197,16 @@ function GM:RenderScreenspaceEffects()
 	if self.SeekerBlinded && LocalPlayer():Team() == TEAM_SEEK then
 		DrawColorModify(mods)
 	end
+end
+
+function GM:DrawCrosshair(x, y, ch)
+	surface.SetDrawColor(ch.Color)
+	-- Top
+	surface.DrawRect(x - ch.Thick / 2, y - ch.Size - ch.Gap, ch.Thick, ch.Size)
+	-- Bottom
+	surface.DrawRect(x - ch.Thick / 2, y + ch.Gap, ch.Thick, ch.Size)
+	-- Right
+	surface.DrawRect(x + ch.Gap, y - ch.Thick / 2, ch.Size, ch.Thick)
+	-- Left
+	surface.DrawRect(x - ch.Gap - ch.Size, y - ch.Thick / 2, ch.Size, ch.Thick)
 end
