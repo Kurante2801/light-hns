@@ -40,15 +40,15 @@ function GM:Tick()
 
 	-- Show spectators
 	for _, ply in ipairs(player.GetAll()) do
-		-- If we shouldn"t be able to see the camera
-		if !IsValid(ply) || ply == LocalPlayer() || ply:Team() != TEAM_SPECTATOR || (LocalPlayer():Team() == TEAM_SPECTATOR && !LocalPlayer():IsAdmin() && !LocalPlayer():IsUserGroup("trialadmin")) then
+		-- If we shouldn't be able to see the camera
+		if !IsValid(ply) || ply:Team() != TEAM_SPECTATOR || ply  == LocalPlayer() || (ply:Team() != TEAM_SPECTATOR && (!LocalPlayer():IsAdmin() && !LocalPlayer():IsUserGroup("trialadmin"))) then
 			-- If camera exists, delete it
 			if IsValid(ply.SpecCamera) then
 				ply.SpecCamera:Remove()
 			end
 		-- If we should see the camrea
 		else
-			-- If camera doesn"t exist, create it
+			-- If camera doesn't exist, create it
 			if !IsValid(ply.SpecCamera) then
 				ply.SpecCamera = ents.CreateClientProp("models/dav0r/camera.mdl")
 			end
@@ -59,17 +59,17 @@ function GM:Tick()
 end
 
 function GM:PostDrawOpaqueRenderables()
-	-- Stop if we aren"t spectating or aren"t admins(while playing)
+	-- Stop if we aren't spectating or aren't admins(while playing)
 	if LocalPlayer():Team() != TEAM_SPECTATOR && !LocalPlayer():IsAdmin() && !LocalPlayer():IsUserGroup("trialadmin") then return end
 
-	-- Draw spectators" names
+	-- Draw spectators' names
 	ang = LocalPlayer():EyeAngles()
 	ang:RotateAroundAxis(ang:Forward(), 90)
 	ang:RotateAroundAxis(ang:Right(), 90)
 	col = ColorAlpha(team.GetColor(TEAM_SPECTATOR), 75)
 
 	for _, ply in ipairs(team.GetPlayers(TEAM_SPECTATOR)) do
-		-- Don"t draw ourselves
+		-- Don't draw ourselves
 		if ply == LocalPlayer() then continue end
 
 		-- Draw a text above head

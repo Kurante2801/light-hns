@@ -52,3 +52,5 @@ function GM:Move(ply)
 	-- Prevent seekers from moving on blind time
 	return self.SeekerBlinded && ply:Team() == TEAM_SEEK
 end
+
+util.PrecacheModel("models/dav0r/camera.mdl")

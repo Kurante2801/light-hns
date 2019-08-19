@@ -135,7 +135,7 @@ elseif CLIENT then
 
 		-- Create a timer to display info
 		if GAMEMODE.RoundState == ROUND_ACTIVE then
-			timer.Create("HNS.RoundTimer", CurTime() - GAMEMODE.RoundStartTime + length, 1, function() end)
+			timer.Create("HNS.RoundTimer", GAMEMODE.RoundStartTime - CurTime() + length, 1, function() end)
 		else
 			-- Put timer to the max if we are waiting (so we can see the server's max time)
 			if GAMEMODE.RoundState == ROUND_WAIT then

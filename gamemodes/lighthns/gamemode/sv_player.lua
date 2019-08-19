@@ -1,5 +1,16 @@
 function GM:PlayerInitialSpawn(ply)
-	ply:SetTeam(TEAM_HIDE)
+	if ply:IsBot() then
+		ply:SetTeam(TEAM_SEEK)
+		return
+	end
+	ply:SetTeam(TEAM_SPECTATOR)
+	-- Send round info
+	net.Start("HNS.RoundInfo")
+		net.WriteDouble(CurTime())
+		net.WriteDouble(math.abs(timer.TimeLeft("HNS.RoundTimer") || (self.CVars.TimeLimit:GetInt() + self.CVars.BlindTime:GetInt())))
+		net.WriteInt(self.RoundCount, 8)
+		net.WriteUInt(self.RoundState, 3)
+	net.Send(ply)
 end
 
 function GM:PlayerSpawn(ply)
@@ -49,7 +60,7 @@ end
 
 function GM:PlayerCanPickupWeapon(ply, weapon)
 	-- Allow pickup after round
-	if ply:Team() == TEAM_SPECTATOR || self.RoundState == ROUND_ACTIVE then return false end
+	if ply:Team() == TEAM_SPECTATOR || (weapon:GetClass() != "has_hands" && self.RoundState == ROUND_ACTIVE) then return false end
 
 	return true
 end
