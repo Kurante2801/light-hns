@@ -13,7 +13,7 @@ AddCSLuaFile("sh_roundmanager.lua")
 -- Shared ConVars
 GM.CVars = GM.CVars || {}
 GM.CVars.MaxRounds = CreateConVar("has_maxrounds", 5, { FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Rounds until map change")
-GM.CVars.TimeLimit = CreateConVar("has_timelimit", 270, { FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Time to seek (0 is infinite)")
+GM.CVars.TimeLimit = CreateConVar("has_timelimit", 300, { FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Time to seek (0 is infinite)")
 GM.CVars.EnviromentDamageAllowed = CreateConVar("has_envdmgallowed", 1, { FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Will the map hurt players?")
 GM.CVars.BlindTime = CreateConVar("has_blindtime", 30, { FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Time to hide (seekers are blinded)")
 GM.CVars.DynamicTagging = CreateConVar("has_dyntagging", 1, { FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Enable dynamic tag ranges?")
@@ -39,7 +39,8 @@ end
 
 hook.Add("Tick", "HNS.SeekerBlinded", function()
 	-- Store time left
-	GAMEMODE.TimeLeft = math.abs(math.ceil(timer.TimeLeft("HNS.RoundTimer") || (GAMEMODE.CVars.TimeLimit:GetInt() + GAMEMODE.CVars.BlindTime:GetInt())))
+	GAMEMODE.TimeLeft = timer.TimeLeft("HNS.RoundTimer") || (GAMEMODE.CVars.TimeLimit:GetInt() + GAMEMODE.CVars.BlindTime:GetInt())
+	GAMEMODE.TimeLeft = math.ceil(math.abs(GAMEMODE.TimeLeft))
 	-- See if seeker is blinded
 	if GAMEMODE.RoundState == ROUND_ACTIVE && GetConVar("has_timelimit"):GetInt() < GAMEMODE.TimeLeft then
 		GAMEMODE.SeekerBlinded = true

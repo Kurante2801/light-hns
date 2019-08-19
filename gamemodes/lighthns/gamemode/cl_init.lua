@@ -15,6 +15,8 @@ GM.CVars.CrosshairThick = CreateClientConVar("has_crosshair_thick", 4, true, fal
 include("sh_init.lua")
 include("cl_fonts.lua")
 include("cl_hud.lua")
+include("tdlib.lua")
+include("cl_derma.lua")
 
 -- Receive a chat message from gamemode
 net.Receive("HNS.Say", function()
@@ -121,5 +123,15 @@ function GM:KeyRelease(ply, key)
 				end
 			end)
 		end)
+	end
+end
+
+function GM:PlayerBindPress(ply, bind)
+	-- Safe check
+	if ply != LocalPlayer() then return end
+
+	-- Team selection menu
+	if bind == "gm_showteam" then
+		vgui.Create("HNS.F2.Derma")
 	end
 end

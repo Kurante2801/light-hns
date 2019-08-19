@@ -14,8 +14,20 @@ function GM:PlayerInitialSpawn(ply)
 end
 
 function GM:PlayerSpawn(ply)
+	if ply:Team() == TEAM_SPECTATOR then
+		self:PlayerSpawnAsSpectator(ply)
+		ply:SetNoDraw(false)
+		ply:SetRenderMode(RENDERMODE_TRANSALPHA)
+		ply:SetColor(Color(0, 0, 0, 0))
+		ply:AllowFlashlight(false)
+		return
+	end
 	-- Calling base spawn for stuff fixing
 	self.BaseClass:PlayerSpawn(ply)
+
+	-- Fixing spectator stuff
+	ply:SetColor(COLOR_WHITE)
+	ply:SetRenderMode(RENDERMODE_NORMAL)
 
 	-- Set current gender
 	ply.Gender = ply:GetInfoNum("has_gender", 0) == 1
@@ -68,7 +80,7 @@ end
 function GM:PlayerDisconnected(ply)
 	-- Check for seeker avoider
 	if ply:Team() == TEAM_SEEK && team.NumPlayers(TEAM_SEEK) <= 1 then
-		self:BroadcastChat(COLOR_WHITE, "[", Color(220, 20, 60), "HNS", COLOR_WHITE, "] ", ply:Name(), " Avoided seeker! (", Color(220, 20, 60), ply:SteamID(), COLOR_WHITE, ")")
+		self:BroadcastChat(COLOR_WHITE, "[", Color(220, 20, 60), "HNS", COLOR_WHITE, "] ", ply:Name(), " avoided seeker! (", Color(220, 20, 60), ply:SteamID(), COLOR_WHITE, ")")
 	end
 	self:RoundCheck()
 end
@@ -121,6 +133,35 @@ FindMetaTable("Player").Caught = function(self, ply)
 	-- Check round state
 	GAMEMODE:RoundCheck()
 end
+
+-- Receive player changing teams
+net.Receive("HNS.JoinPlaying", function(_, ply)
+	-- Ignore players
+	if ply:Team() == TEAM_HIDE || ply:Team() == TEAM_SEEK then return end
+	-- Log
+	GAMEMODE:BroadcastChat(COLOR_WHITE, "[", Color(200, 200, 200), "HNS", COLOR_WHITE, "] " .. ply:Name() .. " (", Color(200, 200, 200), ply:SteamID(), COLOR_WHITE, ") is now playing!")
+	print(string.format("[LHNS] %s (%s) joins the seekers.", ply:Name(), ply:SteamID()))
+	-- Set team and spawn
+	ply:SetTeam(TEAM_SEEK)
+	ply:Spawn()
+end)
+net.Receive("HNS.JoinSpectating", function(_, ply)
+	-- Ignore specs
+	if ply:Team() == TEAM_SPECTATOR then return end
+	-- If player is only seeker, forbit
+	if ply:Team() == TEAM_SEEK && team.NumPlayers(TEAM_SEEK) <= 1 then
+		GAMEMODE:SendChat(ply, COLOR_WHITE, "[", Color(220, 20, 60), "HNS", COLOR_WHITE, "] You are the only seeker. Tag someone else first!")
+		return
+	end
+	-- Log & advert
+	GAMEMODE:BroadcastChat(COLOR_WHITE, "[", Color(200, 200, 200), "HNS", COLOR_WHITE, "] " .. ply:Name() .. " (", Color(200, 200, 200), ply:SteamID(), COLOR_WHITE, ") is now spectating!")
+	print(string.format("[LHNS] %s (%s) joins the spectators.", ply:Name(), ply:SteamID()))
+	-- Set team and spawn
+	ply:SetTeam(TEAM_SPECTATOR)
+	ply:Spawn()
+	-- Round check
+	GAMEMODE:RoundCheck()
+end)
 
 -- Update movement vars
 cvars.AddChangeCallback("has_hiderrunspeed", function(_, _, new)

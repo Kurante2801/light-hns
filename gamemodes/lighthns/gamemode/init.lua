@@ -4,11 +4,15 @@ AddCSLuaFile("sh_init.lua")
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("cl_fonts.lua")
 AddCSLuaFile("cl_hud.lua")
+AddCSLuaFile("cl_derma.lua")
+AddCSLuaFile("tdlib.lua")
 
 include("sv_player.lua")
 
 util.AddNetworkString("HNS.Say")
 util.AddNetworkString("HNS.PlaySound")
+util.AddNetworkString("HNS.JoinPlaying")
+util.AddNetworkString("HNS.JoinSpectating")
 
 -- Sends a table to be unpacked on chat.AddText
 function GM:SendChat(ply, ...)

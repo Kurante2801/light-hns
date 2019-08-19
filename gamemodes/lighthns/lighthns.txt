@@ -16,7 +16,7 @@
 			"name"		"has_timelimit"
 			"text"		"Time to seek (0 is infinite)"
 			"type"		"Numeric"
-			"default"	"270"
+			"default"	"300"
 		}
 		3 {
 			"name"		"has_envdmgallowed"
