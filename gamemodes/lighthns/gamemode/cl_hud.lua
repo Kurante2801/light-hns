@@ -97,8 +97,10 @@ GM.SeekerColor = GM:GetTeamShade(TEAM_SEEK, GM.CVars.SeekerColor:GetString())
 local function GetDrawColor()
 	if LocalPlayer():Team() == TEAM_HIDE then
 		return GAMEMODE:GetTeamShade(TEAM_HIDE, GAMEMODE.CVars.HiderColor:GetString())
-	else
+	elseif LocalPlayer():Team() == TEAM_SEEK then
 		return GAMEMODE:GetTeamShade(TEAM_SEEK, GAMEMODE.CVars.SeekerColor:GetString())
+	else
+		return team.GetColor(LocalPlayer():Team())
 	end
 end
 local function GetRoundText()
@@ -113,13 +115,18 @@ local speed, rayEnt, lastLooked, lookedTime, lookedColor
 local crosshair = {}
 
 function GM:HUDPaint()
+	-- Blind (combined with render hook)
+	if self.SeekerBlinded && LocalPlayer():Team() == TEAM_SEEK then
+		draw.RoundedBox(0, 0, 0, ScrW(), ScrH(), Color(0, 0, 0))
+	end
+
 	self.SelectedHUD = self.HUDs[self.CVars.HUD:GetInt()] || self.HUDs[2]
 	-- Create avatar
 	if self.SelectedHUD.AvatarFunc && !self.SelectedHUD.Avatar then
 		self.SelectedHUD:AvatarFunc()
 	end
 	-- Draw HUD
-	self.SelectedHUD:Draw(LocalPlayer(), GetDrawColor(), 100, string.ToMinutesSeconds(self.TimeLeft), GetRoundText(), self.CVars.TimeLimit)
+	self.SelectedHUD:Draw(LocalPlayer(), GetDrawColor(), self.Stamina, string.ToMinutesSeconds(self.TimeLeft), GetRoundText(), self.CVars.TimeLimit)
 	-- Remove leftover avatars
 	for i, hud in ipairs(self.HUDs) do
 		-- Ignore current hud
@@ -156,11 +163,6 @@ function GM:HUDPaint()
 		crosshair.Thick = self.CVars.CrosshairThick:GetInt()
 		crosshair.Color = self.CVars.CrosshairColor:GetString():ToColor()
 		self:DrawCrosshair(ScrW() / 2, ScrH() / 2, crosshair)
-	end
-
-	-- Blind (combined with render hook)
-	if self.SeekerBlinded && LocalPlayer():Team() == TEAM_SEEK then
-		draw.RoundedBox(0, 0, 0, ScrW(), ScrH(), Color(0, 0, 0))
 	end
 end
 

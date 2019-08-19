@@ -36,3 +36,8 @@ surface.CreateFont("HNS.HUD.DR.Large", {
 	size = 48,
 	antialias = true,
 })
+surface.CreateFont("HNS.HUD.DR.Spec", {
+	font = "Roboto Bold",
+	size = 84,
+	antialias = true,
+})

@@ -41,6 +41,12 @@ function GM:PlayerSpawn(ply)
 	self:RoundCheck()
 end
 
+function GM:PlayerLoadout(ply)
+	if ply:Team() != TEAM_SPECTATOR then
+		ply:Give("has_hands")
+	end
+end
+
 function GM:PlayerCanPickupWeapon(ply, weapon)
 	-- Allow pickup after round
 	if ply:Team() == TEAM_SPECTATOR || self.RoundState == ROUND_ACTIVE then return false end
@@ -85,6 +91,24 @@ function GM:PlayerUse(ply, ent)
 	end
 
 	return true
+end
+
+FindMetaTable("Player").Caught = function(self, ply)
+	-- Change team
+	self:SetTeam(TEAM_SEEK)
+	-- Parameters
+	self:AllowFlashlight(true)
+	self:SetRunSpeed(GAMEMODE.CVars.SeekerRunSpeed:GetInt())
+	self:SetWalkSpeed(GAMEMODE.CVars.SeekerWalkSpeed:GetInt())
+	-- Change color
+	self:SetPlayerColor(GAMEMODE:GetTeamShade(TEAM_SEEK, self:GetInfo("has_seekercolor", "Default")):ToVector())
+	-- Call hook
+	hook.Run("HASPlayerCaught", ply, self)
+	-- Play sounds
+	self:EmitSound("physics/body/body_medium_impact_soft7.wav")
+	GAMEMODE:SendSound(self, "npc/roller/code2.wav")
+	-- Check round state
+	GAMEMODE:RoundCheck()
 end
 
 -- Update movement vars
