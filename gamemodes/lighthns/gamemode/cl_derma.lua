@@ -304,16 +304,6 @@ function PANEL:Init()
 	self.Crosshair.Picker:SetConVarB("has_crosshair_b")
 	self.Crosshair.Picker:SetConVarA("has_crosshair_a")
 
-	self.Tabs:AddSheet("Crosshair", self.Crosshair, "icon16/cross.png")
-	self.Tabs:SwitchToName("Crosshair")
-
-	-- Style tabs
-	for _, item in ipairs(self.Tabs:GetItems()) do
-		item.Tab.GetTabHeight = function() return 24 end
-		item.Tab:TDLib() -- Styling
-			:ClearPaint():Background(Color (25, 25, 25)):BarHover(Color(75, 75, 75), 2):SetTransitionFunc(function(this) return this:IsActive() end):FadeHover(Color (75, 75, 75))
-	end
-
 	-- Crosshair sizes
 	for i = 1, 3 do
 		local wang = self.Crosshair:Add("DNumberWang")
@@ -322,6 +312,15 @@ function PANEL:Init()
 		wang:SetSize(50, 22)
 		wang:SetConVar("has_crosshair_" .. (i == 1 && "size" || i == 2 && "gap" || "thick"))
 		wang:SetValue(GetConVar("has_crosshair_" .. (i == 1 && "size" || i == 2 && "gap" || "thick")):GetInt())
+	end
+
+	self.Tabs:AddSheet("Crosshair", self.Crosshair, "icon16/cross.png")
+
+	-- Style tabs
+	for _, item in ipairs(self.Tabs:GetItems()) do
+		item.Tab.GetTabHeight = function() return 24 end
+		item.Tab:TDLib() -- Styling
+			:ClearPaint():Background(Color (25, 25, 25)):BarHover(Color(75, 75, 75), 2):SetTransitionFunc(function(this) return this:IsActive() end):FadeHover(Color (75, 75, 75))
 	end
 end
 
