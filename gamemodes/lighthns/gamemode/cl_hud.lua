@@ -138,6 +138,16 @@ function GM:HUDPaint()
 		end
 	end
 
+	-- Speed pos
+	if self.CVars.ShowSpeed:GetBool() then
+		speed = LocalPlayer():GetVelocity():Length2D()
+
+		draw.RoundedBox(6, self.CVars.SpeedX:GetInt() - 45, self.CVars.SpeedY:GetInt() - 30, 90, 60, Color(0, 0, 0, speed > 0 && 200 || 100))
+
+		draw.SimpleText("SPEED", "HNS.HUD.DR.Medium", self.CVars.SpeedX:GetInt(), self.CVars.SpeedY:GetInt() - 14, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		draw.SimpleText(math.Round(speed), "HNS.HUD.DR.Big", self.CVars.SpeedX:GetInt(), self.CVars.SpeedY:GetInt() + 12, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+	end
+
 	-- Fade out names
 	rayEnt = LocalPlayer():GetEyeTrace().Entity
 	if !IsValid(LocalPlayer():GetObserverTarget()) && IsValid(rayEnt) && rayEnt:IsPlayer() && (self.RoundState != ROUND_ACTIVE || rayEnt:GetPos():DistToSqr(LocalPlayer():GetPos()) <= 302500) then
@@ -161,7 +171,7 @@ function GM:HUDPaint()
 		crosshair.Size = self.CVars.CrosshairSize:GetInt()
 		crosshair.Gap = self.CVars.CrosshairGap:GetInt()
 		crosshair.Thick = self.CVars.CrosshairThick:GetInt()
-		crosshair.Color = self.CVars.CrosshairColor:GetString():ToColor()
+		crosshair.Color = Color(self.CVars.CrosshairR:GetInt(), self.CVars.CrosshairG:GetInt(), self.CVars.CrosshairB:GetInt(), self.CVars.CrosshairA:GetInt())
 		self:DrawCrosshair(ScrW() / 2, ScrH() / 2, crosshair)
 	end
 end

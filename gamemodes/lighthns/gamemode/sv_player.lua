@@ -163,6 +163,11 @@ net.Receive("HNS.JoinSpectating", function(_, ply)
 	GAMEMODE:RoundCheck()
 end)
 
+-- Receive color update
+net.Receive("HNS.PlayerColorUpdate", function(_, ply)
+	ply:SetPlayerColor(GAMEMODE:GetPlayerTeamColor(ply):ToVector())
+end)
+
 -- Update movement vars
 cvars.AddChangeCallback("has_hiderrunspeed", function(_, _, new)
 	for _, ply in ipairs(team.GetPlayers(TEAM_HIDE)) do

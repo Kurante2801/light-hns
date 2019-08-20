@@ -144,7 +144,7 @@ if SERVER then
 
 		local taunts = {}
 
-		local gender = self.Owner:GetInfoNum("has_gender", 1) == 1 && "female01" || "male01"
+		local gender = self.Owner.Gender && "female01" || "male01"
 
 		if GAMEMODE.RoundState == ROUND_ACTIVE then
 			if self.Owner:Team() == TEAM_HIDE then

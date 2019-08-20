@@ -3,11 +3,11 @@ COLOR_HNS_TAG = Color(150, 100, 200)
 
 GM.HiderColors = {
 	["Default"] = Color(0, 50, 175),
+	["Shark"] = Color(75, 150, 225),
 	["Full Blue"] = Color(0, 0, 255),
 	["Dark Blue"] = Color(0, 0, 175),
-	["Light Blue"] = Color(20, 130, 200),
-	["Shark"] = Color(75, 150, 225),
 	["Super Light Blue"] = Color(0, 255, 255),
+	["Light Blue"] = Color(20, 130, 200),
 }
 
 GM.SeekerColors = {

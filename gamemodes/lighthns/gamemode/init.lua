@@ -13,6 +13,7 @@ util.AddNetworkString("HNS.Say")
 util.AddNetworkString("HNS.PlaySound")
 util.AddNetworkString("HNS.JoinPlaying")
 util.AddNetworkString("HNS.JoinSpectating")
+util.AddNetworkString("HNS.PlayerColorUpdate")
 
 -- Sends a table to be unpacked on chat.AddText
 function GM:SendChat(ply, ...)

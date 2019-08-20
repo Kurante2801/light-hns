@@ -1,12 +1,19 @@
 -- Create local cvars for customization
 GM.CVars = GM.CVars || {}
-GM.CVars.HUD = CreateClientConVar("has_hud", 1, true, false)
+GM.CVars.HUD = CreateClientConVar("has_hud", 2, true, false)
 GM.CVars.HiderColor = CreateClientConVar("has_hidercolor", "Default", true, true)
 GM.CVars.SeekerColor = CreateClientConVar("has_seekercolor", "Default", true, true)
 GM.CVars.Gender = CreateClientConVar("has_gender", 0, true, true)
 GM.CVars.ShowID = CreateClientConVar("has_showid", 1, true, false)
+GM.CVars.ShowOnTop = CreateClientConVar("has_scob_ontop", 0, true, false)
+GM.CVars.ShowSpeed = CreateClientConVar("has_showspeed", 0, true, false)
+GM.CVars.SpeedX = CreateClientConVar("has_speedx", 45, true, false)
+GM.CVars.SpeedY = CreateClientConVar("has_speedy", 30, true, false)
 GM.CVars.CrosshairEnable = CreateClientConVar("has_crosshair_enable", "0", true, false)
-GM.CVars.CrosshairColor = CreateClientConVar("has_crosshair_color", "55 215 75 225", true, false)
+GM.CVars.CrosshairR = CreateClientConVar("has_crosshair_r", 55, true, false)
+GM.CVars.CrosshairG = CreateClientConVar("has_crosshair_g", 215, true, false)
+GM.CVars.CrosshairB = CreateClientConVar("has_crosshair_b", 75, true, false)
+GM.CVars.CrosshairA = CreateClientConVar("has_crosshair_a", 225, true, false)
 GM.CVars.CrosshairSize = CreateClientConVar("has_crosshair_size", 8, true, false)
 GM.CVars.CrosshairGap = CreateClientConVar("has_crosshair_gap", 6, true, false)
 GM.CVars.CrosshairThick = CreateClientConVar("has_crosshair_thick", 4, true, false)
@@ -133,5 +140,15 @@ function GM:PlayerBindPress(ply, bind)
 	-- Team selection menu
 	if bind == "gm_showteam" then
 		vgui.Create("HNS.F2.Derma")
+	elseif bind == "gm_showhelp" then
+		vgui.Create("HNS.F1.Derma")
 	end
 end
+
+-- Update playercolor
+local function PlayerColorUpdate()
+	net.Start("HNS.PlayerColorUpdate")
+	net.SendToServer()
+end
+cvars.AddChangeCallback("has_hidercolor", PlayerColorUpdate)
+cvars.AddChangeCallback("has_seekercolor", PlayerColorUpdate)
