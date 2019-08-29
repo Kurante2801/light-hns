@@ -195,10 +195,10 @@ function GM:HUDPaint()
 	if self.CVars.ShowSpeed:GetBool() then
 		speed = LocalPlayer():GetVelocity():Length2D()
 
-		draw.RoundedBox(6, self.CVars.SpeedX:GetInt() - 45, self.CVars.SpeedY:GetInt() - 30, 90, 60, Color(0, 0, 0, speed > 0 && 200 || 100))
+		draw.RoundedBox(6, self.CVars.SpeedX:GetInt() - 45, self.CVars.SpeedY:GetInt() - 28, 90, 56, Color(0, 0, 0, speed > 0 && 200 || 100))
 
 		draw.SimpleText("SPEED", "HNS.HUD.DR.Medium", self.CVars.SpeedX:GetInt(), self.CVars.SpeedY:GetInt() - 14, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-		draw.SimpleText(math.Round(speed), "HNS.HUD.DR.Big", self.CVars.SpeedX:GetInt(), self.CVars.SpeedY:GetInt() + 12, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		draw.SimpleText(math.Round(speed), "HNS.HUD.DR.Big", self.CVars.SpeedX:GetInt(), self.CVars.SpeedY:GetInt() + 10, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 	end
 
 	-- Fade out names

@@ -6,6 +6,7 @@ GM.CVars.SeekerColor = CreateClientConVar("has_seekercolor", "Default", true, tr
 GM.CVars.Gender = CreateClientConVar("has_gender", 0, true, true)
 GM.CVars.ShowID = CreateClientConVar("has_showid", 1, true, false)
 GM.CVars.ShowOnTop = CreateClientConVar("has_scob_ontop", 0, true, false)
+GM.CVars.Sort = CreateClientConVar("has_scob_sort", 1, true, false)
 GM.CVars.ShowSpeed = CreateClientConVar("has_showspeed", 0, true, false)
 GM.CVars.SpeedX = CreateClientConVar("has_speedx", 45, true, false)
 GM.CVars.SpeedY = CreateClientConVar("has_speedy", 30, true, false)
@@ -142,6 +143,20 @@ function GM:PlayerBindPress(ply, bind)
 		vgui.Create("HNS.F2.Derma")
 	elseif bind == "gm_showhelp" then
 		vgui.Create("HNS.F1.Derma")
+	end
+end
+
+function GM:ScoreboardShow()
+	if !IsValid(self.Scoreboard) then
+		self.Scoreboard = vgui.Create("HNS.Scoreboard")
+	end
+	self.Scoreboard:Show()
+	self.Scoreboard:UpdateList()
+end
+
+function GM:ScoreboardHide()
+	if IsValid(self.Scoreboard) then
+		self.Scoreboard:Hide()
 	end
 end
 
