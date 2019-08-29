@@ -551,4 +551,3 @@ function PANEL:UpdateList()
 end
 
 vgui.Register("HNS.Scoreboard", PANEL, "DFrame")
-vgui.Create("HNS.Scoreboard")

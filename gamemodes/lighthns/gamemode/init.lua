@@ -14,6 +14,7 @@ util.AddNetworkString("HNS.PlaySound")
 util.AddNetworkString("HNS.JoinPlaying")
 util.AddNetworkString("HNS.JoinSpectating")
 util.AddNetworkString("HNS.PlayerColorUpdate")
+util.AddNetworkString("HNS.StaminaChange")
 
 -- Sends a table to be unpacked on chat.AddText
 function GM:SendChat(ply, ...)

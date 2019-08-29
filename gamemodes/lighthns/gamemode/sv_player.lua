@@ -116,6 +116,49 @@ function GM:PlayerUse(ply, ent)
 	return true
 end
 
+function GM:GetFallDamage(ply, speed)
+	if self.RoundState != ROUND_ACTIVE then return end
+
+	local time = math.Round(speed / 666, 1)
+
+	if speed >= 600 then
+		-- Break a leg!
+		ply:EmitSound("player/pl_fleshbreak.wav")
+		ply:EmitSound("vo/npc/" .. (ply.Gender && "female01" || "male01") .. "/pain0" .. math.random (9) .. ".wav")
+		ply:ViewPunch(Angle(0, math.random(-speed / 45, speed / 45), 0))
+		-- Make jump lower
+		ply:SetJumpPower(85)
+		-- Restore jump power
+		timer.Create("HNS.FallRestore." .. ply:EntIndex(), time, 1, function()
+			if IsValid(ply) && ply:Team() != TEAM_SPECTATOR then
+				ply:SetJumpPower(GAMEMODE.CVars.JumpPower:GetInt())
+			end
+		end)
+
+		hook.Run ("HASPlayerFallDamage", ply)
+	end
+
+	if speed >= 760 then
+		ply:EmitSound("physics/cardboard/cardboard_box_strain1.wav")
+		-- Lower stamina
+		net.Start("HNS.StaminaChange")
+			net.WriteInt(time * -10, 8)
+		net.Send(ply)
+
+		-- Moan
+		timer.Simple(math.random(2, 4), function()
+			if !IsValid(ply) then return end
+
+			local rand = math.random(5)
+
+			ply:EmitSound("vo/npc/" .. (ply.Gender && "fe" || "") .. "male01/moan0" .. rand .. ".wav")
+			if ply.Gender then
+				ply:EmitSound("vo/npc/female01/moan0" .. rand .. ".wav")
+			end
+		end)
+	end
+end
+
 FindMetaTable("Player").Caught = function(self, ply)
 	-- Change team
 	self:SetTeam(TEAM_SEEK)

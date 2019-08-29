@@ -68,6 +68,11 @@ function GM:Tick()
 	end
 end
 
+net.Receive("HNS.StaminaChange", function()
+	local sta = net.ReadInt(8)
+	GAMEMODE.Stamina = math.Clamp(GAMEMODE.Stamina + sta, 0, 100)
+end)
+
 function GM:PostDrawOpaqueRenderables()
 	-- Stop if we aren't spectating or aren't admins(while playing)
 	if LocalPlayer():Team() != TEAM_SPECTATOR && !LocalPlayer():IsAdmin() && !LocalPlayer():IsUserGroup("trialadmin") then return end
