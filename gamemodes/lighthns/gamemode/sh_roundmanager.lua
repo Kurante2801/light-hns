@@ -41,6 +41,8 @@ if SERVER then
 			-- If round was active, stop and set hiders as champions
 			if self.RoundState == ROUND_ACTIVE then
 				self:RoundEnd(ROUND_ENDTIME)
+				-- Call hook
+				hook.Run("HASRoundEndedTime")
 			-- If round was over, start a new one
 			elseif self.RoundState == ROUND_POST then
 				self:RoundRestart()

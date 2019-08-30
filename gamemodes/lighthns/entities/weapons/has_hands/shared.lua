@@ -1,3 +1,6 @@
+-- This is chaotic, if  you're trying to understand this... don't, do yourself a favor
+-- Mostly because I've done this over 100 times
+
 SWEP.Author = "Fafy"
 SWEP.PrintName = "Hands"
 
@@ -233,4 +236,19 @@ if SERVER then
 	end
 elseif CLIENT then
 	SWEP.FrameVisible = false
+
+	local crosshair = {}
+
+	function SWEP:DoDrawCrosshair(x, y)
+		-- Crosshair
+		if GAMEMODE.CVars.CrosshairEnable:GetBool() then
+			crosshair.Size = GAMEMODE.CVars.CrosshairSize:GetInt()
+			crosshair.Gap = GAMEMODE.CVars.CrosshairGap:GetInt()
+			crosshair.Thick = GAMEMODE.CVars.CrosshairThick:GetInt()
+			crosshair.Color = Color(GAMEMODE.CVars.CrosshairR:GetInt(), GAMEMODE.CVars.CrosshairG:GetInt(), GAMEMODE.CVars.CrosshairB:GetInt(), GAMEMODE.CVars.CrosshairA:GetInt())
+			GAMEMODE:DrawCrosshair(ScrW() / 2, ScrH() / 2, crosshair)
+
+			return true
+		end
+	end
 end

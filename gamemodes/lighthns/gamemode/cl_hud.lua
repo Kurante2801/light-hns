@@ -203,7 +203,6 @@ local function GetRoundText()
 end
 
 local speed, rayEnt, lastLooked, lookedTime, lookedColor
-local crosshair = {}
 
 function GM:HUDPaint()
 	-- Blind (combined with render hook)
@@ -256,15 +255,6 @@ function GM:HUDPaint()
 			draw.SimpleTextOutlined(lastLooked:SteamID(), "DermaDefaultBold", ScrW() / 2, ScrH() / 2 + 84, lookedColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, lookedColor.a))
 		end
 	end
-
-	-- Crosshair
-	if self.CVars.CrosshairEnable:GetBool() then
-		crosshair.Size = self.CVars.CrosshairSize:GetInt()
-		crosshair.Gap = self.CVars.CrosshairGap:GetInt()
-		crosshair.Thick = self.CVars.CrosshairThick:GetInt()
-		crosshair.Color = Color(self.CVars.CrosshairR:GetInt(), self.CVars.CrosshairG:GetInt(), self.CVars.CrosshairB:GetInt(), self.CVars.CrosshairA:GetInt())
-		self:DrawCrosshair(ScrW() / 2, ScrH() / 2, crosshair)
-	end
 end
 
 -- Hide elements
@@ -277,9 +267,6 @@ local hide = {
 }
 
 function GM:HUDShouldDraw(element)
-	if element == "CHudCrosshair" && self.CVars.CrosshairEnable:GetBool() then
-		return false
-	end
 	return !hide[element]
 end
 
