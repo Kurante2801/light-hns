@@ -123,6 +123,14 @@ if SERVER then
 				-- Log
 				print(string.format("[LHNS] Seekers won round %s with %s left.", self.RoundCount, string.ToMinutesSeconds(left)))
 			end
+
+			if self.RoundCount >= self.CVars.MaxRounds:GetInt() then
+				-- Start votemap
+				hook.Run("HASVotemapStart")
+
+				-- Remove timer
+				timer.Remove("HNS.RoundTimer")
+			end
 		end
 
 	end

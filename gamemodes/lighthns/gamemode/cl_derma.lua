@@ -53,7 +53,7 @@ function PANEL:Init()
 	self:SetTitle("GFL | Hide and Seek")
 
 	self.Text = self:Add("DLabel")
-	self.Text:Dock(TOP)
+	self.Text:SetPos(12, 34)
 	self.Text:SetContentAlignment(7)
 	self.Text:SetFont("DermaDefault")
 	self.Text:SetText("Welcome to GFL Hide and Seek! \n\nHow to play:\nHiders (blue team) have to avoid the Seekers until the round ends to win.\nSeekers (red team) have to tag (touch) all Hiders to win the round.\n\nKeys:\nF1 = Open this window.\nF2 = Change teams.\nR = Play a taunt")
@@ -61,7 +61,7 @@ function PANEL:Init()
 	-- Play button
 	self.Play = self:Add("DButton")
 	self.Play:SetPos(8, 182)
-	self.Play:SetSize(200, 70)
+	self.Play:SetSize(188, 70)
 	self.Play:TDLib() -- Styling
 		:ClearPaint():Outline(Color(220, 20, 60), 2):FillHover(Color(220, 20, 60), LEFT):Text("")
 		:On("PaintOver", function(this, w, h)
@@ -78,12 +78,28 @@ function PANEL:Init()
 
 	-- Preferences panel
 	self.Prefs = self:Add("DButton")
-	self.Prefs:SetPos(202, 182)
-	self.Prefs:SetSize(200, 70)
+	self.Prefs:SetPos(204, 182)
+	self.Prefs:SetSize(188, 31)
 	self.Prefs:TDLib() -- Styling
-		:ClearPaint():Outline(Color(0, 255, 255), 2):BarHover(Color(0, 255, 255), 4):Text("Preferences", "HNS.HUD.DR.Medium")
-		:On("DoClick", function(this)
+		:ClearPaint():Outline(Color(0, 255, 255), 2):FillHover(Color(0, 255, 255), TOP):Text(""):On("PaintOver", function(this, w, h)
+			draw.SimpleText("Preferences", "HNS.HUD.DR.Medium", w / 2, h / 2, Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			draw.SimpleText("Preferences", "HNS.HUD.DR.Medium", w / 2 - 1, h / 2 - 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		end):On("DoClick", function(this)
 			self:Close() vgui.Create("HNS.Prefs.Derma")
+		end)
+
+	-- Achievements
+	self.Achs = self:Add("DButton")
+	self.Achs:SetPos(204, 221)
+	self.Achs:SetSize(188, 31)
+	self.Achs:TDLib()
+		:ClearPaint():Outline(Color(125, 0, 255), 2):FillHover(Color(125, 0, 255), BOTTOM):Text(""):On("PaintOver", function(this, w, h)
+			draw.SimpleText("Achievements", "HNS.HUD.DR.Medium", w / 2, h / 2, Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			draw.SimpleText("Achievements", "HNS.HUD.DR.Medium", w / 2 - 1, h / 2 - 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		end):On("DoClick", function()
+			-- Add your own achievements addon, I'll use a custom one I made but is shitty anyways
+			self:Close()
+			RunConsoleCommand("say", "!achievements")
 		end)
 end
 
@@ -93,7 +109,9 @@ function PANEL:Paint(w, h)
 end
 
 vgui.Register("HNS.F1.Derma", PANEL, "DFrame")
-vgui.Create("HNS.F1.Derma")
+if !GAMEMODE then
+	vgui.Create("HNS.F1.Derma")
+end
 
 PANEL = {}
 
@@ -339,6 +357,7 @@ function PANEL:Init()
 	self:SetSize(550, ScrH() - 100)
 	self:Center()
 	self:MakePopup()
+	self:SetKeyboardInputEnabled(false) -- Not needed
 	self:SetTitle("Scoreboard - Hide and Seek")
 	self:DockPadding(0, 94, 0, 0)
 
