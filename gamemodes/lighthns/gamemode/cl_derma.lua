@@ -50,13 +50,13 @@ function PANEL:Init()
 	self:Center()
 	self:MakePopup()
 
-	self:SetTitle("GFL | Hide and Seek")
+	self:SetTitle("Hide and Seek")
 
 	self.Text = self:Add("DLabel")
 	self.Text:SetPos(12, 34)
 	self.Text:SetContentAlignment(7)
 	self.Text:SetFont("DermaDefault")
-	self.Text:SetText("Welcome to GFL Hide and Seek! \n\nHow to play:\nHiders (blue team) have to avoid the Seekers until the round ends to win.\nSeekers (red team) have to tag (touch) all Hiders to win the round.\n\nKeys:\nF1 = Open this window.\nF2 = Change teams.\nR = Play a taunt")
+	self.Text:SetText("Welcome to Light Hide and Seek! \n\nHow to play:\nHiders (blue team) have to avoid the Seekers until the round ends to win.\nSeekers (red team) have to tag (touch) all Hiders to win the round.\n\nKeys:\nF1 = Open this window.\nF2 = Change teams.\nR = Play a taunt")
 	self.Text:SizeToContents()
 	-- Play button
 	self.Play = self:Add("DButton")
@@ -133,7 +133,7 @@ function PANEL:Init()
 	self:MakePopup()
 	self:DockPadding(0, 24, 0, 0)
 
-	self:SetTitle("GFL | Player Preferences")
+	self:SetTitle("HNS | Player Preferences")
 
 	self.Tabs = self:Add("DPropertySheet")
 	self.Tabs:Dock(FILL)
@@ -388,12 +388,12 @@ function PANEL:Init()
 		["Star"] = Material("icon16/star.png"),
 	}
 
-	-- GFL button
-	self.GFL = self:Add("DButton")
-	self.GFL:SetPos(0, 24)
-	self.GFL:SetSize(200, 64)
-	self.GFL:TDLib() -- Styling
-		:ClearPaint():Text(GAMEMODE.CVars.ScoreboardText:GetString() || "Light HNS", "DermaLarge"):Blur(2):LinedCorners():CircleHover():SetOpenURL("https://gflclan.com/forums")
+	-- Scoreboard button
+	self.ScoButton = self:Add("DButton")
+	self.ScoButton:SetPos(0, 24)
+	self.ScoButton:SetSize(200, 64)
+	self.ScoButton:TDLib() -- Styling
+		:ClearPaint():Text(GAMEMODE.CVars.ScoreboardText:GetString() || "Light HNS", "DermaLarge"):Blur(2):LinedCorners():CircleHover():SetOpenURL(GAMEMODE.CVars.ScoreboardURL:GetString() || "")
 
 	-- Sorting buton
 	self.Sorter = self:Add("DButton")
