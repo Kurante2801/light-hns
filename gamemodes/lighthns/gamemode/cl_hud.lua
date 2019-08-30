@@ -90,6 +90,39 @@ GM.HUDs[2] = {
 }
 
 GM.HUDs[3] = {
+	Name = "Compact",
+	Draw = function(this, ply, tint, stamina, timeLeft, roundText, timeCVar)
+		-- So much for a border
+		surface.SetDrawColor(tint)
+		surface.DrawLine(20, ScrH() - 120, 20, ScrH() - 20)
+		surface.DrawLine(330, ScrH() - 120, 330, ScrH() - 20)
+		surface.DrawLine(20, ScrH() - 20, 330, ScrH() - 20)
+		surface.DrawLine(20, ScrH() - 120, 330, ScrH() - 120)
+
+		-- Stamina
+		if ply:Team() != TEAM_SPECTATOR then
+			-- Black back
+			draw.RoundedBox(0, 25, ScrH() - 50, 300, 25, Color(0, 0, 0, 215))
+			-- Tinted bar
+			draw.RoundedBox(0, 25, ScrH() - 50, stamina * 3, 25, tint)
+		end
+		-- Background
+		draw.RoundedBox(0, 20, ScrH() - 120, 310, 100, ColorAlpha(tint, 5))
+		-- Player name
+		draw.SimpleTextOutlined(ply:Name(), "HNS.HUD.Fafy.Name", 25, ScrH() - 65, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, Color(10, 10, 10, 100))
+		-- Player team
+		draw.SimpleTextOutlined(team.GetName(ply:Team()), "HNS.HUD.Fafy.Name", 325, ScrH() - 65, tint, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, 1, Color(10, 10, 10, 100))
+		-- Time remaining and round count
+		draw.SimpleTextOutlined(timeLeft, "HNS.HUD.Fafy.Timer", 25, ScrH() - 106, Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, Color(10, 10, 10, 100))
+		draw.SimpleTextOutlined(roundText, "HNS.HUD.Fafy.Name", 25, ScrH() - 85, Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, Color(10, 10, 10, 100))
+		-- Time until seeker is unblinded
+		if GAMEMODE.SeekerBlinded then
+			draw.SimpleTextOutlined((ply:Team() == 1 && "Hide" || ply:Team() == 2 && "Wait" || "Start in") .. ": " .. blindTime, "HNS.HUD.Fafy.Name", 325, ScrH() - 85, Color(255, 255, 255), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, 1, Color(10, 10, 10, 100))
+		end
+	end
+}
+
+GM.HUDs[4] = {
 	Name = "Arizard",
 	Draw = function(this, ply, tint, stamina, timeLeft, roundText, timeCVar)
 		-- Team info
@@ -140,6 +173,11 @@ GM.HUDs[3] = {
 		end
 		draw[outlined && "SimpleTextOutlined" || "SimpleText"](text, font, x, y, color, align_x, align_y, 1, Color(0, 0, 0, 65))
 	end
+}
+
+GM.HUDs[5] = {
+	Name = "Cinematic",
+	Draw = function() end
 }
 
 -- Draw HUD

@@ -192,7 +192,7 @@ net.Receive("HNS.JoinSpectating", function(_, ply)
 	-- Ignore specs
 	if ply:Team() == TEAM_SPECTATOR then return end
 	-- If player is only seeker, forbit
-	if ply:Team() == TEAM_SEEK && team.NumPlayers(TEAM_SEEK) <= 1 then
+	if GAMEMODE.RoundState == ROUND_ACTIVE && ply:Team() == TEAM_SEEK && team.NumPlayers(TEAM_SEEK) <= 1 then
 		GAMEMODE:SendChat(ply, COLOR_WHITE, "[", Color(220, 20, 60), "HNS", COLOR_WHITE, "] You are the only seeker. Tag someone else first!")
 		return
 	end
