@@ -393,7 +393,7 @@ function PANEL:Init()
 	self.GFL:SetPos(0, 24)
 	self.GFL:SetSize(200, 64)
 	self.GFL:TDLib() -- Styling
-		:ClearPaint():Text("Games For Life", "DermaLarge"):Blur(2):LinedCorners():CircleHover():SetOpenURL("https://gflclan.com/forums")
+		:ClearPaint():Text(GAMEMODE.CVars.ScoreboardText:GetString() || "Light HNS", "DermaLarge"):Blur(2):LinedCorners():CircleHover():SetOpenURL("https://gflclan.com/forums")
 
 	-- Sorting buton
 	self.Sorter = self:Add("DButton")

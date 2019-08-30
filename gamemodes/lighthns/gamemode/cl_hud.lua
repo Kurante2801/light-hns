@@ -122,60 +122,8 @@ GM.HUDs[3] = {
 	end
 }
 
+
 GM.HUDs[4] = {
-	Name = "Arizard",
-	Draw = function(this, ply, tint, stamina, timeLeft, roundText, timeCVar)
-		-- Team info
-		draw.RoundedBox(0, 8, ScrH() - 116, 228, 16, ColorAlpha(tint, 175))
-		draw.RoundedBox(0, 8, ScrH() - 102, 228, 2, Color(tint.r - 50, tint.g - 50, tint.b - 50, 175))
-
-		this:ShadowedText(string.upper(ply:Name() .. " - " .. team.GetName(ply:Team())), "HNS.HUD.DR.Small", 122, ScrH() - 109, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-
-		-- Round info and timer
-		draw.RoundedBox(0, 8, ScrH() - 96, 228, 16, Color(255, 255, 255, 175))
-		this:ShadowedText(string.upper(roundText), "HNS.HUD.DR.Small", 13, ScrH() - 89, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, tint.g == 255)
-		this:ShadowedText(timeLeft, "HNS.HUD.DR.Small", 230, ScrH() - 89, tint, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, 1, tint.g == 255) -- SuperLigthBlue is too shit for it to be seen, so we outline it when green is 255
-
-		-- Blind time info
-		if GAMEMODE.SeekerBlinded then
-			draw.RoundedBox(0, 8, ScrH() - 136, 228, 16, Color(255, 255, 255, 175))
-			this:ShadowedText(string.upper((ply:Team() == TEAM_SEEK && "You" || team.NumPlayers(TEAM_SEEK) > 1 && "Seekers" || "Seeker") .. " will be unblinded in: " .. (GAMEMODE.TimeLeft - timeCVar:GetInt())), "HNS.HUD.DR.Small", 13, ScrH() - 129, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, tint.g == 255)
-		end
-
-		-- Stamina stuff
-		if ply:Team() != TEAM_SPECTATOR then
-			draw.RoundedBox(0, 8, ScrH() - 76, 32, 32, ColorAlpha(tint, 75))
-			draw.RoundedBox(0, 8, ScrH() - 76, 32, 32, ColorAlpha(tint, 175))
-
-			draw.RoundedBox(0, 44, ScrH() - 76, 192, 32, ColorAlpha(tint, 75))
-			draw.RoundedBox(0, 44, ScrH() - 76, 192 * stamina / 100, 32, ColorAlpha(tint, 175))
-
-			this:ShadowedText("ST", "HNS.HUD.DR.Medium", 24, ScrH() - 60, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-			this:ShadowedText(math.floor(stamina), "HNS.HUD.DR.Large", 50, ScrH() - 60, COLOR_WHITE, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-
-			-- Speed bars
-			draw.RoundedBox(0, 8, ScrH() - 40, 32, 32, ColorAlpha(tint, 75))
-			draw.RoundedBox(0, 8, ScrH() - 40, 32, 32, ColorAlpha(tint, 175))
-
-			draw.RoundedBox(0, 44, ScrH() - 40, 192, 32, ColorAlpha(tint, 75))
-			draw.RoundedBox(0, 44, ScrH() - 40, 192 * math.min(1000, LocalPlayer():GetVelocity():Length2D()) / 1000, 32, ColorAlpha(tint, 175))
-
-			this:ShadowedText("VL", "HNS.HUD.DR.Medium", 24, ScrH() - 24, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-			this:ShadowedText(math.Round(LocalPlayer():GetVelocity():Length2D()), "HNS.HUD.DR.Large", 52, ScrH() - 24, COLOR_WHITE, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-		end
-
-	end,
-	ShadowedText = function(this, text, font, x, y, color, align_x, align_y, d, outlined)
-		d = d || 1
-		if d != 0 then
-			draw.SimpleText(text, font, x + d * 2, y + d * 2, Color(0, 0, 0, color.a / 4), align_x, align_y)
-			draw.SimpleText(text, font, x + d, y + d, Color(0, 0, 0, color.a / 2), align_x, align_y)
-		end
-		draw[outlined && "SimpleTextOutlined" || "SimpleText"](text, font, x, y, color, align_x, align_y, 1, Color(0, 0, 0, 65))
-	end
-}
-
-GM.HUDs[5] = {
 	Name = "Cinematic",
 	Draw = function() end
 }
