@@ -79,19 +79,14 @@ function PANEL:Init()
 	-- Preferences panel
 	self.Prefs = self:Add("DButton")
 	self.Prefs:SetPos(204, 182)
-	self.Prefs:SetSize(188, 31)
 	self.Prefs:TDLib() -- Styling
-		:ClearPaint():Outline(Color(0, 255, 255), 2):FillHover(Color(0, 255, 255), TOP):Text(""):On("PaintOver", function(this, w, h)
-			draw.SimpleText("Preferences", "HNS.HUD.DR.Medium", w / 2, h / 2, Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-			draw.SimpleText("Preferences", "HNS.HUD.DR.Medium", w / 2 - 1, h / 2 - 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-		end):On("DoClick", function(this)
+		:ClearPaint():Outline(Color(0, 255, 255), 2):Text(""):On("DoClick", function(this)
 			self:Close() vgui.Create("HNS.Prefs.Derma")
 		end)
 
 	-- Achievements
 	self.Achs = self:Add("DButton")
 	self.Achs:SetPos(204, 221)
-	self.Achs:SetSize(188, 31)
 	self.Achs:TDLib()
 		:ClearPaint():Outline(Color(125, 0, 255), 2):FillHover(Color(125, 0, 255), BOTTOM):Text(""):On("PaintOver", function(this, w, h)
 			draw.SimpleText("Achievements", "HNS.HUD.DR.Medium", w / 2, h / 2, Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
@@ -101,6 +96,23 @@ function PANEL:Init()
 			self:Close()
 			RunConsoleCommand("say", "!achievements")
 		end)
+
+	-- Replace FACHIEVEMENTS with true if you have your own achievements system
+	if FACHIEVEMENTS then
+		self.Prefs:SetSize(188, 31)
+		self.Prefs:TDLib():FillHover(Color(0, 255, 255), TOP):On("PaintOver", function(this, w, h)
+			draw.SimpleText("Preferences", "HNS.HUD.DR.Medium", w / 2, h / 2, Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			draw.SimpleText("Preferences", "HNS.HUD.DR.Medium", w / 2 - 1, h / 2 - 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		end)
+		self.Achs:SetSize(188, 31)
+	else
+		self.Prefs:SetSize(188, 70)
+		self.Prefs:TDLib():FillHover(Color(0, 255, 255), RIGHT):On("PaintOver", function(this, w, h)
+			draw.SimpleText("Preferences", "HNS.HUD.Fafy.Timer", w / 2, h / 2, Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			draw.SimpleText("Preferences", "HNS.HUD.Fafy.Timer", w / 2 - 1, h / 2 - 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		end)
+		self.Achs:Hide()
+	end
 end
 
 function PANEL:Paint(w, h)
