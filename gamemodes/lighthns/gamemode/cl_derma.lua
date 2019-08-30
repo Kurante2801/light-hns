@@ -46,7 +46,7 @@ vgui.Register("HNS.F2.Derma", PANEL, "DFrame")
 PANEL = {}
 
 function PANEL:Init()
-	self:SetSize(400, 240)
+	self:SetSize(400, 260)
 	self:Center()
 	self:MakePopup()
 
@@ -55,12 +55,12 @@ function PANEL:Init()
 	self.Text = self:Add("DLabel")
 	self.Text:Dock(TOP)
 	self.Text:SetContentAlignment(7)
-	self.Text:SetFont("HNS.HUD.DR.Medium")
-	self.Text:SetText("This server is running under a recoded version of\nHide and Seek made by Fafy. Derma elements use\nThree's Derma Lib (TDLib) made by Threebow.\n\nMake sure you read the !motd and follow the rules\nF1 = Open this again. F2 = Team selection")
+	self.Text:SetFont("DermaDefault")
+	self.Text:SetText("Welcome to GFL Hide and Seek! \n\nHow to play:\nHiders (blue team) have to avoid the Seekers until the round ends to win.\nSeekers (red team) have to tag (touch) all Hiders to win the round.\n\nKeys:\nF1 = Open this window.\nF2 = Change teams.\nR = Play a taunt")
 	self.Text:SizeToContents()
 	-- Play button
 	self.Play = self:Add("DButton")
-	self.Play:SetPos(8, 162)
+	self.Play:SetPos(8, 182)
 	self.Play:SetSize(200, 70)
 	self.Play:TDLib() -- Styling
 		:ClearPaint():Outline(Color(220, 20, 60), 2):FillHover(Color(220, 20, 60), LEFT):Text("")
@@ -78,8 +78,8 @@ function PANEL:Init()
 
 	-- Preferences panel
 	self.Prefs = self:Add("DButton")
-	self.Prefs:SetPos(242, 182)
-	self.Prefs:SetSize(120, 30)
+	self.Prefs:SetPos(202, 182)
+	self.Prefs:SetSize(200, 70)
 	self.Prefs:TDLib() -- Styling
 		:ClearPaint():Outline(Color(0, 255, 255), 2):BarHover(Color(0, 255, 255), 4):Text("Preferences", "HNS.HUD.DR.Medium")
 		:On("DoClick", function(this)
@@ -93,6 +93,7 @@ function PANEL:Paint(w, h)
 end
 
 vgui.Register("HNS.F1.Derma", PANEL, "DFrame")
+vgui.Create("HNS.F1.Derma")
 
 PANEL = {}
 
