@@ -9,7 +9,7 @@ Still a WIP, but feel free to try or use in your server.
 ## Main Features
 
 * Multiple HUDs and settings.
-* Player model/color choices.
+* Player gender and color shade choices.
 * More server-side settings and optimization.
 * More secure (pretty sure I'm not using SendLua anywhere).
 * Active development.
