@@ -38,21 +38,34 @@ function GM:CreateTeams()
 	team.SetUp(TEAM_SPECTATOR, "Spectating", Color(0, 175, 100))
 end
 
+-- Sound when seekers are unblinded
+GM.PlayedStartSound = false
+
 hook.Add("Tick", "HNS.SeekerBlinded", function()
 	-- Store time left
-	if GAMEMODE.RoundState == ROUND_ACTIVE then
-		GAMEMODE.TimeLeft = math.ceil(timer.TimeLeft("HNS.RoundTimer") || 0)
-	elseif GAMEMODE.RoundState == ROUND_POST then
-		GAMEMODE.TimeLeft = 0
+	if GAMEMODE.RoundState == ROUND_WAIT then
+		GAMEMODE.TimeLeft = GAMEMODE.CVars.TimeLimit:GetInt() + GAMEMODE.CVars.BlindTime:GetInt()
 	else
-		GAMEMODE.TimeLeft = timer.TimeLeft("HNS.RoundTimer") || (GAMEMODE.CVars.TimeLimit:GetInt() + GAMEMODE.CVars.BlindTime:GetInt())
-		GAMEMODE.TimeLeft = math.ceil(math.abs(GAMEMODE.TimeLeft))
+		GAMEMODE.TimeLeft = timer.TimeLeft("HNS.RoundTimer") || 0
+		GAMEMODE.TimeLeft = math.abs(math.ceil(GAMEMODE.TimeLeft))
 	end
 	-- See if seeker is blinded
 	if GAMEMODE.RoundState == ROUND_ACTIVE && GAMEMODE.RoundLength < GAMEMODE.TimeLeft then
 		GAMEMODE.SeekerBlinded = true
 	else
 		GAMEMODE.SeekerBlinded = false
+	end
+
+	if !GAMEMODE.PlayedStartSound && GAMEMODE.RoundState == ROUND_ACTIVE && !GAMEMODE.SeekerBlinded then
+		GAMEMODE.PlayedStartSound = true
+		-- Sound
+		if SERVER then
+			for _, ply in pairs(team.GetPlayers(TEAM_SEEK)) do
+				ply:EmitSound("coach/coach_attack_here.wav")
+			end
+		elseif CLIENT then
+			LocalPlayer():EmitSound("coach/coach_attack_here.wav", 90, 100)
+		end
 	end
 end)
 

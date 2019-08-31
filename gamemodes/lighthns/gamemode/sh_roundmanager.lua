@@ -3,8 +3,9 @@ ROUND_WAIT, ROUND_ACTIVE, ROUND_POST = 1, 2, 3
 ROUND_ENDTIME, ROUND_ENDCAUGHT, ROUND_ENDABORT, ROUND_ENDLEAVE = 1, 2, 3, 4
 
 GM.RoundStartTime = 0
-GM.RoundCount = 0
+GM.RoundCount = -1
 GM.RoundState = ROUND_WAIT
+GM.PlayedLastHiderSound = false
 
 if SERVER then
 	util.AddNetworkString("HNS.RoundInfo")
@@ -19,6 +20,13 @@ if SERVER then
 				elseif team.NumPlayers(TEAM_SEEK) == 0 then
 					-- Seeker avoided
 					self:RoundEnd(ROUND_ENDLEAVE)
+				end
+
+				-- Advert last hider
+				if !self.PlayedLastHiderSound && team.NumPlayers(TEAM_HIDE) == 1 then
+					self:BroadcastSound("ui/medic_alert.wav")
+					self:BroadcastChat(COLOR_WHITE, "[", Color(155, 155, 255), "HNS", COLOR_WHITE, "] ", Color(155, 155, 155), "1 hider left.")
+					self.PlayedLastHiderSound = true
 				end
 			elseif self.RoundState == ROUND_WAIT then
 				-- Check for any players
@@ -90,6 +98,9 @@ if SERVER then
 
 			-- Log
 			print(string.format("[LHNS] Starting round %s. The first seeker is %s (%s)", self.RoundCount, seeker:Name(), seeker:SteamID()))
+
+			-- Don't play sound when round starts with 1 hider
+			self.PlayedLastHiderSound = team.NumPlayers(TEAM_HIDE) <= 1
 		else
 			self.RoundState = ROUND_WAIT
 			-- Network
@@ -121,8 +132,10 @@ if SERVER then
 		else
 			if ending == ROUND_ENDTIME then
 				-- Award hiders
-				for _, ply in ipairs(team.GetPlayers(TEAM_HIDE)) do
-					ply:AddFrags(GetConVar("has_hidereward"):GetInt())
+				if GAMEMODE.RoundCount > 0 then
+					for _, ply in ipairs(team.GetPlayers(TEAM_HIDE)) do
+						ply:AddFrags(GetConVar("has_hidereward"):GetInt())
+					end
 				end
 				-- Advert
 				self:BroadcastChat(COLOR_WHITE, "[", Color(155, 155, 255), "HNS", COLOR_WHITE, "] ", Color(155, 155, 255), "The Hiding Win!")

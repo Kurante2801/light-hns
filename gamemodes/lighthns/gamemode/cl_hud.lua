@@ -146,7 +146,11 @@ local function GetRoundText()
 	if GAMEMODE.RoundState == ROUND_WAIT then
 		return "Waiting for players..."
 	else
-		return "Round " .. GAMEMODE.RoundCount
+		if GAMEMODE.RoundCount > 0 then
+			return "Round " .. GAMEMODE.RoundCount
+		else
+			return "Warm-Up Round"
+		end
 	end
 end
 
