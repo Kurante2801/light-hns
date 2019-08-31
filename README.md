@@ -2,6 +2,8 @@
 
 A recoding of the classic Hide and Seek gamemode for Garry's Mod that is more secure, optimized and customizable.
 
+I am using [Threebow](https://www.threebow.com/)'s [Derma Lib](https://threebow.gitbooks.io/tdlib/) for cool loking derma (the windows).
+
 ## Main Features
 
 * Multiple HUDs and settings.
@@ -43,3 +45,7 @@ A recoding of the classic Hide and Seek gamemode for Garry's Mod that is more se
 `has_scob_text` *Text* = Text the scoreboard will show on the button at the top left corner. Requires a map change or closing the scoreboard with the X button to take effect.
 
 `has_scob_url` *Text* = URL the scoreboard button will open. Needs to start with "https://" and DOES REQUIRE QUOTES ("" <- these).
+
+## Additional info
+
+If you want your game to appear on the same list as the original hide and seek, rename the `lighthns` folder and `lighthns.txt` to `hideandseek` and `hideandseek.txt`
