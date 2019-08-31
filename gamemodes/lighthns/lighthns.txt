@@ -31,22 +31,64 @@
 			"default"	"30"
 		}
 		5 {
-			"name"		"has_dyntagging"
-			"text"		"Enable dynamic tag ranges?"
-			"type"		"CheckBox"
-			"default"	"1"
-		}
-		6 {
 			"name"		"has_hidereward"
 			"text"		"How many points to award hiders per round won"
 			"type"		"Numeric"
 			"default"	"3"
 		}
-		7 {
+		6 {
 			"name"		"has_seekreward"
 			"text"		"How many points to award seekers per hider tag"
 			"type"		"Numeric"
 			"default"	"1"
+		}
+		7 {
+			"name"		"has_hiderrunspeed"
+			"text"		"Speed at which hiders run at"
+			"type"		"Numeric"
+			"default"	"320"
+		}
+		8 {
+			"name"		"has_seekerrunspeed"
+			"text"		"Speed at which seekers run at"
+			"type"		"Numeric"
+			"default"	"360"
+		}
+		9 {
+			"name"		"has_hiderwalkspeed"
+			"text"		"Speed at which hiders walk at"
+			"type"		"Numeric"
+			"default"	"190"
+		}
+		10 {
+			"name"		"has_seekerwalkspeed"
+			"text"		"Speed at which seekers walk at"
+			"type"		"Numeric"
+			"default"	"200"
+		}
+		11 {
+			"name"		"has_jumppower"
+			"text"		"Force everyone jumps with"
+			"type"		"Numeric"
+			"default"	"210"
+		}
+		12 {
+			"name"		"has_clickrange"
+			"text"		"Range at wich seekers can click tag"
+			"type"		"Numeric"
+			"default"	"100"
+		}
+		13 {
+			"name"		"has_scob_text"
+			"text"		"Text for the scoreboard (top left button)"
+			"type"		"Text"
+			"default"	"Light HNS"
+		}
+		14 {
+			"name"		"has_scob_url"
+			"text"		"Link the scoreboard button will open (top left button too)"
+			"type"		"Text"
+			"default"	""
 		}
 	}
 }

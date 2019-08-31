@@ -30,16 +30,20 @@ if SERVER then
 	end
 
 	function GM:RoundTimer(time)
+		-- Store this, so when the cvar changes, it won't fuck up seeker blind time
+		self.RoundLength = self.CVars.TimeLimit:GetInt()
+		-- Network
 		net.Start("HNS.RoundInfo")
 			net.WriteDouble(CurTime())
 			net.WriteDouble(time)
+			net.WriteDouble(self.RoundLength)
 			net.WriteInt(self.RoundCount, 8)
 			net.WriteUInt(self.RoundState, 3)
 		net.Broadcast()
-
+		-- Round end timer
 		timer.Create("HNS.RoundTimer", time, 1, function()
 			-- If round was active, stop and set hiders as champions
-			if self.RoundState == ROUND_ACTIVE then
+			if self.CVars.TimeLimit:GetInt() > 0 && self.RoundState == ROUND_ACTIVE then
 				self:RoundEnd(ROUND_ENDTIME)
 				-- Call hook
 				hook.Run("HASRoundEndedTime")
@@ -77,7 +81,7 @@ if SERVER then
 			-- Start round
 			self.RoundState = ROUND_ACTIVE
 			self.RoundCount = self.RoundCount + 1
-			self:RoundTimer(GetConVar("has_timelimit"):GetInt() + GetConVar("has_blindtime"):GetInt())
+			self:RoundTimer(self.CVars.TimeLimit:GetInt() + self.CVars.BlindTime:GetInt())
 
 			-- Select random seeker and spawn
 			local seeker = team.GetPlayers(TEAM_HIDE)[math.random(team.NumPlayers(TEAM_HIDE))]
@@ -89,7 +93,7 @@ if SERVER then
 		else
 			self.RoundState = ROUND_WAIT
 			-- Network
-			self:RoundTimer(GetConVar("has_timelimit"):GetInt() + GetConVar("has_blindtime"):GetInt())
+			self:RoundTimer(self.CVars.TimeLimit:GetInt() + self.CVars.BlindTime:GetInt())
 			-- Advert
 			self:BroadcastChat(COLOR_WHITE, "[", COLOR_HNS_TAG, "HNS", COLOR_WHITE, "] There's not enough players to start the round...")
 			print("[LHNS] There's not enough players to begin round " .. self.RoundCount .. "!")
@@ -146,13 +150,14 @@ if SERVER then
 elseif CLIENT then
 	net.Receive("HNS.RoundInfo", function()
 		GAMEMODE.RoundStartTime = net.ReadDouble()
-		local length = net.ReadDouble()
+		local time = net.ReadDouble()
+		GAMEMODE.RoundLength = net.ReadDouble()
 		GAMEMODE.RoundCount = net.ReadInt(8)
 		GAMEMODE.RoundState = net.ReadUInt(3)
 
 		-- Create a timer to display info
 		if GAMEMODE.RoundState == ROUND_ACTIVE then
-			timer.Create("HNS.RoundTimer", GAMEMODE.RoundStartTime - CurTime() + length, 1, function() end)
+			timer.Create("HNS.RoundTimer", GAMEMODE.RoundStartTime - CurTime() + time, 1, function() end)
 		else
 			-- Put timer to the max if we are waiting (so we can see the server's max time)
 			if GAMEMODE.RoundState == ROUND_WAIT then

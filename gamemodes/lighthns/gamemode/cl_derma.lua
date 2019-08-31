@@ -195,6 +195,7 @@ function PANEL:Init()
 	end
 
 	self.Interface:AddCheckBox("has_showid", "Show other players' Steam ID?")
+	self.Interface:AddCheckBox("hud_quickinfo", "Parentheses around crosshair?")
 	self.Interface:AddCheckBox("has_scob_ontop", "Put yourself at the top of the scoreboard?")
 	self.Interface:AddCheckBox("has_showspeed", "Show movement speed?")
 

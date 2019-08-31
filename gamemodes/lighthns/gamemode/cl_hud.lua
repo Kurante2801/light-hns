@@ -2,7 +2,7 @@ GM.HUDs = {}
 
 GM.HUDs[1] = {
 	Name = "Classic",
-	Draw = function(this, ply, tint, stamina, timeLeft, roundText, timeCVar)
+	Draw = function(this, ply, tint, stamina, timeLeft, roundText, blindTime)
 		-- Player info and stamina container
 		draw.RoundedBoxEx(16, 20, ScrH() - 80, 200, 80, Color(0, 0, 0, 200), true, true, false, false)
 		-- Player info
@@ -24,14 +24,14 @@ GM.HUDs[1] = {
 		if GAMEMODE.SeekerBlinded then
 			draw.RoundedBoxEx(16, ScrW() / 2 - 100, 0, 200, 72, Color(0, 0, 0, 200), false, false, true, true)
 			draw.SimpleTextOutlined((ply:Team() == TEAM_SEEK && "You" || team.NumPlayers(2) == 1 && "The seeker" || "The seekers") .. " will be unblinded in...", "DermaDefault", ScrW() / 2, 24, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, Color(10, 10, 10, 100))
-			draw.SimpleTextOutlined(math.ceil(GAMEMODE.TimeLeft - timeCVar:GetInt()) .. " seconds", "DermaDefault", ScrW() / 2, 40, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, Color(10, 10, 10, 100))
+			draw.SimpleTextOutlined(blindTime .. " seconds", "DermaDefault", ScrW() / 2, 40, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, Color(10, 10, 10, 100))
 		end
 	end
 }
 
 GM.HUDs[2] = {
 	Name = "Fafy",
-	Draw = function(this, ply, tint, stamina, timeLeft, roundText, timeCVar)
+	Draw = function(this, ply, tint, stamina, timeLeft, roundText, blindTime)
 		-- Setting font with surface to get length
 		surface.SetFont("HNS.HUD.Fafy.Name")
 		this.BarWide, this.TextTall = surface.GetTextSize(ply:Name())
@@ -64,7 +64,7 @@ GM.HUDs[2] = {
 		if GAMEMODE.SeekerBlinded then
 			draw.RoundedBox(0, ScrW() / 2 - 100, 15, 200, 50, Color(0, 0, 0, 125))
 			this:ShadowedText((ply:Team() == TEAM_SEEK && "You" || team.NumPlayers(2) == 1 && "The seeker" || "The seekers") .. " will be unblinded in...", "DermaDefaultBold", ScrW() / 2, 26, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-			this:ShadowedText(math.ceil(GAMEMODE.TimeLeft - timeCVar:GetInt()), "HNS.HUD.Fafy.Timer", ScrW() / 2, 47, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			this:ShadowedText(blindTime, "HNS.HUD.Fafy.Timer", ScrW() / 2, 47, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		end
 
 		-- Stamina bar
@@ -91,7 +91,7 @@ GM.HUDs[2] = {
 
 GM.HUDs[3] = {
 	Name = "Compact",
-	Draw = function(this, ply, tint, stamina, timeLeft, roundText, timeCVar)
+	Draw = function(this, ply, tint, stamina, timeLeft, roundText, blindTime)
 		-- So much for a border
 		surface.SetDrawColor(tint)
 		surface.DrawLine(20, ScrH() - 120, 20, ScrH() - 20)
@@ -117,7 +117,7 @@ GM.HUDs[3] = {
 		draw.SimpleTextOutlined(roundText, "HNS.HUD.Fafy.Name", 25, ScrH() - 85, Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, Color(10, 10, 10, 100))
 		-- Time until seeker is unblinded
 		if GAMEMODE.SeekerBlinded then
-			draw.SimpleTextOutlined((ply:Team() == 1 && "Hide" || ply:Team() == 2 && "Wait" || "Start in") .. ": " .. math.ceil(GAMEMODE.TimeLeft - timeCVar:GetInt()), "HNS.HUD.Fafy.Name", 325, ScrH() - 85, Color(255, 255, 255), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, 1, Color(10, 10, 10, 100))
+			draw.SimpleTextOutlined((ply:Team() == 1 && "Hide" || ply:Team() == 2 && "Wait" || "Start in") .. ": " .. blindTime, "HNS.HUD.Fafy.Name", 325, ScrH() - 85, Color(255, 255, 255), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, 1, Color(10, 10, 10, 100))
 		end
 	end
 }
@@ -164,7 +164,7 @@ function GM:HUDPaint()
 		self.SelectedHUD:AvatarFunc()
 	end
 	-- Draw HUD
-	self.SelectedHUD:Draw(LocalPlayer(), GetDrawColor(), self.Stamina, string.ToMinutesSeconds(self.TimeLeft), GetRoundText(), self.CVars.TimeLimit)
+	self.SelectedHUD:Draw(LocalPlayer(), GetDrawColor(), self.Stamina, string.ToMinutesSeconds(self.TimeLeft), GetRoundText(), self.TimeLeft - self.RoundLength)
 
 	-- Stuck prevention
 	if LocalPlayer():GetCollisionGroup() == COLLISION_GROUP_WEAPON then

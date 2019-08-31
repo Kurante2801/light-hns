@@ -8,6 +8,7 @@ function GM:PlayerInitialSpawn(ply)
 	net.Start("HNS.RoundInfo")
 		net.WriteDouble(CurTime())
 		net.WriteDouble(math.abs(timer.TimeLeft("HNS.RoundTimer") || (self.CVars.TimeLimit:GetInt() + self.CVars.BlindTime:GetInt())))
+		net.WriteDouble(self.RoundLength || 0)
 		net.WriteInt(self.RoundCount, 8)
 		net.WriteUInt(self.RoundState, 3)
 	net.Send(ply)
@@ -156,6 +157,17 @@ function GM:GetFallDamage(ply, speed)
 				ply:EmitSound("vo/npc/female01/moan0" .. rand .. ".wav")
 			end
 		end)
+	end
+end
+
+function GM:EntityTakeDamage(ent, damage)
+	-- Don't kill on seeker blid time or when this is off
+	if self.SeekerBlinded || !self.ConVars.EnviromentDamageAllowed:GetBool() then return end
+	-- Kill, make a seeker and check for round end
+	if IsValid(ent) && IsValid(damage:GetAttacker()) && ent:IsPlayer() && ent:Alive() && damage:GetClass() == "trigger_hurt" then
+		ent:Kill()
+		ent:SetTeam(TEAM_SEEK)
+		self:RoundCheck()
 	end
 end
 
