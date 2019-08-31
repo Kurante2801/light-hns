@@ -4,6 +4,8 @@ A recoding of the classic Hide and Seek gamemode for Garry's Mod that is more se
 
 I am using [Threebow](https://www.threebow.com/)'s [Derma Lib](https://threebow.gitbooks.io/tdlib/) for cool loking derma (the windows).
 
+Still a WIP, but feel free to try or use in your server.
+
 ## Main Features
 
 * Multiple HUDs and settings.
