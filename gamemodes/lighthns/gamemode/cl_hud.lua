@@ -165,6 +165,12 @@ function GM:HUDPaint()
 	end
 	-- Draw HUD
 	self.SelectedHUD:Draw(LocalPlayer(), GetDrawColor(), self.Stamina, string.ToMinutesSeconds(self.TimeLeft), GetRoundText(), self.CVars.TimeLimit)
+
+	-- Stuck prevention
+	if LocalPlayer():GetCollisionGroup() == COLLISION_GROUP_WEAPON then
+		draw.SimpleTextOutlined("Stuck Prevention Enabled", "HNS.HUD.Fafy.Name", ScrW() / 2, ScrH() / 2 + 120, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, 125))
+	end
+
 	-- Remove leftover avatars
 	for i, hud in ipairs(self.HUDs) do
 		-- Ignore current hud

@@ -237,3 +237,54 @@ cvars.AddChangeCallback("has_jumppower", function(_, _, new)
 		ply:SetJumpPower(new)
 	end
 end)
+
+hook.Add("Tick", "HNS.PlayerStuckPrevention", function()
+		-- Stuck prevention
+	for _, ply in pairs(player.GetAll()) do
+		if ply:Team() == TEAM_SPECTATOR then continue end
+
+		roof = (ply:Crouching() || ply:KeyDown(IN_DUCK)) && 58 || 70
+
+		shouldCalculate = false
+
+		-- Check for near players
+		for _, ply2 in pairs(player.GetAll()) do
+			if ply2:Team() == TEAM_SPECTATOR || ply == ply2 then continue end
+
+			shouldCalculate = false
+
+			if (ply:GetPos() + Vector(0, 0, 30)):DistToSqr(ply2:GetPos() + Vector(0, 0, 30)) <= 6400 then
+				shouldCalculate = true
+				break
+			end
+		end
+
+		-- If another player is closeby, start checking
+		if shouldCalculate then
+			if ply:Crouching() || ply:KeyDown(IN_DUCK) then
+				hulla, hullb = ply:GetHullDuck()
+				hullb = hullb + Vector(0, 0, 4)
+			else
+				hulla, hullb = ply:GetHull()
+			end
+
+			hulla = hulla + Vector(2, 2, 2)
+			hullb = hullb - Vector(2, 2, 2)
+
+			for _, ent in pairs(ents.FindInBox(ply:GetPos() + hulla, ply:GetPos() + hullb)) do
+				if ent == ply || !ent:IsPlayer () || ply:Team() == TEAM_SPECTATOR then continue end
+
+				ent:SetCollisionGroup(COLLISION_GROUP_WEAPON)
+				ent:SetRenderMode(RENDERMODE_TRANSCOLOR)
+				ent:SetColor(ColorAlpha(ply:GetColor(), 235))
+				-- Un unstuck
+				timer.Create("HAS_AntiStuck_" .. ent:EntIndex(), 0.25, 1, function()
+					ent:SetCollisionGroup(COLLISION_GROUP_PLAYER)
+					ent:SetRenderMode(RENDERMODE_NORMAL)
+					ent:SetColor(ColorAlpha(ply:GetColor(), 255))
+				end)
+
+			end
+		end
+	end
+end)

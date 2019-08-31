@@ -54,7 +54,12 @@ if SERVER then
 		-- Restart map
 		game.CleanUpMap()
 
-		-- TODO: Remove weapons and vehicles
+		-- Remove weapons and vehicles
+		for _, ent in pairs(ents.GetAll()) do
+			if (ent:IsWeapon() && ent:GetClass() != "has_hands") || ent:IsVehicle() then
+				ent:Remove()
+			end
+		end
 
 		for _, ply in ipairs(player.GetAll()) do
 			-- Turn seekers into hiders
@@ -89,6 +94,8 @@ if SERVER then
 			self:BroadcastChat(COLOR_WHITE, "[", COLOR_HNS_TAG, "HNS", COLOR_WHITE, "] There's not enough players to start the round...")
 			print("[LHNS] There's not enough players to begin round " .. self.RoundCount .. "!")
 		end
+
+		hook.Run("HASRoundStarted")
 	end
 
 	function GM:RoundEnd(ending)
