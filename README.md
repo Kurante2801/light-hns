@@ -49,3 +49,5 @@ I am using [Threebow](https://www.threebow.com/)'s [Derma Lib](https://threebow.
 ## Additional info
 
 If you want your game to appear on the same list as the original hide and seek, rename the `lighthns` folder and `lighthns.txt` to `hideandseek` and `hideandseek.txt`
+
+This gamemode was created to be exclusive to the GFL community, but now is free for everyone to use, that's why you may see server references, bad commit names or me just being a dick on the comments on older commits.
