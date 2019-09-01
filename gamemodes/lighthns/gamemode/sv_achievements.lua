@@ -82,9 +82,9 @@ function PLAYER:GiveAchievementProgress(id, count)
 	self.Achs[id] = self.Achs[id] || 0
 	-- Update or insert values
 	if self.Achs[id] > 0 then
-		sql.Query("UPDATE lhns_achievements_progress SET SteamID = SteamID, AchievementID = AchievementID, Progress = Progress + " .. count .. " WHERE SteamID = '" .. self:SteamID() .. "' AND AchievementID = '" .. id .. "'")
+		sql.Query("UPDATE lhns_achievements_progress SET SteamID = SteamID, AchievementID = AchievementID, Progress = " .. math.Clamp(self.Achs[id] + count, 0, GAMEMODE.Achievements[id].Goal) .. " WHERE SteamID = '" .. self:SteamID() .. "' AND AchievementID = '" .. id .. "'")
 	else
-		sql.Query("INSERT INTO lhns_achievements_progress VALUES('" .. self:SteamID() .. "', '" .. id .. "', " .. count .. ")")
+		sql.Query("INSERT INTO lhns_achievements_progress VALUES('" .. self:SteamID() .. "', '" .. id .. "', " .. math.Clamp(count, 0, GAMEMODE.Achievements[id].Goal) .. ")")
 	end
 	-- Cache
 	self.Achs[id] = self.Achs[id] + count
