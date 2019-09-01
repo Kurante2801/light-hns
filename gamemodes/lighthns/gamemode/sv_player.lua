@@ -1,4 +1,7 @@
 function GM:PlayerInitialSpawn(ply)
+	-- Get achievements from sql and also network etc
+	ply:ProcessAchievements()
+	-- Don't set bots as spectators
 	if ply:IsBot() then
 		ply:SetTeam(TEAM_SEEK)
 		return
@@ -12,6 +15,14 @@ function GM:PlayerInitialSpawn(ply)
 		net.WriteInt(self.RoundCount, 8)
 		net.WriteUInt(self.RoundState, 3)
 	net.Send(ply)
+	-- Send achievements masters
+	for _, otherPly in pairs(player.GetAll()) do
+		if otherPly.AchMaster then
+			net.Start("HNS.AchievementsMaster")
+				net.WriteEntity(otherPly)
+			net.Send(ply)
+		end
+	end
 end
 
 function GM:PlayerSpawn(ply)

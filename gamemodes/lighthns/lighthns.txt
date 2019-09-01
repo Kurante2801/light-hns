@@ -88,7 +88,7 @@
 			"name"		"has_scob_url"
 			"text"		"Link the scoreboard button will open (top left button too)"
 			"type"		"Text"
-			"default"	""
+			"default"	"https://github.com/Fafy2801/light-hns"
 		}
 	}
 }

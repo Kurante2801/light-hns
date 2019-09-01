@@ -13,10 +13,10 @@ Still a WIP, but feel free to try or use in your server.
 * More server-side settings and optimization.
 * More secure (pretty sure I'm not using SendLua anywhere).
 * Active development.
+* Per-server achievements.
 
 ## TO DO
 * Votemap (currently, you'll need to hook your own votemap to `HASVotemapStart`)
-* Achievements (I actually have done them, but usign PData, so I'll have to do it again using SQL)
 
 ## ConVars (server settings)
 
@@ -46,7 +46,7 @@ Still a WIP, but feel free to try or use in your server.
 
 `has_scob_text` *Text* = Text the scoreboard will show on the button at the top left corner. Requires a map change or closing the scoreboard with the X button to take effect.
 
-`has_scob_url` *Text* = URL the scoreboard button will open. Needs to start with "https://" and DOES REQUIRE QUOTES ("" <- these).
+`has_scob_url` *Text* = URL the scoreboard button will open. Needs to start with "https://" and DOES REQUIRE QUOTES when setting from console ("" <- these).
 
 ## Additional info
 

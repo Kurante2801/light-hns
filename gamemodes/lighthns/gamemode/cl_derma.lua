@@ -79,14 +79,19 @@ function PANEL:Init()
 	-- Preferences panel
 	self.Prefs = self:Add("DButton")
 	self.Prefs:SetPos(204, 182)
+	self.Prefs:SetSize(188, 31)
 	self.Prefs:TDLib() -- Styling
-		:ClearPaint():Outline(Color(0, 255, 255), 2):Text(""):On("DoClick", function(this)
+		:ClearPaint():Outline(Color(0, 255, 255), 2):Text(""):FillHover(Color(0, 255, 255), TOP):On("PaintOver", function(this, w, h)
+			draw.SimpleText("Preferences", "HNS.HUD.DR.Medium", w / 2, h / 2, Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			draw.SimpleText("Preferences", "HNS.HUD.DR.Medium", w / 2 - 1, h / 2 - 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		end):On("DoClick", function(this)
 			self:Close() vgui.Create("HNS.Prefs.Derma")
 		end)
 
 	-- Achievements
 	self.Achs = self:Add("DButton")
 	self.Achs:SetPos(204, 221)
+	self.Achs:SetSize(188, 31)
 	self.Achs:TDLib()
 		:ClearPaint():Outline(Color(125, 0, 255), 2):FillHover(Color(125, 0, 255), BOTTOM):Text(""):On("PaintOver", function(this, w, h)
 			draw.SimpleText("Achievements", "HNS.HUD.DR.Medium", w / 2, h / 2, Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
@@ -94,25 +99,8 @@ function PANEL:Init()
 		end):On("DoClick", function()
 			-- Add your own achievements addon, I'll use a custom one I made but is shitty anyways
 			self:Close()
-			RunConsoleCommand("say", "!achievements")
+			vgui.Create("HNS.Achievements")
 		end)
-
-	-- Replace FACHIEVEMENTS with true if you have your own achievements system
-	if FACHIEVEMENTS then
-		self.Prefs:SetSize(188, 31)
-		self.Prefs:TDLib():FillHover(Color(0, 255, 255), TOP):On("PaintOver", function(this, w, h)
-			draw.SimpleText("Preferences", "HNS.HUD.DR.Medium", w / 2, h / 2, Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-			draw.SimpleText("Preferences", "HNS.HUD.DR.Medium", w / 2 - 1, h / 2 - 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-		end)
-		self.Achs:SetSize(188, 31)
-	else
-		self.Prefs:SetSize(188, 70)
-		self.Prefs:TDLib():FillHover(Color(0, 255, 255), RIGHT):On("PaintOver", function(this, w, h)
-			draw.SimpleText("Preferences", "HNS.HUD.Fafy.Timer", w / 2, h / 2, Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-			draw.SimpleText("Preferences", "HNS.HUD.Fafy.Timer", w / 2 - 1, h / 2 - 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-		end)
-		self.Achs:Hide()
-	end
 end
 
 function PANEL:Paint(w, h)
@@ -195,7 +183,6 @@ function PANEL:Init()
 	end
 
 	self.Interface:AddCheckBox("has_showid", "Show other players' Steam ID?")
-	self.Interface:AddCheckBox("hud_quickinfo", "Parentheses around crosshair?")
 	self.Interface:AddCheckBox("has_scob_ontop", "Put yourself at the top of the scoreboard?")
 	self.Interface:AddCheckBox("has_showspeed", "Show movement speed?")
 
@@ -584,3 +571,59 @@ function PANEL:UpdateList()
 end
 
 vgui.Register("HNS.Scoreboard", PANEL, "DFrame")
+
+-- Achievements
+PANEL = {}
+
+function PANEL:Init()
+	self:SetSize(400, 600)
+	self:Center()
+	self:MakePopup()
+	self:DockPadding(0, 24, 0, 0)
+	self:SetTitle("HNS | Achievements")
+	-- Scroll panel
+	self.SP = self:Add("DScrollPanel")
+	self.SP:Dock(FILL)
+	-- For each achievement, add a panel
+	for id, ach in pairs(GAMEMODE.Achievements) do
+		local panel = self.SP:Add("DPanel")
+		panel:Dock(TOP)
+		panel:SetTall(ach.Goal && 70 || 46)
+
+		if ach.Goal then
+			panel.Done = (GAMEMODE.AchievementsProgress[id] || 0) >= ach.Goal
+		else
+			panel.Done = GAMEMODE.AchievementsProgress[id]
+		end
+
+		panel.Paint = function(this, w, h)
+			-- BG
+			if this.Done then
+				draw.RoundedBox(0, 0, 0, w, h, Color(75, 150, 225, 75))
+			end
+
+			-- Progress
+			if ach.Goal then
+				draw.RoundedBox(0, 6, 44, w - 12, 19, COLOR_WHITE)
+				draw.RoundedBox(0, 7, 45, w - 14, 17, Color(0, 0, 0))
+				draw.RoundedBox(0, 7, 45, (w * (GAMEMODE.AchievementsProgress[id] || 0) / ach.Goal) - 14, 17, Color(220, 20, 60))
+
+				draw.SimpleText((GAMEMODE.AchievementsProgress[id] || 0) .. "/" .. ach.Goal, "HNS.HUD.DR.Small", w / 2, 53, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			end
+
+			draw.SimpleText(ach.Name, "HNS.HUD.DR.Medium", 5, 14, Color(0, 0, 0), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+			draw.SimpleText(ach.Name, "HNS.HUD.DR.Medium", 6, 15, COLOR_WHITE, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+			draw.SimpleText(ach.Desc, "DermaDefault", 6, 30, Color(0, 0, 0), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+			draw.SimpleText(ach.Desc, "DermaDefault", 7, 31, COLOR_WHITE, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+
+			surface.SetDrawColor(255, 255, 255) surface.DrawLine(0, h - 1, w, h - 1)
+		end
+	end
+end
+
+function PANEL:Paint(w, h)
+	draw.RoundedBox(0, 0, 0, w, h, Color(25, 25, 25))
+	draw.RoundedBox(0, 0, 0, w, 24, Color(50, 50, 50))
+end
+
+vgui.Register("HNS.Achievements", PANEL, "DFrame")
