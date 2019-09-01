@@ -32,17 +32,17 @@ Still a WIP, but feel free to try or use in your server.
 
 `has_seekreward` *Number* = Points (frags) to award seekers when they tag a hider.
 
-`has_hiderrunspeed` *Number* = Speed at wich hiders run.
+`has_hiderrunspeed` *Number* = Speed at which hiders run.
 
-`has_seekerrunspeed` *Number* = Speed at wich seekers run.
+`has_seekerrunspeed` *Number* = Speed at which seekers run.
 
-`has_hiderwalkspeed` *Number* = Speed at wich hiders walk.
+`has_hiderwalkspeed` *Number* = Speed at which hiders walk.
 
-`has_seekerwalkspeed` *Number* = Speed at wich seekers walk.
+`has_seekerwalkspeed` *Number* = Speed at which seekers walk.
 
 `has_jumppower` *Number* = Power everyone jumps with.
 
-`has_clickrange` *Number* = Range at wich seekers will tag hiders using click tag.
+`has_clickrange` *Number* = Range at which seekers will tag hiders using click tag.
 
 `has_scob_text` *Text* = Text the scoreboard will show on the button at the top left corner. Requires a map change or closing the scoreboard with the X button to take effect.
 
