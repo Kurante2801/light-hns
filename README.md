@@ -4,7 +4,7 @@ A recoding of the classic Hide and Seek gamemode for Garry's Mod that is more se
 
 I am using [Threebow](https://www.threebow.com/)'s [Derma Lib](https://threebow.gitbooks.io/tdlib/) for cool looking derma (the windows).
 
-Still a WIP, but feel free to try or use in your server.
+This gamemode WILL CONFLICT with [classic Hide and Seek](https://steamcommunity.com/sharedfiles/filedetails/?id=266512527), so make sure you uninstall it.
 
 ## Main Features
 
@@ -49,7 +49,5 @@ Still a WIP, but feel free to try or use in your server.
 `has_scob_url` *Text* = URL the scoreboard button will open. Needs to start with "https://" and DOES REQUIRE QUOTES when setting from console ("" <- these).
 
 ## Additional info
-
-If you want your game to appear on the same list as the original hide and seek, rename the `lighthns` folder and `lighthns.txt` to `hideandseek` and `hideandseek.txt`
 
 This gamemode was created to be exclusive to the GFL community, but now is free for everyone to use, that's why you may see server references, bad commit names or me just being a dick on the comments on older commits.
