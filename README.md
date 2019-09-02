@@ -1,6 +1,6 @@
 # Light Hide and Seek
 
-A recoding of the classic Hide and Seek gamemode for Garry's Mod that is more secure, optimized and customizable.
+A recoding of the classic Hide and Seek gamemode for Garry's Mod that is more secure, optimized and customizable. The reason I've done this is because I want the gamemode to live again, or not to completely die out as it is my favorite gamemode since years.
 
 I am using [Threebow](https://www.threebow.com/)'s [Derma Lib](https://threebow.gitbooks.io/tdlib/) for cool looking derma (the windows).
 
