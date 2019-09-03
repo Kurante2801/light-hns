@@ -173,7 +173,7 @@ end
 
 function GM:EntityTakeDamage(ent, damage)
 	-- Don't kill on seeker blid time or when this is off
-	if self.SeekerBlinded || !self.ConVars.EnviromentDamageAllowed:GetBool() then return end
+	if self.SeekerBlinded || !self.CVars.EnviromentDamageAllowed:GetBool() then return end
 	-- Kill, make a seeker and check for round end
 	if IsValid(ent) && IsValid(damage:GetAttacker()) && ent:IsPlayer() && ent:Alive() && damage:GetClass() == "trigger_hurt" then
 		ent:Kill()
