@@ -182,6 +182,37 @@ function GM:EntityTakeDamage(ent, damage)
 	end
 end
 
+function GM:KeyPress(ply, key)
+	-- Push players and big props
+	if key == IN_USE then
+		if ply:Team() == TEAM_SPECTATOR then return end
+
+		local ent = ply:GetEyeTrace()
+		local distance = ply:GetPos():DistToSqr(ent.HitPos)
+		ent = ent.Entity
+
+		if !IsValid(ent) then return end
+
+		-- If we're pushing a player
+		if distance <= 4900 && ent:IsPlayer() && ply:Team() == ent:Team() && ent:GetVelocity():Length() <= 40 then
+			ent:SetVelocity(ply:GetForward() * 82)
+			return
+		end
+
+		-- If we're pushing a prop
+		if distance <= 5184 && (ent:GetClass() == "prop_physics" || ent:GetClass() == "prop_physics_multiplayer") && ent:GetPhysicsObject():GetMass() > 35 then
+			local eyeAngle = -ply:EyeAngles().p
+			ent:GetPhysicsObject():Wake()
+
+			if eyeAngle >= 2.5 then
+				ent:GetPhysicsObject():AddVelocity(ply:GetForward() * 56 + Vector(0, 0, eyeAngle * 2.33))
+			else
+				ent:GetPhysicsObject():AddVelocity(ply:GetForward() * 66)
+			end
+		end
+	end
+end
+
 FindMetaTable("Player").Caught = function(self, ply)
 	-- Change team
 	self:SetTeam(TEAM_SEEK)
