@@ -494,6 +494,10 @@ function PANEL:UpdateList()
 		button.Avatar:SetPlayer(ply, 64)
 
 		button.Paint = function(this, w, h)
+			if !IsValid(ply) then
+				this:Remove()
+				return
+			end
 			-- BG
 			if this:IsHovered() then
 				surface.SetDrawColor(75, 75, 75, 175)
