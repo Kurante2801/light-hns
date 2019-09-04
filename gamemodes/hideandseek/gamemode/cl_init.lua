@@ -48,25 +48,6 @@ function GM:Tick()
 	if self.Stamina <= 0 then
 		RunConsoleCommand("-speed")
 	end
-
-	-- Show spectators
-	for _, ply in ipairs(player.GetAll()) do
-		-- If we shouldn't be able to see the camera
-		if !IsValid(ply) || ply:Team() != TEAM_SPECTATOR || ply  == LocalPlayer() || (ply:Team() != TEAM_SPECTATOR && (!LocalPlayer():IsAdmin() && !LocalPlayer():IsUserGroup("trialadmin"))) then
-			-- If camera exists, delete it
-			if IsValid(ply.SpecCamera) then
-				ply.SpecCamera:Remove()
-			end
-		-- If we should see the camrea
-		else
-			-- If camera doesn't exist, create it
-			if !IsValid(ply.SpecCamera) then
-				ply.SpecCamera = ents.CreateClientProp("models/dav0r/camera.mdl")
-			end
-			ply.SpecCamera:SetPos(ply:EyePos())
-			ply.SpecCamera:SetAngles(ply:EyeAngles())
-		end
-	end
 end
 
 net.Receive("HNS.StaminaChange", function()
@@ -75,9 +56,6 @@ net.Receive("HNS.StaminaChange", function()
 end)
 
 function GM:PostDrawOpaqueRenderables()
-	-- Stop if we aren't spectating or aren't admins(while playing)
-	if LocalPlayer():Team() != TEAM_SPECTATOR && !LocalPlayer():IsAdmin() && !LocalPlayer():IsUserGroup("trialadmin") then return end
-
 	-- Draw spectators' names
 	ang = LocalPlayer():EyeAngles()
 	ang:RotateAroundAxis(ang:Forward(), 90)
