@@ -356,8 +356,6 @@ PANEL = {}
 function PANEL:Init()
 	self:SetSize(550, ScrH() - 100)
 	self:Center()
-	self:MakePopup()
-	self:SetKeyboardInputEnabled(false) -- Not needed
 	self:SetTitle("Scoreboard - Hide and Seek")
 	self:DockPadding(0, 94, 0, 0)
 

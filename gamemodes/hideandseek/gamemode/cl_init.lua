@@ -101,6 +101,7 @@ function GM:KeyPress(ply, key)
 	-- Scoreboard
 	if key == IN_ATTACK2 && ply:KeyDown(IN_SCORE) && IsValid(self.Scoreboard) then
 		self.Scoreboard:MakePopup()
+		self.Scoreboard:SetKeyboardInputEnabled(false) -- Not needed
 	end
 	-- Stamina
 	if key == IN_SPEED then
@@ -163,6 +164,8 @@ end
 function GM:ScoreboardHide()
 	if IsValid(self.Scoreboard) then
 		self.Scoreboard:Hide()
+		self.Scoreboard:SetMouseInputEnabled(false)
+		self.Scoreboard:SetKeyboardInputEnabled(false)
 	end
 end
 
