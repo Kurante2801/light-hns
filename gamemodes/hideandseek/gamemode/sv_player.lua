@@ -32,7 +32,7 @@ function GM:PlayerSpawn(ply)
 		ply:SetRenderMode(RENDERMODE_TRANSALPHA)
 		ply:SetColor(Color(0, 0, 0, 0))
 		ply:AllowFlashlight(false)
-		return
+		return true
 	end
 	-- Calling base spawn for stuff fixing
 	self.BaseClass:PlayerSpawn(ply)
