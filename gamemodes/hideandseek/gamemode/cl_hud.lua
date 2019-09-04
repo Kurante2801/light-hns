@@ -198,7 +198,7 @@ function GM:HUDPaint()
 
 	-- Fade out names
 	rayEnt = LocalPlayer():GetEyeTrace().Entity
-	if !IsValid(LocalPlayer():GetObserverTarget()) && IsValid(rayEnt) && rayEnt:IsPlayer() && (self.RoundState != ROUND_ACTIVE || rayEnt:GetPos():DistToSqr(LocalPlayer():GetPos()) <= 302500) then
+	if !IsValid(LocalPlayer():GetObserverTarget()) && IsValid(rayEnt) && rayEnt:IsPlayer() && (self.RoundState != ROUND_ACTIVE || rayEnt:Team() == LocalPlayer():Team() || rayEnt:GetPos():DistToSqr(LocalPlayer():GetPos()) <= 302500) then
 		-- From murder gamemode
 		lastLooked = rayEnt
 		lookedTime = CurTime()
@@ -229,21 +229,19 @@ function GM:HUDShouldDraw(element)
 end
 
 -- Blind time
-local mods = {
-	["pp_colour_addr "] = -1,
-	["pp_colour_addg "] = -1,
-	["pp_colour_addb "] = -1,
-	["pp_colour_brightness"] = -1,
-	["pp_colour_colour"] = 0,
-	["pp_colour_contrast"] = 1.4,
-	["pp_colour_mulr"] = -1,
-	["pp_colour_mulg"] = -1,
-	["pp_colour_mulb"] = -1,
-}
-
 function GM:RenderScreenspaceEffects()
 	if self.SeekerBlinded && LocalPlayer():Team() == TEAM_SEEK then
-		DrawColorModify(mods)
+		DrawColorModify({
+			["pp_colour_addr "] = -1,
+			["pp_colour_addg "] = -1,
+			["pp_colour_addb "] = -1,
+			["pp_colour_brightness"] = -1,
+			["pp_colour_colour"] = 0,
+			["pp_colour_contrast"] = 1.4,
+			["pp_colour_mulr"] = -1,
+			["pp_colour_mulg"] = -1,
+			["pp_colour_mulb"] = -1,
+		})
 	end
 end
 
