@@ -169,6 +169,7 @@ if SERVER then
 					"vo/npc/" .. gender .. "/gethellout.wav",
 					"vo/npc/" .. gender .. "/strider_run.wav",
 					"vo/npc/" .. gender .. "/overhere01.wav",
+					"vo/npc/" .. gender .. "/question06.wav",
 					"vo/canals/" .. gender .. "/stn6_go_nag02.wav",
 					"vo/trainyard/" .. gender .. "/cit_window_use01.wav",
 					"vo/trainyard/" .. gender .. "/cit_window_use02.wav",
