@@ -56,16 +56,20 @@ hook.Add("Tick", "HNS.SeekerBlinded", function()
 		GAMEMODE.SeekerBlinded = false
 	end
 
-	if !GAMEMODE.PlayedStartSound && GAMEMODE.RoundState == ROUND_ACTIVE && !GAMEMODE.SeekerBlinded then
-		GAMEMODE.PlayedStartSound = true
-		-- Sound
-		if SERVER then
-			for _, ply in pairs(team.GetPlayers(TEAM_SEEK)) do
-				ply:EmitSound("coach/coach_attack_here.wav")
+	if GAMEMODE.RoundState == ROUND_ACTIVE then
+		if !GAMEMODE.PlayedStartSound && !GAMEMODE.SeekerBlinded then
+			GAMEMODE.PlayedStartSound = true
+			-- Sound
+			if SERVER then
+				for _, ply in pairs(team.GetPlayers(TEAM_SEEK)) do
+					ply:EmitSound("coach/coach_attack_here.wav")
+				end
+			elseif CLIENT then
+				LocalPlayer():EmitSound("coach/coach_attack_here.wav", 90, 100)
 			end
-		elseif CLIENT then
-			LocalPlayer():EmitSound("coach/coach_attack_here.wav", 90, 100)
 		end
+	else
+		GAMEMODE.PlayedStartSound = false
 	end
 end)
 
