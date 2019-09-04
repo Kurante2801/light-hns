@@ -221,3 +221,23 @@ net.Receive("HNS.AchievementsGet", function()
 		util.Effect("PhyscannonImpact", data2)
 	end)
 end)
+
+hook.Add("OnPlayerChat", "HNS.Commands", function(ply, text)
+	-- Using hooks instead of a function in case there's an addon overriting the gamemode function
+	text = string.lower(text)
+
+	-- HUD - Interface section
+	if text == "!hnshud" || text == "!hnsmenu" then
+		if ply == LocalPlayer() then
+			vgui.Create("HNS.Prefs.Derma")
+		end
+		return true
+	end
+	-- Playercolors
+	if text == "!hnscolors" || text == "!hnscolours" then
+		if ply == LocalPlayer() then
+			vgui.Create("HNS.Prefs.Derma").Tabs:SwitchToName("Player Model")
+		end
+		return true
+	end
+end, HOOK_HIGH)
