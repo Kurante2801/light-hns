@@ -232,15 +232,15 @@ end
 function GM:RenderScreenspaceEffects()
 	if self.SeekerBlinded && LocalPlayer():Team() == TEAM_SEEK then
 		DrawColorModify({
-			["pp_colour_addr "] = -1,
-			["pp_colour_addg "] = -1,
-			["pp_colour_addb "] = -1,
-			["pp_colour_brightness"] = -1,
+			["pp_colour_addr "] = 0,
+			["pp_colour_addg "] = 0,
+			["pp_colour_addb "] = 0,
+			["pp_colour_brightness"] = -0.92,
 			["pp_colour_colour"] = 0,
 			["pp_colour_contrast"] = 1.4,
-			["pp_colour_mulr"] = -1,
-			["pp_colour_mulg"] = -1,
-			["pp_colour_mulb"] = -1,
+			["pp_colour_mulr"] = 0,
+			["pp_colour_mulg"] = 0,
+			["pp_colour_mulb"] = 0,
 		})
 	end
 end

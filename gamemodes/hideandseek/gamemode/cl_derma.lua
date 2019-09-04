@@ -511,7 +511,7 @@ function PANEL:UpdateList()
 				end
 			end
 			-- Player square
-			if GAMEMODE.RoundState != ROUND_ACTIVE || LocalPlayer():Team() != TEAM_HIDE || ply:Team() == TEAM_SPECTATOR then
+			if GAMEMODE.RoundState != ROUND_ACTIVE || GAMEMODE.SeekerBlinded || LocalPlayer():Team() != TEAM_HIDE || ply:Team() == TEAM_SPECTATOR then
 				surface.SetDrawColor(team.GetColor(ply:Team()))
 			else
 				surface.SetDrawColor(255, 255, 255, 255)
