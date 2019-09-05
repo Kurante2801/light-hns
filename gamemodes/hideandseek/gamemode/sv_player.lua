@@ -39,9 +39,9 @@ function GM:PlayerSpawn(ply)
 	self.BaseClass:PlayerSpawn(ply)
 
 	-- Fixing spectator stuff
-	ply:SetColor(COLOR_WHITE)
+	ply:SetMaterial("")
 	ply:SetRenderMode(RENDERMODE_NORMAL)
-	ply:SetMaterial("", true)
+	ply:SetColor(COLOR_WHITE)
 
 	-- Set current gender
 	ply.Gender = ply:GetInfoNum("has_gender", 0) == 1
