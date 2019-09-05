@@ -32,6 +32,7 @@ function GM:PlayerSpawn(ply)
 		ply:SetRenderMode(RENDERMODE_TRANSALPHA)
 		ply:SetColor(Color(0, 0, 0, 0))
 		ply:AllowFlashlight(false)
+		ply:SetMaterial("models/effects/vol_light001")
 		return true
 	end
 	-- Calling base spawn for stuff fixing
@@ -40,6 +41,7 @@ function GM:PlayerSpawn(ply)
 	-- Fixing spectator stuff
 	ply:SetColor(COLOR_WHITE)
 	ply:SetRenderMode(RENDERMODE_NORMAL)
+	ply:SetMaterial("", true)
 
 	-- Set current gender
 	ply.Gender = ply:GetInfoNum("has_gender", 0) == 1
