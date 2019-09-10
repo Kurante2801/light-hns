@@ -53,8 +53,6 @@ if SERVER then
 			-- If round was active, stop and set hiders as champions
 			if self.CVars.TimeLimit:GetInt() > 0 && self.RoundState == ROUND_ACTIVE then
 				self:RoundEnd(ROUND_ENDTIME)
-				-- Call hook
-				hook.Run("HASRoundEndedTime")
 			-- If round was over, start a new one
 			elseif self.RoundState == ROUND_POST then
 				self:RoundRestart()
@@ -142,12 +140,18 @@ if SERVER then
 				self:BroadcastSound("misc/happy_birthday.wav")
 				-- Log
 				print(string.format("[LHNS] Hiders won round %s with %s hider(s) left.", self.RoundCount, team.NumPlayers(TEAM_HIDE)))
+				-- Call hooks
+				hook.Run("HASRoundEndedTime")
+				hook.Run("HASRoundEnded", ROUND_ENDTIME)
 			elseif ending == ROUND_ENDCAUGHT then
 				-- Advert seekers
 				self:BroadcastChat(COLOR_WHITE, "[", Color(255, 155, 155), "HNS", COLOR_WHITE, "] ", Color(255, 155, 155), "The Seekers Win!")
 				self:BroadcastSound("misc/happy_birthday.wav")
 				-- Log
 				print(string.format("[LHNS] Seekers won round %s with %s left.", self.RoundCount, string.ToMinutesSeconds(left)))
+				-- Call hooks
+				hook.Run("HASRoundEndedCaught")
+				hook.Run("HASRoundEnded", ROUND_ENDCAUGHT)
 			end
 
 			if self.RoundCount >= self.CVars.MaxRounds:GetInt() then
