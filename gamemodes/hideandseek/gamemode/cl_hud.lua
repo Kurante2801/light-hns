@@ -157,11 +157,6 @@ end
 local speed, rayEnt, lastLooked, lookedTime, lookedColor
 
 function GM:HUDPaint()
-	-- Blind (combined with render hook)
-	if self.SeekerBlinded && LocalPlayer():Team() == TEAM_SEEK then
-		draw.RoundedBox(0, 0, 0, ScrW(), ScrH(), Color(0, 0, 0))
-	end
-
 	self.SelectedHUD = self.HUDs[self.CVars.HUD:GetInt()] || self.HUDs[2]
 	-- Create avatar
 	if self.SelectedHUD.AvatarFunc && !self.SelectedHUD.Avatar then
@@ -214,6 +209,14 @@ function GM:HUDPaint()
 		end
 	end
 end
+
+-- Using hook to allow other HUD elements from other addons to be seen
+hook.Add("HUDPaint", "HNS.BlindTime", function()
+	-- Blind (combined with render hook)
+	if GAMEMODE.SeekerBlinded && LocalPlayer():Team() == TEAM_SEEK then
+		draw.RoundedBox(0, 0, 0, ScrW(), ScrH(), Color(0, 0, 0))
+	end
+end, HOOK_HIGH) -- Hook will run first, so other addons paint ON TOP of the black screen, thus being visible
 
 -- Hide elements
 local hide = {
