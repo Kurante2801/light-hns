@@ -108,6 +108,11 @@ if SERVER then
 			print("[LHNS] There's not enough players to begin round " .. self.RoundCount .. "!")
 		end
 
+		-- Refill stamina
+		net.Start("HNS.StaminaChange")
+			net.WriteInt(100, 8)
+		net.Broadcast()
+
 		hook.Run("HASRoundStarted")
 	end
 
