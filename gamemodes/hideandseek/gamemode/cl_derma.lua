@@ -228,6 +228,9 @@ function PANEL:Init()
 
 	self.Tabs:AddSheet("HUD - Interface", self.Interface, "icon16/paintbrush.png")
 
+	-- Add your own settings in this hook
+	hook.Run("HASPreferencesMenu", self.Interface)
+
 	-- Playermodel color and gender
 	self.Playermodel = self:Add("DPanel")
 	self.Playermodel.Paint = function(this, w, h)
