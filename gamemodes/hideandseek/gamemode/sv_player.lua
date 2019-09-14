@@ -29,10 +29,10 @@ function GM:PlayerSpawn(ply)
 	if ply:Team() == TEAM_SPECTATOR then
 		self:PlayerSpawnAsSpectator(ply)
 		ply:SetNoDraw(false)
+		ply:SetMaterial("models/effects/vol_light001")
 		ply:SetRenderMode(RENDERMODE_TRANSALPHA)
 		ply:SetColor(Color(0, 0, 0, 0))
 		ply:AllowFlashlight(false)
-		ply:SetMaterial("models/effects/vol_light001")
 		return true
 	end
 	-- Calling base spawn for stuff fixing
