@@ -21,6 +21,7 @@ util.AddNetworkString("HNS.StaminaChange")
 util.AddNetworkString("HNS.AchievementsProgress")
 util.AddNetworkString("HNS.AchievementsMaster")
 util.AddNetworkString("HNS.AchievementsGet")
+util.AddNetworkString("HNS.PlayerEvent")
 
 -- Sends a table to be unpacked on chat.AddText
 function GM:SendChat(ply, ...)
@@ -44,5 +45,12 @@ end
 function GM:BroadcastSound(path)
 	net.Start("HNS.PlaySound")
 		net.WriteString(path)
+	net.Broadcast()
+end
+
+function GM:BroadcastEvent(ply, event)
+	net.Start("HNS.PlayerEvent")
+		net.WriteUInt(event, 3)
+		net.WriteEntity(ply)
 	net.Broadcast()
 end

@@ -238,7 +238,7 @@ net.Receive("HNS.JoinPlaying", function(_, ply)
 	-- Ignore players
 	if ply:Team() == TEAM_HIDE || ply:Team() == TEAM_SEEK then return end
 	-- Log
-	GAMEMODE:BroadcastChat(COLOR_WHITE, "[", Color(200, 200, 200), "HNS", COLOR_WHITE, "] " .. ply:Name() .. " (", Color(200, 200, 200), ply:SteamID(), COLOR_WHITE, ") is now playing!")
+	GAMEMODE:BroadcastEvent(ply, PLYEVENT_PLAY)
 	print(string.format("[LHNS] %s (%s) joins the seekers.", ply:Name(), ply:SteamID()))
 	-- Set team and spawn
 	ply:SetTeam(TEAM_SEEK)
@@ -253,7 +253,7 @@ net.Receive("HNS.JoinSpectating", function(_, ply)
 		return
 	end
 	-- Log & advert
-	GAMEMODE:BroadcastChat(COLOR_WHITE, "[", Color(200, 200, 200), "HNS", COLOR_WHITE, "] " .. ply:Name() .. " (", Color(200, 200, 200), ply:SteamID(), COLOR_WHITE, ") is now spectating!")
+	GAMEMODE:BroadcastEvent(ply, PLYEVENT_SPEC)
 	print(string.format("[LHNS] %s (%s) joins the spectators.", ply:Name(), ply:SteamID()))
 	-- Set team and spawn
 	ply:SetTeam(TEAM_SPECTATOR)

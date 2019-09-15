@@ -10,6 +10,9 @@ AddCSLuaFile("sh_colors.lua")
 include("sh_roundmanager.lua")
 AddCSLuaFile("sh_roundmanager.lua")
 
+-- Player events
+PLYEVENT_PLAY, PLYEVENT_SPEC, PLYEVENT_AVOID  = 1, 2, 3
+
 -- Shared ConVars
 GM.CVars = GM.CVars || {}
 GM.CVars.MaxRounds = CreateConVar("has_maxrounds", 5, { FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Rounds until map change")
