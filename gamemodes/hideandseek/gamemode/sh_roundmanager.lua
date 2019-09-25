@@ -183,7 +183,7 @@ elseif CLIENT then
 		else
 			-- Put timer to the max if we are waiting (so we can see the server's max time)
 			if GAMEMODE.RoundState == ROUND_WAIT then
-				timer.Create("HNS.RoundTimer", GetConVar("has_timelimit"):GetInt() + 30, 1, function () end)
+				timer.Create("HNS.RoundTimer", GetConVar("has_timelimit"):GetInt() + GetConVar("has_blindtime"):GetInt(), 1, function () end)
 			end
 			-- Pause the timer if the round didn't start
 			timer.Pause("HNS.RoundTimer")
