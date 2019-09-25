@@ -75,6 +75,11 @@ function GM:PlayerSpawn(ply)
 	ply:SetCrouchedWalkSpeed(0.4)
 	ply:GodEnable()
 
+	-- We give hands again just in case PlayerLoadout doesn't fucking work
+	timer.Simple(0.1, function()
+		ply:Give("has_hands")
+	end)
+
 	self:RoundCheck()
 end
 
