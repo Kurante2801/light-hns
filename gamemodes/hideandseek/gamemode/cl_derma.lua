@@ -130,8 +130,7 @@ function PANEL:Init()
 	self.Tabs.Paint = nil
 
 	-- HUD tab
-	self.Interface = self:Add("DPanel")
-	self.Interface.Paint = nil
+	self.Interface = self:Add("DScrollPanel")
 
 	self.Interface.HUDSlider = self.Interface:Add("DNumSlider")
 	self.Interface.HUDSlider:Dock(TOP)
