@@ -77,6 +77,18 @@ end
 net.Receive("HNS.StaminaChange", function()
 	local sta = net.ReadInt(8)
 	GAMEMODE.Stamina = math.Clamp(GAMEMODE.Stamina + sta, 0, 100)
+	-- Stop regen
+	timer.Remove("HNS.StaminaRegen")
+	-- Regen again
+	timer.Create("HNS.StaminaDelay", 2, 1, function()
+		timer.Create("HNS.StaminaRegen", 0.05, 0, function()
+			GAMEMODE.Stamina = math.Clamp(GAMEMODE.Stamina + 0.4, 0, 100)
+			-- Stop regenerating after we reach 100
+			if GAMEMODE.Stamina >= 100 then
+				timer.Remove("HNS.StaminaRegen")
+			end
+		end)
+	end)
 end)
 
 function GM:PostDrawOpaqueRenderables()
