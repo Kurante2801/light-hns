@@ -43,6 +43,9 @@ net.Receive("HNS.PlayerEvent", function()
 	local event = net.ReadUInt(3)
 	local ply = net.ReadEntity()
 
+	-- Stop if ply wasn't send to the client yet
+	if !IsValid(ply) || !ply.Name then return end
+
 	if event == PLYEVENT_PLAY then
 		if GAMEMODE.CVars.ShowID:GetBool() then
 			chat.AddText(COLOR_WHITE, "[", Color(215, 215, 215), "HNS", COLOR_WHITE, "] ", ply:Name(), COLOR_WHITE, " (", Color(215, 215, 215), ply:SteamID(), COLOR_WHITE, ") is now playing!")
@@ -54,12 +57,6 @@ net.Receive("HNS.PlayerEvent", function()
 			chat.AddText(COLOR_WHITE, "[", Color(215, 215, 215), "HNS", COLOR_WHITE, "] ", ply:Name(), COLOR_WHITE, " (", Color(215, 215, 215), ply:SteamID(), COLOR_WHITE, ") is now spectating!")
 		else
 			chat.AddText(COLOR_WHITE, "[", Color(215, 215, 215), "HNS", COLOR_WHITE, "] ", ply:Name(), COLOR_WHITE, " is now spectating!")
-		end
-	elseif event == PLYEVENT_AVOID then
-		if GAMEMODE.CVars.ShowID:GetBool() then
-			chat.AddText(COLOR_WHITE, "[", Color(220, 20, 60), "HNS", COLOR_WHITE, "] ", ply:Name(), " avoided seeker! (", Color(220, 20, 60), ply:SteamID(), COLOR_WHITE, ")")
-		else
-			chat.AddText(COLOR_WHITE, "[", Color(220, 20, 60), "HNS", COLOR_WHITE, "] ", ply:Name(), " avoided seeker!")
 		end
 	end
 end)
