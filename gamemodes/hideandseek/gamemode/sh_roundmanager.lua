@@ -24,6 +24,14 @@ if SERVER then
 
 				-- Advert last hider
 				if !self.PlayedLastHiderSound && team.NumPlayers(TEAM_HIDE) == 1 then
+					-- Last hider trail
+					if self.CVars.HiderTrail:GetBool() then
+						local hider = team.GetPlayers(TEAM_HIDE)[1]
+
+						if IsValid(hider) then
+							hider.HiderTrail = util.SpriteTrail(hider, 0, self:GetTeamShade(TEAM_HIDE, hider:GetInfo("has_hidercolor", "Default")), true, 8, 0, 1.75, 0.01, "trails/laser.vmt")
+						end
+					end
 					self:BroadcastSound("ui/medic_alert.wav")
 					self:BroadcastChat(COLOR_WHITE, "[", Color(155, 155, 255), "HNS", COLOR_WHITE, "] ", Color(155, 155, 155), "1 hider left.")
 					self.PlayedLastHiderSound = true
@@ -65,7 +73,7 @@ if SERVER then
 		game.CleanUpMap()
 
 		-- Remove weapons and vehicles
-		for _, ent in pairs(ents.GetAll()) do
+		for _, ent in ipairs(ents.GetAll()) do
 			if (ent:IsWeapon() && ent:GetClass() != "has_hands") || ent:IsVehicle() then
 				ent:Remove()
 			end
@@ -97,8 +105,18 @@ if SERVER then
 			-- Log
 			print(string.format("[LHNS] Starting round %s. The first seeker is %s (%s)", self.RoundCount, seeker:Name(), seeker:SteamID()))
 
-			-- Don't play sound when round starts with 1 hider
-			self.PlayedLastHiderSound = team.NumPlayers(TEAM_HIDE) <= 1
+			-- When there's one hider left (round starts with one hider)
+			if team.NumPlayers(TEAM_HIDE) <= 1 then
+				-- Don't play last hider sound
+				self.PlayedLastHiderSound = true
+				-- Create trail
+				if self.CVars.HiderTrail:GetBool() then
+					local hider = team.GetPlayers(TEAM_HIDE)[1]
+					hider.HiderTrail = util.SpriteTrail(hider, 0, self:GetTeamShade(TEAM_HIDE, hider:GetInfo("has_hidercolor", "Default")), true, 8, 0, 1.75, 0.01, "trails/laser.vmt")
+				end
+			else
+				self.PlayedLastHiderSound = false
+			end
 		else
 			self.RoundState = ROUND_WAIT
 			-- Network

@@ -112,7 +112,7 @@ if SERVER then
 			end
 
 			-- For each entity inside the box
-			for _, ply in pairs(ents.FindInBox(self.Owner:GetPos() + Vector(math.max(traces [1].Fraction * range, 16.25), math.max(traces [3].Fraction * range, 16.25), floor), self.Owner:GetPos() + Vector(math.min(-(traces [2].Fraction * range), -16.25), math.min(-(traces [4].Fraction * range), -16.25), playerHeight + traces [5].Fraction * (roof - playerHeight)))) do
+			for _, ply in ipairs(ents.FindInBox(self.Owner:GetPos() + Vector(math.max(traces [1].Fraction * range, 16.25), math.max(traces [3].Fraction * range, 16.25), floor), self.Owner:GetPos() + Vector(math.min(-(traces [2].Fraction * range), -16.25), math.min(-(traces [4].Fraction * range), -16.25), playerHeight + traces [5].Fraction * (roof - playerHeight)))) do
 				-- Stop if not a hider
 				if !IsValid(ply) || !ply:IsPlayer() || ply:Team() != TEAM_HIDE then continue end
 

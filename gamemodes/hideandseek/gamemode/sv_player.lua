@@ -16,7 +16,7 @@ function GM:PlayerInitialSpawn(ply)
 		net.WriteUInt(self.RoundState, 3)
 	net.Send(ply)
 	-- Send achievements masters
-	for _, otherPly in pairs(player.GetAll()) do
+	for _, otherPly in ipairs(player.GetAll()) do
 		if otherPly.AchMaster then
 			net.Start("HNS.AchievementsMaster")
 				net.WriteEntity(otherPly)
@@ -26,6 +26,13 @@ function GM:PlayerInitialSpawn(ply)
 end
 
 function GM:PlayerSpawn(ply)
+	-- Removing last hider trail
+	if IsValid(ply.HiderTrail) then
+		ply.HiderTrail:Fire("Kill", 0, 0) -- Make the engine kill it
+		ply.HiderTrail:Remove() -- Remove the entity
+		ply.HiderTrail = nil -- Make this nil for future if checks
+	end
+
 	if ply:Team() == TEAM_SPECTATOR then
 		self:PlayerSpawnAsSpectator(ply)
 		ply:SetNoDraw(false)
@@ -229,6 +236,12 @@ FindMetaTable("Player").Caught = function(self, ply)
 	self:SetWalkSpeed(GAMEMODE.CVars.SeekerWalkSpeed:GetInt())
 	-- Change color
 	self:SetPlayerColor(GAMEMODE:GetTeamShade(TEAM_SEEK, self:GetInfo("has_seekercolor", "Default")):ToVector())
+	-- Removing last hider trail
+	if IsValid(self.HiderTrail) then
+		self.HiderTrail:Fire("Kill", 0, 0) -- Make the engine kill it
+		self.HiderTrail:Remove() -- Remove the entity
+		self.HiderTrail = nil -- Make this nil for future if checks
+	end
 	-- Call hook
 	hook.Run("HASPlayerCaught", ply, self)
 	-- Play sounds
@@ -270,6 +283,10 @@ end)
 -- Receive color update
 net.Receive("HNS.PlayerColorUpdate", function(_, ply)
 	ply:SetPlayerColor(GAMEMODE:GetPlayerTeamColor(ply):ToVector())
+	-- Update hider trail if applicable
+	if IsValid(ply.HiderTrail) then
+		ply.HiderTrail:Fire("Color", tostring(GAMEMODE:GetTeamShade(TEAM_HIDE, ply:GetInfo("has_hidercolor", "Default"))))
+	end
 end)
 
 -- Update movement vars
@@ -298,10 +315,21 @@ cvars.AddChangeCallback("has_jumppower", function(_, _, new)
 		ply:SetJumpPower(new)
 	end
 end)
+cvars.AddChangeCallback("has_lasthidertrail", function(_, _, new)
+	if new == 0 then
+		for _, ply in ipairs(player.GetAll()) do
+			if IsValid(ply.HiderTrail) then
+				ply.HiderTrail:Fire("Kill", 0, 0)
+				ply.HiderTrail:Remove()
+				ply.HiderTrail = nil
+			end
+		end
+	end
+end)
 
 hook.Add("Tick", "HNS.PlayerStuckPrevention", function()
 		-- Stuck prevention
-	for _, ply in pairs(player.GetAll()) do
+	for _, ply in ipairs(player.GetAll()) do
 		if ply:Team() == TEAM_SPECTATOR then continue end
 
 		roof = (ply:Crouching() || ply:KeyDown(IN_DUCK)) && 58 || 70
@@ -309,7 +337,7 @@ hook.Add("Tick", "HNS.PlayerStuckPrevention", function()
 		shouldCalculate = false
 
 		-- Check for near players
-		for _, ply2 in pairs(player.GetAll()) do
+		for _, ply2 in ipairs(player.GetAll()) do
 			if ply2:Team() == TEAM_SPECTATOR || ply == ply2 then continue end
 
 			shouldCalculate = false
@@ -332,7 +360,7 @@ hook.Add("Tick", "HNS.PlayerStuckPrevention", function()
 			hulla = hulla + Vector(2, 2, 2)
 			hullb = hullb - Vector(2, 2, 2)
 
-			for _, ent in pairs(ents.FindInBox(ply:GetPos() + hulla, ply:GetPos() + hullb)) do
+			for _, ent in ipairs(ents.FindInBox(ply:GetPos() + hulla, ply:GetPos() + hullb)) do
 				if ent == ply || !ent:IsPlayer () || ply:Team() == TEAM_SPECTATOR then continue end
 
 				ent:SetCollisionGroup(COLLISION_GROUP_WEAPON)
