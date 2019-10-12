@@ -200,6 +200,12 @@ end)
 -- Receive achievements progress
 net.Receive("HNS.AchievementsProgress", function()
 	GAMEMODE.AchievementsProgress = net.ReadTable()
+	-- Clamp progress
+	for id, progress in pairs(GAMEMODE.AchievementsProgress) do
+		if isnumber(progress) then
+			GAMEMODE.AchievementsProgress[id] = math.Clamp(progress, 0, GAMEMODE.Achievements[id].Goal)
+		end
+	end
 end)
 
 -- Receive an achievement
