@@ -105,7 +105,7 @@ if SERVER then
 				traces [i] = util.TraceHull({
 					start = start,
 					endpos = start + Vector(i == 1 && range || i == 2 && -range || 0, i == 3 && range || i == 4 && -range || 0, i == 5 && roof - playerHeight || 0),
-					filter = player.GetAll(),
+					filter = GAMEMODE.PlayersCache,
 					mins = Vector(i < 3 && -0.5 || i < 5 && -6 || -8, i < 3 && -6 || i < 5 && -0.5 || -8),
 					maxs = Vector(i < 3 && 0.5 || i < 5 && 6 || 8, i < 3 && 0.5 || i < 5 && 6 || 8, i == 5 && 0.5 || traceHeight),
 				})
@@ -121,7 +121,7 @@ if SERVER then
 				local trace = util.TraceLine({
 					start = start,
 					endpos = ply:GetPos() + Vector(0, 0, plyHeight),
-					filter = player.GetAll()
+					filter = GAMEMODE.PlayersCache
 				})
 				-- Tag
 				if trace.Fraction == 1 then

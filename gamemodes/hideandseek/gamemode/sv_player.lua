@@ -1,6 +1,10 @@
+-- Global players tab to use in has_hands (to not call player.GetAll)
+GM.PlayersCache = GAMEMODE && table.Copy(player.GetAll()) || {}
 function GM:PlayerInitialSpawn(ply)
 	-- Get achievements from sql and also network etc
 	ply:ProcessAchievements()
+	-- Add to players table
+	table.insert(self.PlayersCache, ply)
 	-- Don't set bots as spectators
 	if ply:IsBot() then
 		ply:SetTeam(TEAM_SEEK)
@@ -104,6 +108,8 @@ function GM:PlayerCanPickupWeapon(ply, weapon)
 end
 
 function GM:PlayerDisconnected(ply)
+	-- Remove from players table
+	table.RemoveByValue(self.PlayersCache, ply)
 	-- Check for seeker avoider
 	if ply:Team() == TEAM_SEEK && team.NumPlayers(TEAM_SEEK) <= 1 then
 		self:BroadcastChat(COLOR_WHITE, "[", Color(220, 20, 60), "HNS", COLOR_WHITE, "] ", ply:Name(), " avoided seeker! (", Color(220, 20, 60), ply:SteamID(), COLOR_WHITE, ")")
@@ -329,7 +335,7 @@ end)
 
 hook.Add("Tick", "HNS.PlayerStuckPrevention", function()
 		-- Stuck prevention
-	for _, ply in ipairs(player.GetAll()) do
+	for _, ply in ipairs(GAMEMODE.PlayersCache) do
 		if ply:Team() == TEAM_SPECTATOR then continue end
 
 		roof = (ply:Crouching() || ply:KeyDown(IN_DUCK)) && 58 || 70
@@ -337,7 +343,7 @@ hook.Add("Tick", "HNS.PlayerStuckPrevention", function()
 		shouldCalculate = false
 
 		-- Check for near players
-		for _, ply2 in ipairs(player.GetAll()) do
+		for _, ply2 in ipairs(GAMEMODE.PlayersCache) do
 			if ply2:Team() == TEAM_SPECTATOR || ply == ply2 then continue end
 
 			shouldCalculate = false

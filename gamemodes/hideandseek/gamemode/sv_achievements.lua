@@ -114,7 +114,7 @@ hook.Add("Tick", "HNS.Achievements", function()
 	if GAMEMODE.RoundState == ROUND_ACTIVE && lastSecond != GAMEMODE.TimeLeft then
 		lastSecond = GAMEMODE.TimeLeft
 		-- Hiding in tranquility: Add a second each second
-		for _, ply in pairs(team.GetPlayers(TEAM_HIDE)) do
+		for _, ply in ipairs(team.GetPlayers(TEAM_HIDE)) do
 			ply.HWTime = ply.HWTime + 1
 		end
 	end
