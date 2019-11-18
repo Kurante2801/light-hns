@@ -225,6 +225,7 @@ local hide = {
 	["CHudBattery"] = true,
 	["CHudPoisonDamageIndicator"] = true,
 	["CHudZoom"] = true,
+	["CHudSuitPower"] = true,
 }
 
 function GM:HUDShouldDraw(element)

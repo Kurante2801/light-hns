@@ -43,7 +43,7 @@ function GM:CreateTeams()
 end
 
 -- Sound when seekers are unblinded
-GM.PlayedStartSound = false
+GM.PlayedStartSound = true
 
 hook.Add("Tick", "HNS.SeekerBlinded", function()
 	-- Store time left
