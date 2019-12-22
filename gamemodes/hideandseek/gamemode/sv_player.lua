@@ -1,10 +1,8 @@
 -- Global players tab to use in has_hands (to not call player.GetAll)
 GM.PlayersCache = GAMEMODE && table.Copy(player.GetAll()) || {}
 function GM:PlayerInitialSpawn(ply)
-	-- Get achievements from sql and also network etc
-	ply:ProcessAchievements()
-	-- Add to players table
-	table.insert(self.PlayersCache, ply)
+	-- Refresh cache
+	self.PlayersCache = player.GetAll()
 	-- Don't set bots as spectators
 	if ply:IsBot() then
 		ply:SetTeam(TEAM_SEEK)
@@ -336,7 +334,7 @@ end)
 hook.Add("Tick", "HNS.PlayerStuckPrevention", function()
 		-- Stuck prevention
 	for _, ply in ipairs(GAMEMODE.PlayersCache) do
-		if ply:Team() == TEAM_SPECTATOR then continue end
+		if !IsValid(ply) || ply:Team() == TEAM_SPECTATOR then continue end
 
 		roof = (ply:Crouching() || ply:KeyDown(IN_DUCK)) && 58 || 70
 
@@ -344,7 +342,7 @@ hook.Add("Tick", "HNS.PlayerStuckPrevention", function()
 
 		-- Check for near players
 		for _, ply2 in ipairs(GAMEMODE.PlayersCache) do
-			if ply2:Team() == TEAM_SPECTATOR || ply == ply2 then continue end
+			if  !IsValid(ply2) || ply2:Team() == TEAM_SPECTATOR || ply == ply2 then continue end
 
 			shouldCalculate = false
 
