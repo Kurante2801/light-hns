@@ -156,6 +156,7 @@ end
 
 local speed, rayEnt, lastLooked, lookedTime, lookedColor
 
+GM.RoundLength = 0
 function GM:HUDPaint()
 	self.SelectedHUD = self.HUDs[self.CVars.HUD:GetInt()] || self.HUDs[2]
 	-- Create avatar

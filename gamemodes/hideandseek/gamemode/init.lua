@@ -22,6 +22,7 @@ util.AddNetworkString("HNS.AchievementsProgress")
 util.AddNetworkString("HNS.AchievementsMaster")
 util.AddNetworkString("HNS.AchievementsGet")
 util.AddNetworkString("HNS.PlayerEvent")
+util.AddNetworkString("HNS.PlayerNetReady")
 
 -- Sends a table to be unpacked on chat.AddText
 function GM:SendChat(ply, ...)

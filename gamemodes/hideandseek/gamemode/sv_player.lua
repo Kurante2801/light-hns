@@ -9,6 +9,11 @@ function GM:PlayerInitialSpawn(ply)
 		return
 	end
 	ply:SetTeam(TEAM_SPECTATOR)
+end
+
+function GM:HASPlayerNetReady(ply)
+	-- Get achievements from sql and also network etc
+	ply:ProcessAchievements()
 	-- Send round info
 	net.Start("HNS.RoundInfo")
 		net.WriteDouble(CurTime())
@@ -291,6 +296,11 @@ net.Receive("HNS.PlayerColorUpdate", function(_, ply)
 	if IsValid(ply.HiderTrail) then
 		ply.HiderTrail:Fire("Color", tostring(GAMEMODE:GetTeamShade(TEAM_HIDE, ply:GetInfo("has_hidercolor", "Default"))))
 	end
+end)
+
+-- Call hook when player can receive net messages
+net.Receive("HNS.PlayerNetReady", function(_, ply)
+	hook.Run("HASPlayerNetReady", ply)
 end)
 
 -- Update movement vars

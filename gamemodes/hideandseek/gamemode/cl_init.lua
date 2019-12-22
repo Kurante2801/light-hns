@@ -61,6 +61,11 @@ net.Receive("HNS.PlayerEvent", function()
 	end
 end)
 
+-- Notify the server that we are ready to receive net messages
+function GM:InitPostEntity()
+	net.Start("HNS.PlayerNetReady")
+	net.SendToServer()
+end
 
 -- Stamina manager
 GM.Stamina = 100
