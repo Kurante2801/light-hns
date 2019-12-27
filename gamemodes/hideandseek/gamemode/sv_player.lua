@@ -148,6 +148,11 @@ function GM:PlayerUse(ply, ent)
 		ent.LastDoorToggle = CurTime()
 	end
 
+	-- Prevent use when running
+	if ply:IsSprinting() && (ent:GetClass() == "prop_physics" || ent:GetClass() == "prop_physics_multiplayer") then
+		return false
+	end
+
 	return true
 end
 
@@ -235,6 +240,20 @@ function GM:KeyPress(ply, key)
 		end
 	end
 end
+
+local using = nil
+hook.Add("Move", "HNS.SprintPrevention", function(ply, data)
+	using = ply:GetEntityInUse()
+	-- Prevent sprinting while moving a prop
+	if ply:IsSprinting() && IsValid(using) && (using:GetClass() == "prop_physics" || using:GetClass() == "player_pickup" || using:GetClass() == "prop_physics_multiplayer") then
+		-- Seeker or hider max speed
+		if ply:Team() == TEAM_HIDE then
+			data:SetMaxSpeed(GAMEMODE.CVars.HiderWalkSpeed:GetInt())
+		elseif ply:Team() == TEAM_SEEK then
+			data:SetMaxSpeed(GAMEMODE.CVars.SeekerWalkSpeed:GetInt())
+		end
+	end
+end)
 
 FindMetaTable("Player").Caught = function(self, ply)
 	-- Change team

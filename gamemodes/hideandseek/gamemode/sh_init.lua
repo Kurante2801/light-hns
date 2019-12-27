@@ -77,7 +77,7 @@ hook.Add("Tick", "HNS.SeekerBlinded", function()
 	end
 end)
 
-function GM:Move(ply)
+function GM:Move(ply, data)
 	-- Prevent seekers from moving on blind time
 	return self.SeekerBlinded && ply:Team() == TEAM_SEEK
 end
