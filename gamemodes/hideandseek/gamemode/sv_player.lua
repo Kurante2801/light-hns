@@ -6,6 +6,7 @@ function GM:PlayerInitialSpawn(ply)
 	-- Don't set bots as spectators
 	if ply:IsBot() then
 		ply:SetTeam(TEAM_SEEK)
+		ply.Achs = {}
 		return
 	end
 	ply:SetTeam(TEAM_SPECTATOR)
