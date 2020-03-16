@@ -1,3 +1,14 @@
+function GM:StringToMinutesSeconds(time)
+	local seconds = time % 60
+	-- Fix missing 0
+	if seconds < 10 then
+		seconds = "0" .. seconds
+	end
+
+	-- Concatenate
+	return math.floor(time / 60) .. ":" .. seconds
+end
+
 GM.HUDs = {}
 
 GM.HUDs[1] = {
@@ -164,7 +175,7 @@ function GM:HUDPaint()
 		self.SelectedHUD:AvatarFunc()
 	end
 	-- Draw HUD
-	self.SelectedHUD:Draw(LocalPlayer(), GetDrawColor(), self.Stamina, string.ToMinutesSeconds(self.TimeLeft), GetRoundText(), self.TimeLeft - self.RoundLength)
+	self.SelectedHUD:Draw(LocalPlayer(), GetDrawColor(), self.Stamina, self:StringToMinutesSeconds(self.TimeLeft), GetRoundText(), self.TimeLeft - self.RoundLength)
 
 	-- Stuck prevention
 	if LocalPlayer():GetCollisionGroup() == COLLISION_GROUP_WEAPON then
