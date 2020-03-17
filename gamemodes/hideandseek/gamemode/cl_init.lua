@@ -74,6 +74,12 @@ function GM:Tick()
 	if self.Stamina <= 0 then
 		RunConsoleCommand("-speed")
 	end
+
+	-- Turn off flashlight clientside
+	if self.FlashlightIsOn && (LocalPlayer():Team() != TEAM_HIDE || !self.CVars.HiderFlash:GetBool()) then
+		LocalPlayer():RemoveEffects(EF_DIMLIGHT)
+		self.FlashlightIsOn = nil
+	end
 end
 
 net.Receive("HNS.StaminaChange", function()
@@ -166,6 +172,18 @@ function GM:PlayerBindPress(ply, bind)
 		vgui.Create("HNS.F2.Derma")
 	elseif bind == "gm_showhelp" then
 		vgui.Create("HNS.F1.Derma")
+	-- Flashlight
+	elseif bind == "impulse 100" then
+		-- Allowed?
+		if ply:Team() == TEAM_HIDE && self.CVars.HiderFlash:GetBool() then
+			self.FlashlightIsOn = !self.FlashlightIsOn
+			-- Toggle
+			if self.FlashlightIsOn then
+				ply:AddEffects(EF_DIMLIGHT)
+			else
+				ply:RemoveEffects(EF_DIMLIGHT)
+			end
+		end
 	end
 end
 

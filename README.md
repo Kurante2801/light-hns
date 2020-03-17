@@ -48,6 +48,10 @@ This gamemode WILL CONFLICT with [classic Hide and Seek](https://steamcommunity.
 
 `has_scob_url` *Text* = URL the scoreboard button will open. Needs to start with "https://" and DOES REQUIRE QUOTES when setting from console ("" <- these).
 
+`has_lasthidertrail` *Boolean (0 or 1)* = Will the last hider have a trail following them around?
+
+`has_hiderflashlight` *Boolean (0 or 1)* = Will hiders be able to use flashlights? They will only be visible for themselves and will not produce a sound.
+
 ## Additional info
 
 This gamemode was created to be exclusive to the GFL community, but now is free for everyone to use, that's why you may see server references, bad commit names or me just being a dick on the comments on older commits.
