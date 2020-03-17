@@ -38,7 +38,7 @@ function SWEP:PrimaryAttack()
 	local dist = ent.StartPos:DistToSqr(ent.HitPos)
 	ent = ent.Entity
 
-	if (ent:GetClass() == "func_breakable" || ent:GetClass() == "func_breakable_surf") && dist <= 10000 then
+	if (ent:GetClass() == "func_breakable" || ent:GetClass() == "func_breakable_surf") && dist <= 10000 && ent:Health() != 0 then
 		-- Damage
 		ent:EmitSound("physics/body/body_medium_impact_hard")
 		ent:Fire("RemoveHealth", 25)
