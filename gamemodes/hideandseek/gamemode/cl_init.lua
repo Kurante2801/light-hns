@@ -70,9 +70,6 @@ end
 -- Stamina manager
 GM.Stamina = 100
 function GM:Tick()
-	-- Blind time check
-	GAMEMODE.SeekerBlind = timer.Exists("")
-
 	-- Stop sprinting
 	if self.Stamina <= 0 then
 		RunConsoleCommand("-speed")
