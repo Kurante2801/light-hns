@@ -90,5 +90,11 @@
 			"type"		"Text"
 			"default"	"https://github.com/Fafy2801/light-hns"
 		}
+		15 {
+			"name"		"has_hiderflashlight"
+			"text"		"Enable hider flashlights (only visible to them)."
+			"type"		"CheckBox"
+			"default"	"0"
+		}
 	}
 }
