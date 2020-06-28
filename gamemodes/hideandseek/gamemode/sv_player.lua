@@ -185,6 +185,7 @@ function GM:GetFallDamage(ply, speed)
 		net.Start("HNS.StaminaChange")
 			net.WriteInt(time * -10, 8)
 		net.Send(ply)
+		ply.Stamina = ply.Stamina - time * 10
 
 		-- Moan
 		timer.Simple(math.random(2, 4), function()

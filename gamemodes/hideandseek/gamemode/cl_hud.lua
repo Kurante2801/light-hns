@@ -169,16 +169,18 @@ local speed, rayEnt, lastLooked, lookedTime, lookedColor
 
 GM.RoundLength = 0
 function GM:HUDPaint()
+	local ply = LocalPlayer()
+
 	self.SelectedHUD = self.HUDs[self.CVars.HUD:GetInt()] || self.HUDs[2]
 	-- Create avatar
 	if self.SelectedHUD.AvatarFunc && !self.SelectedHUD.Avatar then
 		self.SelectedHUD:AvatarFunc()
 	end
 	-- Draw HUD
-	self.SelectedHUD:Draw(LocalPlayer(), GetDrawColor(), self.Stamina, self:StringToMinutesSeconds(self.TimeLeft), GetRoundText(), self.TimeLeft - self.RoundLength)
+	self.SelectedHUD:Draw(ply, GetDrawColor(), ply.Stamina || 100, self:StringToMinutesSeconds(self.TimeLeft), GetRoundText(), self.TimeLeft - self.RoundLength)
 
 	-- Stuck prevention
-	if LocalPlayer():GetCollisionGroup() == COLLISION_GROUP_WEAPON then
+	if ply:GetCollisionGroup() == COLLISION_GROUP_WEAPON then
 		draw.SimpleTextOutlined("Stuck Prevention Enabled", "HNS.HUD.Fafy.Name", ScrW() / 2, ScrH() / 2 + 120, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, 125))
 	end
 
@@ -195,7 +197,7 @@ function GM:HUDPaint()
 
 	-- Speed pos
 	if self.CVars.ShowSpeed:GetBool() then
-		speed = LocalPlayer():GetVelocity():Length2D()
+		speed = ply:GetVelocity():Length2D()
 
 		draw.RoundedBox(6, self.CVars.SpeedX:GetInt() - 45, self.CVars.SpeedY:GetInt() - 28, 90, 56, Color(0, 0, 0, speed > 0 && 200 || 100))
 
@@ -204,8 +206,8 @@ function GM:HUDPaint()
 	end
 
 	-- Fade out names
-	rayEnt = LocalPlayer():GetEyeTrace().Entity
-	if !IsValid(LocalPlayer():GetObserverTarget()) && IsValid(rayEnt) && rayEnt:IsPlayer() && (self.RoundState != ROUND_ACTIVE || rayEnt:Team() == LocalPlayer():Team() || rayEnt:GetPos():DistToSqr(LocalPlayer():GetPos()) <= 302500) then
+	rayEnt = ply:GetEyeTrace().Entity
+	if !IsValid(ply:GetObserverTarget()) && IsValid(rayEnt) && rayEnt:IsPlayer() && (self.RoundState != ROUND_ACTIVE || rayEnt:Team() == ply:Team() || rayEnt:GetPos():DistToSqr(ply:GetPos()) <= 302500) then
 		-- From murder gamemode
 		lastLooked = rayEnt
 		lookedTime = CurTime()

@@ -67,8 +67,6 @@ function GM:InitPostEntity()
 	net.SendToServer()
 end
 
--- Stamina manager
-GM.Stamina = 100
 function GM:Tick()
 	-- Turn off flashlight clientside
 	if self.FlashlightIsOn && (LocalPlayer():Team() != TEAM_HIDE || !self.CVars.HiderFlash:GetBool()) then
@@ -77,28 +75,12 @@ function GM:Tick()
 	end
 end
 
-function GM:CreateMove(cmd)
-	-- Stop sprint
-	if self.Stamina <= 0 && cmd:KeyDown(IN_SPEED) then
-		cmd:SetButtons(cmd:GetButtons() - IN_SPEED)
-	end
-end
-
 net.Receive("HNS.StaminaChange", function()
 	local sta = net.ReadInt(8)
-	GAMEMODE.Stamina = math.Clamp(GAMEMODE.Stamina + sta, 0, 100)
+	local ply = LocalPlayer()
+	ply.Stamina = math.Clamp(GAMEMODE.Stamina + sta, 0, 100)
 	-- Stop regen
-	timer.Remove("HNS.StaminaRegen")
-	-- Regen again
-	timer.Create("HNS.StaminaDelay", 2, 1, function()
-		timer.Create("HNS.StaminaRegen", 0.05, 0, function()
-			GAMEMODE.Stamina = math.Clamp(GAMEMODE.Stamina + 0.4, 0, 100)
-			-- Stop regenerating after we reach 100
-			if GAMEMODE.Stamina >= 100 then
-				timer.Remove("HNS.StaminaRegen")
-			end
-		end)
-	end)
+	GAMEMODE:StaminaStop(ply)
 end)
 
 function GM:PostDrawOpaqueRenderables()
@@ -126,42 +108,6 @@ function GM:KeyPress(ply, key)
 	if key == IN_ATTACK2 && ply:KeyDown(IN_SCORE) && IsValid(self.Scoreboard) then
 		self.Scoreboard:MakePopup()
 		self.Scoreboard:SetKeyboardInputEnabled(false) -- Not needed
-	end
-	-- Stamina
-	if key == IN_SPEED then
-		if self.Stamina <= 0 || ply:Team() == TEAM_SPECTATOR then return end
-
-		if ply:GetVelocity():Length2D() >= 65 then
-			self.Stamina = math.Clamp(self.Stamina - 1, 0, 100)
-		end
-		-- Stop regen
-		timer.Remove("HNS.StaminaRegen")
-		timer.Remove("HNS.StaminaDelay")
-		-- Drain stamina
-		timer.Create("HNS.StaminaDrain", 0.055, 0, function()
-			if ply:GetVelocity():Length2D() >= 65 then
-				self.Stamina = math.Clamp(self.Stamina - 1, 0, 100)
-			end
-		end)
-	end
-end
-
-function GM:KeyRelease(ply, key)
-	if ply != LocalPlayer() then return end
-
-	if key == IN_SPEED then
-		-- Stop drain
-		timer.Remove("HNS.StaminaDrain")
-		-- Create delay
-		timer.Create("HNS.StaminaDelay", 2, 1, function()
-				timer.Create("HNS.StaminaRegen", 0.05, 0, function()
-				self.Stamina = math.Clamp(self.Stamina + 0.4, 0, 100)
-				-- Stop regenerating after we reach 100
-				if self.Stamina >= 100 then
-					timer.Remove("HNS.StaminaRegen")
-				end
-			end)
-		end)
 	end
 end
 

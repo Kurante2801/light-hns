@@ -83,4 +83,57 @@ function GM:Move(ply, data)
 	return self.SeekerBlinded && ply:Team() == TEAM_SEEK
 end
 
-util.PrecacheModel("models/dav0r/camera.mdl")
+-- Stamina
+function GM:StartCommand(ply, cmd)
+	ply.Stamina = ply.Stamina || 100
+
+	if cmd:KeyDown(IN_SPEED) then
+		-- Reduce stamina
+		self:StaminaStart(ply)
+		-- Prevent sprint
+		if ply.Stamina <= 0 && ply:Team() != TEAM_SPECTATOR then
+			cmd:SetButtons(cmd:GetButtons() - IN_SPEED)
+		end
+	elseif ply.Stamina != 100 then
+		self:StaminaStop(ply)
+	end
+end
+
+function GM:StaminaStart(ply)
+	local i = ply:EntIndex()
+	-- Already draining
+	if timer.Exists("HNS.StaminaDrain" .. i) then return end
+	-- Stops regeneration
+	timer.Remove("HNS.StaminaRegen" .. i)
+	timer.Remove("HNS.StaminaDelay" .. i)
+	-- Drain
+	timer.Create("HNS.StaminaDrain" .. i, 0.055, 0, function()
+		if !IsValid(ply) then
+			timer.Remove("HNS.StaminaDrain" .. i)
+		elseif ply:Team() != TEAM_SPECTATOR && ply:GetVelocity():Length2D() >= 65 then
+			ply.Stamina = math.Clamp(ply.Stamina - 1, 0, 100)
+		end
+	end)
+end
+
+function GM:StaminaStop(ply)
+	local i = ply:EntIndex()
+	-- Player did not sprint recently
+	if timer.Exists("HNS.StaminaDelay" .. i) || timer.Exists("HNS.StaminaRegen" .. i) then return end
+	-- Stop draining stamina
+	timer.Remove("HNS.StaminaDrain" .. i)
+	-- Create a delay before filling stamina
+	timer.Create("HNS.StaminaDelay" .. i, 2, 1, function()
+		timer.Create("HNS.StaminaRegen" .. i, 0.05, 0, function()
+			if !IsValid(ply) then
+				timer.Remove("HNS.StaminaRegen" .. i)
+			end
+
+			ply.Stamina = math.Clamp(ply.Stamina + 0.4, 0, 100)
+			-- Stop regen timer when full
+			if ply.Stamina >= 100 then
+				timer.Remove("HNS.StaminaRegen" .. i)
+			end
+		end)
+	end)
+end
