@@ -94,8 +94,6 @@ function GM:StartCommand(ply, cmd)
 		if ply.Stamina <= 0 && ply:Team() != TEAM_SPECTATOR then
 			cmd:SetButtons(cmd:GetButtons() - IN_SPEED)
 		end
-	elseif ply.Stamina != 100 then
-		self:StaminaStop(ply)
 	end
 end
 
@@ -110,6 +108,8 @@ function GM:StaminaStart(ply)
 	timer.Create("HNS.StaminaDrain" .. i, 0.055, 0, function()
 		if !IsValid(ply) then
 			timer.Remove("HNS.StaminaDrain" .. i)
+		elseif !ply:KeyDown(IN_SPEED) then
+			GAMEMODE:StaminaStop(ply)
 		elseif ply:Team() != TEAM_SPECTATOR && ply:GetVelocity():Length2D() >= 65 then
 			ply.Stamina = math.Clamp(ply.Stamina - 1, 0, 100)
 		end
