@@ -167,7 +167,13 @@ end
 
 local speed, rayEnt, lastLooked, lookedTime, lookedColor
 
-GM.RoundLength = 0
+-- Prevent glitches when reloading
+if GAMEMODE then
+	GM.RoundLength = GAMEMODE.RoundLength
+else
+	GM.RoundLength = 0
+end
+
 function GM:HUDPaint()
 	local ply = LocalPlayer()
 

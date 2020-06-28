@@ -2,10 +2,18 @@
 ROUND_WAIT, ROUND_ACTIVE, ROUND_POST = 1, 2, 3
 ROUND_ENDTIME, ROUND_ENDCAUGHT, ROUND_ENDABORT, ROUND_ENDLEAVE = 1, 2, 3, 4
 
-GM.RoundStartTime = 0
-GM.RoundCount = -1
-GM.RoundState = ROUND_WAIT
-GM.PlayedLastHiderSound = false
+-- Prevent interruption when reloading gamemode
+if GAMEMODE then
+	GM.RoundStartTime = GAMEMODE.RoundStartTime
+	GM.RoundCount = GAMEMODE.RoundCount
+	GM.RoundState = GAMEMODE.RoundState
+	GM.PlayedLastHiderSound = GAMEMODE.PlayedLastHiderSound
+else
+	GM.RoundStartTime = 0
+	GM.RoundCount = -1
+	GM.RoundState = ROUND_WAIT
+	GM.PlayedLastHiderSound = false
+end
 
 if SERVER then
 	util.AddNetworkString("HNS.RoundInfo")
