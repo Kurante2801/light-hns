@@ -207,7 +207,12 @@ function GM:EntityTakeDamage(ent, damage)
 	-- Kill, make a seeker and check for round end
 	if IsValid(ent) && IsValid(damage:GetAttacker()) && ent:IsPlayer() && ent:Alive() && damage:GetAttacker():GetClass() == "trigger_hurt" then
 		ent:Kill()
-		ent:SetTeam(TEAM_SEEK)
+
+		-- Don't turn into seeker if the round ended
+		if self.RoundState == ROUND_ACTIVE then
+			ent:SetTeam(TEAM_SEEK)
+		end
+
 		self:RoundCheck()
 	end
 end
