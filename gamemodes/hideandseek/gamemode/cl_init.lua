@@ -70,15 +70,17 @@ end
 -- Stamina manager
 GM.Stamina = 100
 function GM:Tick()
-	-- Stop sprinting
-	if self.Stamina <= 0 then
-		RunConsoleCommand("-speed")
-	end
-
 	-- Turn off flashlight clientside
 	if self.FlashlightIsOn && (LocalPlayer():Team() != TEAM_HIDE || !self.CVars.HiderFlash:GetBool()) then
 		LocalPlayer():RemoveEffects(EF_DIMLIGHT)
 		self.FlashlightIsOn = nil
+	end
+end
+
+function GM:CreateMove(cmd)
+	-- Stop sprint
+	if self.Stamina <= 0 && cmd:KeyDown(IN_SPEED) then
+		cmd:SetButtons(cmd:GetButtons() - IN_SPEED)
 	end
 end
 
