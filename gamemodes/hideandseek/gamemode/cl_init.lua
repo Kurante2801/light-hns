@@ -78,7 +78,7 @@ end
 net.Receive("HNS.StaminaChange", function()
 	local sta = net.ReadInt(8)
 	local ply = LocalPlayer()
-	ply.Stamina = math.Clamp(GAMEMODE.Stamina + sta, 0, 100)
+	ply.Stamina = math.Clamp(ply.Stamina + sta, 0, 100)
 	-- Stop regen
 	GAMEMODE:StaminaStop(ply)
 end)
