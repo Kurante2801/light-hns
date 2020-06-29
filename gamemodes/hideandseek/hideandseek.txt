@@ -2,7 +2,7 @@
 {
 	"base"			"base"
 	"title"			"Light Hide and Seek"
-	"maps"			"^hns_, ^has_"
+	"maps"			"^hns_|^has_"
 	"menusystem"	"1"
 	"settings"
 	{
