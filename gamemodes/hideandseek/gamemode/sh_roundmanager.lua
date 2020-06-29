@@ -97,6 +97,8 @@ if SERVER then
 			if ply:Team() == TEAM_HIDE then
 				ply:Spawn()
 			end
+			-- Refill stamina
+			ply.Stamina = 100
 		end
 
 		-- Check for enough players
