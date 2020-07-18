@@ -230,7 +230,7 @@ function GM:HUDPaint()
 	end
 
 	-- Team indicators (the V)
-	if self.CVars.TeamIndicators:GetBool() then
+	if self.CVars.TeamIndicators:GetBool() && ply:Team() != TEAM_SPECTATOR then
 		for _, mate in ipairs(team.GetPlayers(ply:Team())) do
 			if mate == ply then continue end
 

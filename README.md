@@ -52,6 +52,8 @@ This gamemode WILL CONFLICT with [classic Hide and Seek](https://steamcommunity.
 
 `has_hiderflashlight` *Boolean (0 or 1)* = Will hiders be able to use flashlights? They will only be visible for themselves and will not produce a sound.
 
+`has_teamindicators` *Boolean (0 or 1)* = Will players be able to see their teammates' position with a V over their heads?.
+
 ## Additional info
 
 This gamemode was created to be exclusive to the GFL community, but now is free for everyone to use, that's why you may see server references, bad commit names or me just being a dick on the comments on older commits.
