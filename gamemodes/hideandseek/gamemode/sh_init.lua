@@ -127,6 +127,7 @@ function GM:StaminaStop(ply)
 		timer.Create("HNS.StaminaRegen" .. i, 0.05, 0, function()
 			if !IsValid(ply) then
 				timer.Remove("HNS.StaminaRegen" .. i)
+				return
 			end
 
 			ply.Stamina = math.Clamp(ply.Stamina + 0.4, 0, 100)
