@@ -228,6 +228,19 @@ function GM:HUDPaint()
 			draw.SimpleTextOutlined(lastLooked:SteamID(), "DermaDefaultBold", ScrW() / 2, ScrH() / 2 + 84, lookedColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, lookedColor.a))
 		end
 	end
+
+	-- Team indicators (the V)
+	if self.CVars.TeamIndicators:GetBool() then
+		for _, mate in ipairs(team.GetPlayers(ply:Team())) do
+			if mate == ply then continue end
+
+			local pos = mate:GetPos() + Vector(0, 0, 74)
+			local alpha = math.Clamp((ply:GetPos():Distance(mate:GetPos()) - 200) * 255 / 600, 0, 255)
+			pos = pos:ToScreen()
+
+			draw.SimpleTextOutlined("6", "Marlett", pos.x, pos.y, ColorAlpha(mate:GetPlayerColor():ToColor(), alpha), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, alpha * 0.35))
+		end
+	end
 end
 
 -- Using hook to allow other HUD elements from other addons to be seen
