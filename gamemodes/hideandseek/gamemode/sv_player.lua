@@ -47,6 +47,7 @@ function GM:PlayerSpawn(ply)
 		ply:SetMaterial("models/effects/vol_light001")
 		ply:SetRenderMode(RENDERMODE_TRANSALPHA)
 		ply:SetColor(Color(0, 0, 0, 0))
+		ply:SetModelScale(0)
 		ply:AllowFlashlight(false)
 		return true
 	end
@@ -57,6 +58,7 @@ function GM:PlayerSpawn(ply)
 	ply:SetMaterial("")
 	ply:SetRenderMode(RENDERMODE_NORMAL)
 	ply:SetColor(COLOR_WHITE)
+	ply:SetModelScale(1)
 
 	-- Set current gender
 	ply.Gender = ply:GetInfoNum("has_gender", 0) == 1
