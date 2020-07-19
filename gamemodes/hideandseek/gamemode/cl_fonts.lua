@@ -1,3 +1,23 @@
+GM.UpdateFonts = function()
+	local self = GM || GAMEMODE
+	local scale = self.CVars.HUDScale:GetInt()
+
+	surface.CreateFont("HNSHUD.VerdanaLarge", {
+		font = "Verdana",
+		size = 11 * scale,
+		weight = 138 * scale,
+	})
+
+	surface.CreateFont("HNSHUD.TahomaSmall", {
+		font = "Tahoma",
+		size = 8 * scale,
+		weight = 550 * scale,
+	})
+end
+
+GM.UpdateFonts()
+cvars.AddChangeCallback("has_hud_scale", GM.UpdateFonts, "HNS.UpdateFonts")
+
 surface.CreateFont("HNS.HUD.Fafy.Name", {
 	font = "Verdana",
 	size = 22,

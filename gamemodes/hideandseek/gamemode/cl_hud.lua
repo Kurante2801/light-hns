@@ -42,14 +42,14 @@ GM.HUDs[1] = {
 
 GM.HUDs[2] = {
 	Name = "Fafy",
-	Draw = function(this, ply, tint, stamina, timeLeft, roundText, blindTime)
+	Draw = function(this, ply, tint, stamina, timeLeft, roundText, blindTime, scale)
 		-- Setting font with surface to get length
-		surface.SetFont("HNS.HUD.Fafy.Name")
+		surface.SetFont("HNSHUD.VerdanaLarge")
 		this.BarWide, this.TextTall = surface.GetTextSize(ply:Name())
-		this.BarWide = math.max(200, this.BarWide + 6)
+		this.BarWide = math.max(100 * scale, this.BarWide + 3 * scale)
 		-- Drawing name shadow now that we used surface.SetFont
 		surface.SetTextColor(0, 0, 0)
-		surface.SetTextPos(84, ScrH() - 69 - this.TextTall / 2)
+		surface.SetTextPos(42 * scale, (ScrH() - 35 * scale - this.TextTall / 2) + 1)
 		surface.DrawText(ply:Name())
 
 		-- Avatar image
@@ -59,10 +59,10 @@ GM.HUDs[2] = {
 
 		-- Player name
 		draw.RoundedBox(0, 81, ScrH() - 81, this.BarWide, 24, Color(0, 0, 0, 125))
-		draw.SimpleText(ply:Name(), "HNS.HUD.Fafy.Name", 83, ScrH() - 70, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+		draw.SimpleText(ply:Name(), "HNSHUD.VerdanaLarge", 42 * scale - 1, ScrH() - 35 * scale, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 
 		-- Player team
-		this:ShadowedText(team.GetName(ply:Team()), "DermaDefaultBold", 85, ScrH() - 50, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+		this:ShadowedText(team.GetName(ply:Team()), "HNSHUD.TahomaSmall", 85, ScrH() - 50, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 
 		-- Round and timer bars
 		draw.RoundedBox(0, 15, 15, 125, 40, Color(0, 0, 0, 125))
@@ -80,7 +80,7 @@ GM.HUDs[2] = {
 
 		-- Stamina bar
 		if ply:Team() == TEAM_SPECTATOR then
-			this:ShadowedText("Press F2 to join the game!", "DermaDefaultBold", 85, ScrH() - 36, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+			this:ShadowedText("Press F2 to join the game!", "HNS.TahomaSmall", 85, ScrH() - 34, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 		else
 			draw.RoundedBox(0, 81, ScrH() - 39, this.BarWide, 24, Color(0, 0, 0, 175))
 			draw.RoundedBox(0, 83, ScrH() - 37, (this.BarWide - 4) * stamina / 100, 20, ColorAlpha(tint, math.sin(CurTime() * 4) * 60 + 120))
@@ -183,7 +183,7 @@ function GM:HUDPaint()
 		self.SelectedHUD:AvatarFunc()
 	end
 	-- Draw HUD
-	self.SelectedHUD:Draw(ply, GetDrawColor(), ply.Stamina || 100, self:StringToMinutesSeconds(self.TimeLeft), GetRoundText(), self.TimeLeft - self.RoundLength)
+	self.SelectedHUD:Draw(ply, GetDrawColor(), ply.Stamina || 100, self:StringToMinutesSeconds(self.TimeLeft), GetRoundText(), self.TimeLeft - self.RoundLength, self.CVars.HUDScale:GetInt())
 
 	-- Stuck prevention
 	if ply:GetCollisionGroup() == COLLISION_GROUP_WEAPON then
