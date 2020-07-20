@@ -227,6 +227,36 @@ function PANEL:Init()
 
 	self.Tabs:AddSheet("HUD - Interface", self.Interface, "icon16/paintbrush.png")
 
+	-- HUD Scaling
+	self.Interface.HUDScale = self.Interface:Add("DNumSlider")
+	self.Interface.HUDScale:Dock(TOP)
+	self.Interface.HUDScale:DockMargin(45, 0, 0, 0)
+	self.Interface.HUDScale:SetMinMax(1, 6)
+	self.Interface.HUDScale:SetDecimals(0)
+	self.Interface.HUDScale:SetValue(GAMEMODE.CVars.HUDScale:GetInt())
+	-- Disable all elements besides the slider
+	self.Interface.HUDScale.Label:Dock(NODOCK)
+	self.Interface.HUDScale.Label:SetMouseInputEnabled(false)
+	-- Make number white (no racist I promise)
+	self.Interface.HUDScale.TextArea:SetTextColor(COLOR_WHITE)
+	-- Snap to whole numbers and update convar
+	self.Interface.HUDScale.OnValueChanged = function(this, value)
+		value = math.Round(value)
+		this:SetValue(value)
+		-- Update HUD and text
+		RunConsoleCommand("has_hud_scale", value)
+		self.Interface.ScaleText:SetText("HUD Scaling: " .. value)
+	end
+
+	-- HUD Scaling text
+	self.Interface.ScaleText = self.Interface:Add("DLabel")
+	self.Interface.ScaleText:Dock(TOP)
+	self.Interface.ScaleText:DockMargin(0, 0, 0, 0)
+	self.Interface.ScaleText:SetFont("DermaDefault")
+	self.Interface.ScaleText:SetColor(COLOR_WHITE)
+	self.Interface.ScaleText:SetContentAlignment(8)
+	self.Interface.ScaleText:SetText("HUD Scaling: " .. GAMEMODE.CVars.HUDScale:GetInt())
+
 	-- Add your own settings in this hook
 	hook.Run("HASPreferencesMenu", self.Interface)
 
