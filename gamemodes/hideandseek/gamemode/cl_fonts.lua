@@ -2,7 +2,7 @@ GM.UpdateFonts = function()
 	local self = GM || GAMEMODE
 	local scale = self.CVars.HUDScale:GetInt()
 
-	surface.CreateFont("HNSHUD.VerdanaLarge", {
+	surface.CreateFont("HNSHUD.VerdanaMedium", {
 		font = "Verdana",
 		size = 11 * scale,
 		weight = 190 * scale,
@@ -12,6 +12,12 @@ GM.UpdateFonts = function()
 		font = "Tahoma",
 		size = 7 * scale,
 		weight = 280 * scale,
+	})
+
+	surface.CreateFont("HNSHUD.VerdanaLarge", {
+		font = "Verdana",
+		size = 14 * scale,
+		weight = 287 * scale,
 	})
 end
 
