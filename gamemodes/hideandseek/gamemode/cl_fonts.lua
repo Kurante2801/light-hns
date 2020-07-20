@@ -5,13 +5,13 @@ GM.UpdateFonts = function()
 	surface.CreateFont("HNSHUD.VerdanaLarge", {
 		font = "Verdana",
 		size = 11 * scale,
-		weight = 138 * scale,
+		weight = 190 * scale,
 	})
 
 	surface.CreateFont("HNSHUD.TahomaSmall", {
 		font = "Tahoma",
-		size = 8 * scale,
-		weight = 550 * scale,
+		size = 7 * scale,
+		weight = 280 * scale,
 	})
 end
 

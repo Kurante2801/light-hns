@@ -49,20 +49,20 @@ GM.HUDs[2] = {
 		this.BarWide = math.max(100 * scale, this.BarWide + 3 * scale)
 		-- Drawing name shadow now that we used surface.SetFont
 		surface.SetTextColor(0, 0, 0)
-		surface.SetTextPos(42 * scale, (ScrH() - 35 * scale - this.TextTall / 2) + 1)
+		surface.SetTextPos(42 * scale + 1, (ScrH() - 35 * scale - this.TextTall / 2) + 1)
 		surface.DrawText(ply:Name())
 
 		-- Avatar image
-		draw.RoundedBox(0, 15, ScrH() - 81, 66, 66, tint)
-		draw.RoundedBox(0, 16, ScrH() - 80, 64, 64, Color(0, 0, 0))
+		draw.RoundedBox(0, 8 * scale - 1, ScrH() - 40 * scale - 1, 32 * scale + 2, 32 * scale + 2, tint)
+		draw.RoundedBox(0, 8 * scale, ScrH() - 40 * scale, 32 * scale, 32 * scale, Color(0, 0, 0))
 		this.Avatar:PaintManual()
 
 		-- Player name
 		draw.RoundedBox(0, 81, ScrH() - 81, this.BarWide, 24, Color(0, 0, 0, 125))
-		draw.SimpleText(ply:Name(), "HNSHUD.VerdanaLarge", 42 * scale - 1, ScrH() - 35 * scale, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+		draw.SimpleText(ply:Name(), "HNSHUD.VerdanaLarge", 42 * scale, ScrH() - 35 * scale, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 
 		-- Player team
-		this:ShadowedText(team.GetName(ply:Team()), "HNSHUD.TahomaSmall", 85, ScrH() - 50, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+		this:ShadowedText(team.GetName(ply:Team()), "HNSHUD.TahomaSmall", 42 * scale + 1, ScrH() - 25 * scale, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 
 		-- Round and timer bars
 		draw.RoundedBox(0, 15, 15, 125, 40, Color(0, 0, 0, 125))
@@ -86,11 +86,11 @@ GM.HUDs[2] = {
 			draw.RoundedBox(0, 83, ScrH() - 37, (this.BarWide - 4) * stamina / 100, 20, ColorAlpha(tint, math.sin(CurTime() * 4) * 60 + 120))
 		end
 	end,
-	AvatarFunc = function(this)
+	AvatarFunc = function(this, scale)
 		this.Avatar = vgui.Create("AvatarImage")
-		this.Avatar:SetPos(16, ScrH() - 80)
-		this.Avatar:SetSize(64, 64)
-		this.Avatar:SetPlayer(LocalPlayer(), 64)
+		this.Avatar:SetPos(8 * scale, ScrH() - 40 * scale)
+		this.Avatar:SetSize(32 * scale, 32 * scale)
+		this.Avatar:SetPlayer(LocalPlayer(), 32 * scale)
 		this.Avatar:SetPaintedManually(true)
 		this.Avatar:MoveToBack()
 	end,
@@ -180,7 +180,7 @@ function GM:HUDPaint()
 	self.SelectedHUD = self.HUDs[self.CVars.HUD:GetInt()] || self.HUDs[2]
 	-- Create avatar
 	if self.SelectedHUD.AvatarFunc && !self.SelectedHUD.Avatar then
-		self.SelectedHUD:AvatarFunc()
+		self.SelectedHUD:AvatarFunc(self.CVars.HUDScale:GetInt())
 	end
 	-- Draw HUD
 	self.SelectedHUD:Draw(ply, GetDrawColor(), ply.Stamina || 100, self:StringToMinutesSeconds(self.TimeLeft), GetRoundText(), self.TimeLeft - self.RoundLength, self.CVars.HUDScale:GetInt())
@@ -293,3 +293,13 @@ function GM:DrawCrosshair(x, y, ch)
 	-- Left
 	surface.DrawRect(x - ch.Gap - ch.Size, y - ch.Thick / 2, ch.Size, ch.Thick)
 end
+
+-- Update avatars
+cvars.AddChangeCallback("has_hud_scale", function()
+	local hud = GAMEMODE.HUDs[GAMEMODE.CVars.HUD:GetInt()]
+
+	if hud.AvatarFunc && IsValid(hud.Avatar) then
+		hud.Avatar:Remove()
+		hud.Avatar = nil
+	end
+end, "HNS.UpdateAvatar")
