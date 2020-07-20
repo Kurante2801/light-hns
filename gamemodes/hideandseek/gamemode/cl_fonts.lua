@@ -31,6 +31,18 @@ GM.UpdateFonts = function()
 		size = 16 * scale,
 		weight = 200 * scale,
 	})
+
+	surface.CreateFont("HNSHUD.TahomaLarge", {
+		font = "Tahoma",
+		size = 22 * scale,
+		weight = 300 * scale,
+	})
+
+	surface.CreateFont("HNSHUD.Marlett", {
+		font = "Trebuchet MS",
+		size = 18 * scale,
+		weight = 300 * scale,
+	})
 end
 
 GM.UpdateFonts()

@@ -162,7 +162,7 @@ local function GetRoundText()
 	end
 end
 
-local speed, rayEnt, lastLooked, lookedTime, lookedColor
+local speed, rayEnt, lastLooked, lookedTime, lookedColor, scale, ply
 
 -- Prevent glitches when reloading
 if GAMEMODE then
@@ -172,19 +172,20 @@ else
 end
 
 function GM:HUDPaint()
-	local ply = LocalPlayer()
+	ply = LocalPlayer()
+	scale = self.CVars.HUDScale:GetInt()
 
 	self.SelectedHUD = self.HUDs[self.CVars.HUD:GetInt()] || self.HUDs[2]
 	-- Create avatar
 	if self.SelectedHUD.AvatarFunc && !self.SelectedHUD.Avatar then
-		self.SelectedHUD:AvatarFunc(self.CVars.HUDScale:GetInt())
+		self.SelectedHUD:AvatarFunc(scale)
 	end
 	-- Draw HUD
-	self.SelectedHUD:Draw(ply, GetDrawColor(), ply.Stamina || 100, self:StringToMinutesSeconds(self.TimeLeft), GetRoundText(), self.TimeLeft - self.RoundLength, self.CVars.HUDScale:GetInt())
+	self.SelectedHUD:Draw(ply, GetDrawColor(), ply.Stamina || 100, self:StringToMinutesSeconds(self.TimeLeft), GetRoundText(), self.TimeLeft - self.RoundLength, scale)
 
 	-- Stuck prevention
 	if ply:GetCollisionGroup() == COLLISION_GROUP_WEAPON then
-		draw.SimpleTextOutlined("Stuck Prevention Enabled", "HNS.HUD.Fafy.Name", ScrW() / 2, ScrH() / 2 + 120, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, 125))
+		draw.SimpleTextOutlined("Stuck Prevention Enabled", "HNSHUD.VerdanaMedium", ScrW() / 2, ScrH() / 2 + 60 * scale, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, 125))
 	end
 
 	-- Remove leftover avatars
@@ -202,10 +203,9 @@ function GM:HUDPaint()
 	if self.CVars.ShowSpeed:GetBool() then
 		speed = ply:GetVelocity():Length2D()
 
-		draw.RoundedBox(6, self.CVars.SpeedX:GetInt() - 45, self.CVars.SpeedY:GetInt() - 28, 90, 56, Color(0, 0, 0, speed > 0 && 200 || 100))
-
-		draw.SimpleText("SPEED", "HNS.HUD.DR.Medium", self.CVars.SpeedX:GetInt(), self.CVars.SpeedY:GetInt() - 14, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-		draw.SimpleText(math.Round(speed), "HNS.HUD.DR.Big", self.CVars.SpeedX:GetInt(), self.CVars.SpeedY:GetInt() + 10, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		draw.RoundedBox(0, self.CVars.SpeedX:GetInt() - 25 * scale, self.CVars.SpeedY:GetInt() - 14 * scale, 50 * scale, 28 * scale, Color(0, 0, 0, speed > 0 && 200 || 100))
+		draw.SimpleText("SPEED", "HNSHUD.VerdanaMedium", self.CVars.SpeedX:GetInt(), self.CVars.SpeedY:GetInt() - 8 * scale, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		draw.SimpleText(math.Round(speed), "HNSHUD.TahomaLarge", self.CVars.SpeedX:GetInt(), self.CVars.SpeedY:GetInt() + 4 * scale, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 	end
 
 	-- Fade out names
@@ -219,10 +219,10 @@ function GM:HUDPaint()
 	-- Draw name
 	if IsValid(lastLooked) && lookedTime + 2 > CurTime() then
 		lookedColor = ColorAlpha(team.GetColor(lastLooked:Team()), (1 - (CurTime() - lookedTime) / 2) * 255)
-		draw.SimpleTextOutlined(lastLooked:Name(), "DermaLarge", ScrW() / 2, ScrH() / 2 + 50, lookedColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, lookedColor.a))
-		draw.SimpleTextOutlined(team.GetName(lastLooked:Team()), "DermaDefaultBold", ScrW() / 2, ScrH() / 2 + 70, lookedColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, lookedColor.a))
+		draw.SimpleTextOutlined(lastLooked:Name(), "HNSHUD.RobotoLarge", ScrW() / 2, ScrH() / 2 + 25 * scale, lookedColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, lookedColor.a))
+		draw.SimpleTextOutlined(team.GetName(lastLooked:Team()), "HNSHUD.TahomaSmall", ScrW() / 2, ScrH() / 2 + 35 * scale, lookedColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, lookedColor.a))
 		if self.CVars.ShowID:GetBool() then
-			draw.SimpleTextOutlined(lastLooked:SteamID(), "DermaDefaultBold", ScrW() / 2, ScrH() / 2 + 84, lookedColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, lookedColor.a))
+			draw.SimpleTextOutlined(lastLooked:SteamID(), "HNSHUD.TahomaSmall", ScrW() / 2, ScrH() / 2 + 42 * scale, lookedColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, lookedColor.a))
 		end
 	end
 
@@ -231,11 +231,11 @@ function GM:HUDPaint()
 		for _, mate in ipairs(team.GetPlayers(ply:Team())) do
 			if mate == ply then continue end
 
-			local pos = mate:GetPos() + Vector(0, 0, 74)
+			local pos = mate:GetPos() + Vector(0, 0, 84)
 			local alpha = math.Clamp((ply:GetPos():Distance(mate:GetPos()) - 200) * 255 / 600, 0, 255)
 			pos = pos:ToScreen()
 
-			draw.SimpleTextOutlined("6", "Marlett", pos.x, pos.y, ColorAlpha(mate:GetPlayerColor():ToColor(), alpha), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, alpha * 0.35))
+			draw.SimpleTextOutlined("v", "HNSHUD.Marlett", pos.x, pos.y, ColorAlpha(mate:GetPlayerColor():ToColor(), alpha), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, alpha * 0.35))
 		end
 	end
 end
