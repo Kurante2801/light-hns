@@ -69,13 +69,13 @@ GM.HUDs[2] = {
 		draw.RoundedBox(0, 8 * scale - 1, 30 * scale, 70 * scale, 10 * scale, Color(0, 0, 0, 125))
 
 		-- Round and timer texts
-		this:ShadowedText(timeLeft, "HNSHUD.VerdanaLarge", 43 * scale - 1, 17 * scale, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		this:ShadowedText(timeLeft, "HNSHUD.VerdanaLarge", 43 * scale - 1, 17 * scale + 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		this:ShadowedText(roundText, "HNSHUD.TahomaSmall", 43 * scale - 1, 35 * scale - 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 
 		if GAMEMODE.SeekerBlinded then
-			draw.RoundedBox(0, ScrW() / 2 - 100, 15, 200, 50, Color(0, 0, 0, 125))
-			this:ShadowedText((ply:Team() == TEAM_SEEK && "You" || team.NumPlayers(2) == 1 && "The seeker" || "The seekers") .. " will be unblinded in...", "DermaDefaultBold", ScrW() / 2, 26, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-			this:ShadowedText(blindTime, "HNS.HUD.Fafy.Timer", ScrW() / 2, 47, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			draw.RoundedBox(0, ScrW() / 2 - 60 * scale, 8 * scale - 1, 120 * scale, 24 * scale, Color(0, 0, 0, 125))
+			this:ShadowedText((ply:Team() == TEAM_SEEK && "You" || team.NumPlayers(2) == 1 && "The seeker" || "The seekers") .. " will be unblinded in...", "HNSHUD.TahomaSmall", ScrW() / 2, 13 * scale, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			this:ShadowedText(blindTime, "HNSHUD.VerdanaLarge", ScrW() / 2, 24 * scale - 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		end
 
 		-- Stamina bar
