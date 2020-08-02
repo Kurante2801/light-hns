@@ -7,6 +7,7 @@ AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("cl_fonts.lua")
 AddCSLuaFile("cl_hud.lua")
 AddCSLuaFile("cl_derma.lua")
+AddCSLuaFile("vgui/scoreboard.lua")
 AddCSLuaFile("tdlib.lua")
 
 include("sv_player.lua")

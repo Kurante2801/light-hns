@@ -1,3 +1,5 @@
+include("vgui/scoreboard.lua")
+
 local PANEL = {}
 
 function PANEL:Init()
@@ -604,7 +606,7 @@ function PANEL:UpdateList()
 	end
 end
 
-vgui.Register("HNS.Scoreboard", PANEL, "DFrame")
+--vgui.Register("HNS.Scoreboard", PANEL, "DFrame")
 
 -- Achievements
 PANEL = {}
