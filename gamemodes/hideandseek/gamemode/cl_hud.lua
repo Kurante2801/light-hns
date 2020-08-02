@@ -13,84 +13,84 @@ GM.HUDs = {}
 
 GM.HUDs[1] = {
 	Name = "Classic",
-	Draw = function(this, ply, tint, stamina, timeLeft, roundText, blindTime)
+	Draw = function(this, ply, tint, stamina, timeLeft, roundText, blindTime, scale)
 		-- Player info and stamina container
-		draw.RoundedBoxEx(16, 20, ScrH() - 80, 200, 80, Color(0, 0, 0, 200), true, true, false, false)
+		draw.RoundedBoxEx(8 * scale, 10 * scale, ScrH() - 40 * scale, 100 * scale, 40 * scale, Color(0, 0, 0, 200), true, true, false, false)
 		-- Player info
-		draw.SimpleTextOutlined(ply:Name(), "DermaDefaultBold", 32, ScrH() - 70, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 2, Color(10, 10, 10, 100))
-		draw.SimpleTextOutlined(team.GetName(ply:Team()), "DermaDefault", 32, ScrH() - 56, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 2, Color(10, 10, 10, 100))
+		draw.SimpleTextOutlined(ply:Name(), "HNSHUD.TahomaSmall", 16 * scale, ScrH() - 35 * scale + 1, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 2, Color(10, 10, 10, 100))
+		draw.SimpleTextOutlined(team.GetName(ply:Team()), "HNSHUD.TahomaThin", 16 * scale, ScrH() - 28 * scale + 1, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 2, Color(10, 10, 10, 100))
 		-- Stamina
 		if ply:Team() != TEAM_SPECTATOR then
-			draw.RoundedBoxEx(16, 220, ScrH() - 48, 108, 32, Color(0, 0, 0, 200), false, true, false, true)
-			draw.RoundedBox(12, 24, ScrH() - 44, 300, 24, Color(0, 0, 0, 200))
-			draw.RoundedBox(12, 24, ScrH() - 44, stamina * 3, 24, ColorAlpha(tint, math.sin(CurTime() * 6) * 50 + 100))
+			draw.RoundedBoxEx(8 * scale, 110 * scale, ScrH() - 24 * scale, 54 * scale, 16 * scale, Color(0, 0, 0, 200), false, true, false, true)
+			draw.RoundedBox(6 * scale, 12 * scale, ScrH() - 22 * scale, 150 * scale, 12 * scale, Color(0, 0, 0, 200))
+			draw.RoundedBox(6 * scale, 12 * scale, ScrH() - 22 * scale, stamina * 1.5 * scale, 12 * scale, ColorAlpha(tint, math.sin(CurTime() * 6) * 50 + 100))
 		end
 
 		-- Round indicators
-		draw.RoundedBoxEx(16, 20, 0, 128, 72, Color(0, 0, 0, 200), false, false, true, true)
-		draw.SimpleTextOutlined(timeLeft, "DermaLarge", 32, 24, COLOR_WHITE, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 2, Color(10, 10, 10, 100))
-		draw.SimpleTextOutlined(roundText, "DermaDefault", 32, 48, COLOR_WHITE, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 2, Color(10, 10, 10, 100))
+		draw.RoundedBoxEx(8 * scale, 10 * scale, 0, 64 * scale, 36 * scale, Color(0, 0, 0, 200), false, false, true, true)
+		draw.SimpleTextOutlined(timeLeft, "HNSHUD.RobotoLarge", 16 * scale, 12 * scale, COLOR_WHITE, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 2, Color(10, 10, 10, 100))
+		draw.SimpleTextOutlined(roundText, "HNSHUD.TahomaThin", 16 * scale, 24 * scale, COLOR_WHITE, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 2, Color(10, 10, 10, 100))
 
 		-- Blind time
 		if GAMEMODE.SeekerBlinded then
-			draw.RoundedBoxEx(16, ScrW() / 2 - 100, 0, 200, 72, Color(0, 0, 0, 200), false, false, true, true)
-			draw.SimpleTextOutlined((ply:Team() == TEAM_SEEK && "You" || team.NumPlayers(2) == 1 && "The seeker" || "The seekers") .. " will be unblinded in...", "DermaDefault", ScrW() / 2, 24, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, Color(10, 10, 10, 100))
-			draw.SimpleTextOutlined(blindTime .. " seconds", "DermaDefault", ScrW() / 2, 40, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, Color(10, 10, 10, 100))
+			draw.RoundedBoxEx(8 * scale, ScrW() / 2 - 50 * scale, 0, 100 * scale, 36 * scale, Color(0, 0, 0, 200), false, false, true, true)
+			draw.SimpleTextOutlined((ply:Team() == TEAM_SEEK && "You" || team.NumPlayers(2) == 1 && "The seeker" || "The seekers") .. " will be unblinded in...", "HNSHUD.TahomaThin", ScrW() / 2, 14 * scale, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, Color(10, 10, 10, 100))
+			draw.SimpleTextOutlined(blindTime .. " seconds", "HNSHUD.TahomaThin", ScrW() / 2, 22 * scale, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, Color(10, 10, 10, 100))
 		end
 	end
 }
 
 GM.HUDs[2] = {
 	Name = "Fafy",
-	Draw = function(this, ply, tint, stamina, timeLeft, roundText, blindTime)
+	Draw = function(this, ply, tint, stamina, timeLeft, roundText, blindTime, scale)
 		-- Setting font with surface to get length
-		surface.SetFont("HNS.HUD.Fafy.Name")
+		surface.SetFont("HNSHUD.VerdanaMedium")
 		this.BarWide, this.TextTall = surface.GetTextSize(ply:Name())
-		this.BarWide = math.max(200, this.BarWide + 6)
+		this.BarWide = math.max(100 * scale, this.BarWide + 3 * scale)
 		-- Drawing name shadow now that we used surface.SetFont
 		surface.SetTextColor(0, 0, 0)
-		surface.SetTextPos(84, ScrH() - 69 - this.TextTall / 2)
+		surface.SetTextPos(42 * scale + 1, (ScrH() - 35 * scale - this.TextTall / 2) + 1)
 		surface.DrawText(ply:Name())
 
 		-- Avatar image
-		draw.RoundedBox(0, 15, ScrH() - 81, 66, 66, tint)
-		draw.RoundedBox(0, 16, ScrH() - 80, 64, 64, Color(0, 0, 0))
+		draw.RoundedBox(0, 8 * scale - 1, ScrH() - 40 * scale - 1, 32 * scale + 2, 32 * scale + 2, tint)
+		draw.RoundedBox(0, 8 * scale, ScrH() - 40 * scale, 32 * scale, 32 * scale, Color(0, 0, 0))
 		this.Avatar:PaintManual()
 
 		-- Player name
-		draw.RoundedBox(0, 81, ScrH() - 81, this.BarWide, 24, Color(0, 0, 0, 125))
-		draw.SimpleText(ply:Name(), "HNS.HUD.Fafy.Name", 83, ScrH() - 70, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+		draw.RoundedBox(0, 40 * scale + 1, ScrH() - 40 * scale - 1, this.BarWide, 12 * scale, Color(0, 0, 0, 125))
+		draw.SimpleText(ply:Name(), "HNSHUD.VerdanaMedium", 42 * scale, ScrH() - 35 * scale, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 
 		-- Player team
-		this:ShadowedText(team.GetName(ply:Team()), "DermaDefaultBold", 85, ScrH() - 50, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+		this:ShadowedText(team.GetName(ply:Team()), "HNSHUD.TahomaSmall", 42 * scale + 1, ScrH() - 25 * scale + 1, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 
 		-- Round and timer bars
-		draw.RoundedBox(0, 15, 15, 125, 40, Color(0, 0, 0, 125))
-		draw.RoundedBox(0, 15, 60, 125, 20, Color(0, 0, 0, 125))
+		draw.RoundedBox(0, 8 * scale - 1, 8 * scale - 1, 70 * scale, 20 * scale, Color(0, 0, 0, 125))
+		draw.RoundedBox(0, 8 * scale - 1, 30 * scale, 70 * scale, 10 * scale, Color(0, 0, 0, 125))
 
 		-- Round and timer texts
-		this:ShadowedText(timeLeft, "HNS.HUD.Fafy.Timer", 76, 34, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-		this:ShadowedText(roundText, "DermaDefaultBold", 78, 69, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		this:ShadowedText(timeLeft, "HNSHUD.VerdanaLarge", 43 * scale - 1, 17 * scale + 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		this:ShadowedText(roundText, "HNSHUD.TahomaSmall", 43 * scale - 1, 35 * scale - 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 
 		if GAMEMODE.SeekerBlinded then
-			draw.RoundedBox(0, ScrW() / 2 - 100, 15, 200, 50, Color(0, 0, 0, 125))
-			this:ShadowedText((ply:Team() == TEAM_SEEK && "You" || team.NumPlayers(2) == 1 && "The seeker" || "The seekers") .. " will be unblinded in...", "DermaDefaultBold", ScrW() / 2, 26, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-			this:ShadowedText(blindTime, "HNS.HUD.Fafy.Timer", ScrW() / 2, 47, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			draw.RoundedBox(0, ScrW() / 2 - 60 * scale, 8 * scale - 1, 120 * scale, 24 * scale, Color(0, 0, 0, 125))
+			this:ShadowedText((ply:Team() == TEAM_SEEK && "You" || team.NumPlayers(2) == 1 && "The seeker" || "The seekers") .. " will be unblinded in...", "HNSHUD.TahomaSmall", ScrW() / 2, 13 * scale, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			this:ShadowedText(blindTime, "HNSHUD.VerdanaLarge", ScrW() / 2, 24 * scale - 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		end
 
 		-- Stamina bar
 		if ply:Team() == TEAM_SPECTATOR then
-			this:ShadowedText("Press F2 to join the game!", "DermaDefaultBold", 85, ScrH() - 36, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+			this:ShadowedText("Press F2 to join the game!", "HNSHUD.TahomaSmall", 42 * scale + 1, ScrH() - 17 * scale, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 		else
-			draw.RoundedBox(0, 81, ScrH() - 39, this.BarWide, 24, Color(0, 0, 0, 175))
-			draw.RoundedBox(0, 83, ScrH() - 37, (this.BarWide - 4) * stamina / 100, 20, ColorAlpha(tint, math.sin(CurTime() * 4) * 60 + 120))
+			draw.RoundedBox(0, 40 * scale + 1, ScrH() - 20 * scale + 1, this.BarWide, 12 * scale, Color(0, 0, 0, 175))
+			draw.RoundedBox(0, 41 * scale + 1, ScrH() - 19 * scale + 1, (this.BarWide - 2 * scale) * stamina / 100, 10 * scale, ColorAlpha(tint, math.sin(CurTime() * 4) * 60 + 120))
 		end
 	end,
-	AvatarFunc = function(this)
+	AvatarFunc = function(this, scale)
 		this.Avatar = vgui.Create("AvatarImage")
-		this.Avatar:SetPos(16, ScrH() - 80)
-		this.Avatar:SetSize(64, 64)
-		this.Avatar:SetPlayer(LocalPlayer(), 64)
+		this.Avatar:SetPos(8 * scale, ScrH() - 40 * scale)
+		this.Avatar:SetSize(32 * scale, 32 * scale)
+		this.Avatar:SetPlayer(LocalPlayer(), 32 * scale)
 		this.Avatar:SetPaintedManually(true)
 		this.Avatar:MoveToBack()
 	end,
@@ -102,33 +102,30 @@ GM.HUDs[2] = {
 
 GM.HUDs[3] = {
 	Name = "Compact",
-	Draw = function(this, ply, tint, stamina, timeLeft, roundText, blindTime)
+	Draw = function(this, ply, tint, stamina, timeLeft, roundText, blindTime, scale)
 		-- So much for a border
 		surface.SetDrawColor(tint)
-		surface.DrawLine(20, ScrH() - 120, 20, ScrH() - 20)
-		surface.DrawLine(330, ScrH() - 120, 330, ScrH() - 20)
-		surface.DrawLine(20, ScrH() - 20, 330, ScrH() - 20)
-		surface.DrawLine(20, ScrH() - 120, 330, ScrH() - 120)
+		surface.DrawOutlinedRect(10 * scale, ScrH() - 60 * scale, 155 * scale, 50 * scale)
 
 		-- Stamina
 		if ply:Team() != TEAM_SPECTATOR then
 			-- Black back
-			draw.RoundedBox(0, 25, ScrH() - 50, 300, 25, Color(0, 0, 0, 215))
+			draw.RoundedBox(0, 12 * scale + 1, ScrH() - 25 * scale, 150 * scale, 12 * scale + 1, Color(0, 0, 0, 215))
 			-- Tinted bar
-			draw.RoundedBox(0, 25, ScrH() - 50, stamina * 3, 25, tint)
+			draw.RoundedBox(0, 12 * scale + 1, ScrH() - 25 * scale, stamina * 1.5 * scale, 12 * scale + 1, tint)
 		end
 		-- Background
-		draw.RoundedBox(0, 20, ScrH() - 120, 310, 100, ColorAlpha(tint, 5))
+		draw.RoundedBox(0, 10 * scale, ScrH() - 60 * scale, 155 * scale, 50 * scale, ColorAlpha(tint, 5))
 		-- Player name
-		draw.SimpleTextOutlined(ply:Name(), "HNS.HUD.Fafy.Name", 25, ScrH() - 65, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, Color(10, 10, 10, 100))
+		draw.SimpleTextOutlined(ply:Name(), "HNSHUD.VerdanaMedium", 12 * scale + 1, ScrH() - 32 * scale - 1, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, Color(10, 10, 10, 100))
 		-- Player team
-		draw.SimpleTextOutlined(team.GetName(ply:Team()), "HNS.HUD.Fafy.Name", 325, ScrH() - 65, tint, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, 1, Color(10, 10, 10, 100))
+		draw.SimpleTextOutlined(team.GetName(ply:Team()), "HNSHUD.VerdanaMedium", 162 * scale + 1, ScrH() - 32 * scale - 1, tint, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, 1, Color(10, 10, 10, 100))
 		-- Time remaining and round count
-		draw.SimpleTextOutlined(timeLeft, "HNS.HUD.Fafy.Timer", 25, ScrH() - 106, Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, Color(10, 10, 10, 100))
-		draw.SimpleTextOutlined(roundText, "HNS.HUD.Fafy.Name", 25, ScrH() - 85, Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, Color(10, 10, 10, 100))
+		draw.SimpleTextOutlined(timeLeft, "HNSHUD.VerdanaLarge", 12 * scale + 1, ScrH() - 53 * scale, Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, Color(10, 10, 10, 100))
+		draw.SimpleTextOutlined(roundText, "HNSHUD.VerdanaMedium", 12 * scale + 1, ScrH() - 42 * scale - 1, Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, 1, Color(10, 10, 10, 100))
 		-- Time until seeker is unblinded
 		if GAMEMODE.SeekerBlinded then
-			draw.SimpleTextOutlined((ply:Team() == 1 && "Hide" || ply:Team() == 2 && "Wait" || "Start in") .. ": " .. blindTime, "HNS.HUD.Fafy.Name", 325, ScrH() - 85, Color(255, 255, 255), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, 1, Color(10, 10, 10, 100))
+			draw.SimpleTextOutlined((ply:Team() == 1 && "Hide" || ply:Team() == 2 && "Wait" || "Start in") .. ": " .. blindTime, "HNSHUD.VerdanaMedium", 162 * scale + 1, ScrH() - 42 * scale - 1, Color(255, 255, 255), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, 1, Color(10, 10, 10, 100))
 		end
 	end
 }
@@ -165,7 +162,7 @@ local function GetRoundText()
 	end
 end
 
-local speed, rayEnt, lastLooked, lookedTime, lookedColor
+local speed, rayEnt, lastLooked, lookedTime, lookedColor, scale, ply
 
 -- Prevent glitches when reloading
 if GAMEMODE then
@@ -175,19 +172,20 @@ else
 end
 
 function GM:HUDPaint()
-	local ply = LocalPlayer()
+	ply = LocalPlayer()
+	scale = self.CVars.HUDScale:GetInt()
 
 	self.SelectedHUD = self.HUDs[self.CVars.HUD:GetInt()] || self.HUDs[2]
 	-- Create avatar
 	if self.SelectedHUD.AvatarFunc && !self.SelectedHUD.Avatar then
-		self.SelectedHUD:AvatarFunc()
+		self.SelectedHUD:AvatarFunc(scale)
 	end
 	-- Draw HUD
-	self.SelectedHUD:Draw(ply, GetDrawColor(), ply.Stamina || 100, self:StringToMinutesSeconds(self.TimeLeft), GetRoundText(), self.TimeLeft - self.RoundLength)
+	self.SelectedHUD:Draw(ply, GetDrawColor(), ply.Stamina || 100, self:StringToMinutesSeconds(self.TimeLeft), GetRoundText(), self.TimeLeft - self.RoundLength, scale)
 
 	-- Stuck prevention
 	if ply:GetCollisionGroup() == COLLISION_GROUP_WEAPON then
-		draw.SimpleTextOutlined("Stuck Prevention Enabled", "HNS.HUD.Fafy.Name", ScrW() / 2, ScrH() / 2 + 120, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, 125))
+		draw.SimpleTextOutlined("Stuck Prevention Enabled", "HNSHUD.VerdanaMedium", ScrW() / 2, ScrH() / 2 + 60 * scale, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, 125))
 	end
 
 	-- Remove leftover avatars
@@ -205,10 +203,9 @@ function GM:HUDPaint()
 	if self.CVars.ShowSpeed:GetBool() then
 		speed = ply:GetVelocity():Length2D()
 
-		draw.RoundedBox(6, self.CVars.SpeedX:GetInt() - 45, self.CVars.SpeedY:GetInt() - 28, 90, 56, Color(0, 0, 0, speed > 0 && 200 || 100))
-
-		draw.SimpleText("SPEED", "HNS.HUD.DR.Medium", self.CVars.SpeedX:GetInt(), self.CVars.SpeedY:GetInt() - 14, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-		draw.SimpleText(math.Round(speed), "HNS.HUD.DR.Big", self.CVars.SpeedX:GetInt(), self.CVars.SpeedY:GetInt() + 10, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		draw.RoundedBox(0, self.CVars.SpeedX:GetInt() - 25 * scale, self.CVars.SpeedY:GetInt() - 14 * scale, 50 * scale, 28 * scale, Color(0, 0, 0, speed > 0 && 200 || 100))
+		draw.SimpleText("SPEED", "HNSHUD.VerdanaMedium", self.CVars.SpeedX:GetInt(), self.CVars.SpeedY:GetInt() - 8 * scale, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		draw.SimpleText(math.Round(speed), "HNSHUD.TahomaLarge", self.CVars.SpeedX:GetInt(), self.CVars.SpeedY:GetInt() + 4 * scale, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 	end
 
 	-- Fade out names
@@ -222,10 +219,10 @@ function GM:HUDPaint()
 	-- Draw name
 	if IsValid(lastLooked) && lookedTime + 2 > CurTime() then
 		lookedColor = ColorAlpha(team.GetColor(lastLooked:Team()), (1 - (CurTime() - lookedTime) / 2) * 255)
-		draw.SimpleTextOutlined(lastLooked:Name(), "DermaLarge", ScrW() / 2, ScrH() / 2 + 50, lookedColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, lookedColor.a))
-		draw.SimpleTextOutlined(team.GetName(lastLooked:Team()), "DermaDefaultBold", ScrW() / 2, ScrH() / 2 + 70, lookedColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, lookedColor.a))
+		draw.SimpleTextOutlined(lastLooked:Name(), "HNSHUD.RobotoLarge", ScrW() / 2, ScrH() / 2 + 25 * scale, lookedColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, lookedColor.a))
+		draw.SimpleTextOutlined(team.GetName(lastLooked:Team()), "HNSHUD.TahomaSmall", ScrW() / 2, ScrH() / 2 + 35 * scale, lookedColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, lookedColor.a))
 		if self.CVars.ShowID:GetBool() then
-			draw.SimpleTextOutlined(lastLooked:SteamID(), "DermaDefaultBold", ScrW() / 2, ScrH() / 2 + 84, lookedColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, lookedColor.a))
+			draw.SimpleTextOutlined(lastLooked:SteamID(), "HNSHUD.TahomaSmall", ScrW() / 2, ScrH() / 2 + 42 * scale, lookedColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, lookedColor.a))
 		end
 	end
 
@@ -234,11 +231,11 @@ function GM:HUDPaint()
 		for _, mate in ipairs(team.GetPlayers(ply:Team())) do
 			if mate == ply then continue end
 
-			local pos = mate:GetPos() + Vector(0, 0, 74)
+			local pos = mate:GetPos() + Vector(0, 0, 84)
 			local alpha = math.Clamp((ply:GetPos():Distance(mate:GetPos()) - 200) * 255 / 600, 0, 255)
 			pos = pos:ToScreen()
 
-			draw.SimpleTextOutlined("6", "Marlett", pos.x, pos.y, ColorAlpha(mate:GetPlayerColor():ToColor(), alpha), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, alpha * 0.35))
+			draw.SimpleTextOutlined("v", "HNSHUD.Marlett", pos.x, pos.y, ColorAlpha(mate:GetPlayerColor():ToColor(), alpha), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, alpha * 0.35))
 		end
 	end
 end
@@ -293,3 +290,13 @@ function GM:DrawCrosshair(x, y, ch)
 	-- Left
 	surface.DrawRect(x - ch.Gap - ch.Size, y - ch.Thick / 2, ch.Size, ch.Thick)
 end
+
+-- Update avatars
+cvars.AddChangeCallback("has_hud_scale", function()
+	local hud = GAMEMODE.HUDs[GAMEMODE.CVars.HUD:GetInt()]
+
+	if hud.AvatarFunc && IsValid(hud.Avatar) then
+		hud.Avatar:Remove()
+		hud.Avatar = nil
+	end
+end, "HNS.UpdateAvatar")

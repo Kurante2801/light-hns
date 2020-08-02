@@ -22,8 +22,8 @@ function PANEL:Init()
 	self.Play:TDLib() -- Styling
 		:ClearPaint():Outline(Color(220, 20, 60), 2):FillHover(Color(220, 20, 60), LEFT):Text("")
 		:On("PaintOver", function(this, w, h)
-			draw.SimpleText("PLAY!", "HNS.HUD.Fafy.Timer", w / 2, h / 2, Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-			draw.SimpleText("PLAY!", "HNS.HUD.Fafy.Timer", w / 2 - 1, h / 2 - 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			draw.SimpleText("PLAY!", "HNS.VerdanaLarge", w / 2, h / 2, Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			draw.SimpleText("PLAY!", "HNS.VerdanaLarge", w / 2 - 1, h / 2 - 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		end)
 		-- Send net and close
 		:NetMessage("HNS.JoinPlaying", function() self:Close() end)
@@ -34,8 +34,8 @@ function PANEL:Init()
 	self.Spec:TDLib() -- Styling
 		:ClearPaint():Outline(Color(0, 175, 100), 2):FillHover(Color(0, 175, 100), RIGHT):Text("")
 		:On("PaintOver", function(this, w, h)
-			draw.SimpleText("SPECTATE", "HNS.HUD.Fafy.Timer", w / 2, h / 2, Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-			draw.SimpleText("SPECTATE", "HNS.HUD.Fafy.Timer", w / 2 - 1, h / 2 - 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			draw.SimpleText("SPECTATE", "HNS.VerdanaLarge", w / 2, h / 2, Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			draw.SimpleText("SPECTATE", "HNS.VerdanaLarge", w / 2 - 1, h / 2 - 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		end)
 		-- Send net and close
 		:NetMessage("HNS.JoinSpectating", function() self:Close() end)
@@ -65,8 +65,8 @@ function PANEL:Init()
 	self.Play:TDLib() -- Styling
 		:ClearPaint():Outline(Color(220, 20, 60), 2):FillHover(Color(220, 20, 60), LEFT):Text("")
 		:On("PaintOver", function(this, w, h)
-			draw.SimpleText("Let's Play!", "HNS.HUD.Fafy.Timer", w / 2, h / 2, Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-			draw.SimpleText("Let's Play!", "HNS.HUD.Fafy.Timer", w / 2 - 1, h / 2 - 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			draw.SimpleText("Let's Play!", "HNS.VerdanaLarge", w / 2, h / 2, Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			draw.SimpleText("Let's Play!", "HNS.VerdanaLarge", w / 2 - 1, h / 2 - 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		end):On("DoClick", function(this)
 			self:Close()
 			-- Open once
@@ -82,8 +82,8 @@ function PANEL:Init()
 	self.Prefs:SetSize(188, 31)
 	self.Prefs:TDLib() -- Styling
 		:ClearPaint():Outline(Color(0, 255, 255), 2):Text(""):FillHover(Color(0, 255, 255), TOP):On("PaintOver", function(this, w, h)
-			draw.SimpleText("Preferences", "HNS.HUD.DR.Medium", w / 2, h / 2, Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-			draw.SimpleText("Preferences", "HNS.HUD.DR.Medium", w / 2 - 1, h / 2 - 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			draw.SimpleText("Preferences", "HNS.RobotoMedium", w / 2, h / 2, Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			draw.SimpleText("Preferences", "HNS.RobotoMedium", w / 2 - 1, h / 2 - 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		end):On("DoClick", function(this)
 			self:Close() vgui.Create("HNS.Prefs.Derma")
 		end)
@@ -94,8 +94,8 @@ function PANEL:Init()
 	self.Achs:SetSize(188, 31)
 	self.Achs:TDLib()
 		:ClearPaint():Outline(Color(125, 0, 255), 2):FillHover(Color(125, 0, 255), BOTTOM):Text(""):On("PaintOver", function(this, w, h)
-			draw.SimpleText("Achievements", "HNS.HUD.DR.Medium", w / 2, h / 2, Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-			draw.SimpleText("Achievements", "HNS.HUD.DR.Medium", w / 2 - 1, h / 2 - 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			draw.SimpleText("Achievements", "HNS.RobotoMedium", w / 2, h / 2, Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			draw.SimpleText("Achievements", "HNS.RobotoMedium", w / 2 - 1, h / 2 - 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		end):On("DoClick", function()
 			-- Add your own achievements addon, I'll use a custom one I made but is shitty anyways
 			self:Close()
@@ -226,6 +226,36 @@ function PANEL:Init()
 	end
 
 	self.Tabs:AddSheet("HUD - Interface", self.Interface, "icon16/paintbrush.png")
+
+	-- HUD Scaling
+	self.Interface.HUDScale = self.Interface:Add("DNumSlider")
+	self.Interface.HUDScale:Dock(TOP)
+	self.Interface.HUDScale:DockMargin(45, 0, 0, 0)
+	self.Interface.HUDScale:SetMinMax(1, 6)
+	self.Interface.HUDScale:SetDecimals(0)
+	self.Interface.HUDScale:SetValue(GAMEMODE.CVars.HUDScale:GetInt())
+	-- Disable all elements besides the slider
+	self.Interface.HUDScale.Label:Dock(NODOCK)
+	self.Interface.HUDScale.Label:SetMouseInputEnabled(false)
+	-- Make number white (no racist I promise)
+	self.Interface.HUDScale.TextArea:SetTextColor(COLOR_WHITE)
+	-- Snap to whole numbers and update convar
+	self.Interface.HUDScale.OnValueChanged = function(this, value)
+		value = math.Round(value)
+		this:SetValue(value)
+		-- Update HUD and text
+		RunConsoleCommand("has_hud_scale", value)
+		self.Interface.ScaleText:SetText("HUD Scaling: " .. value)
+	end
+
+	-- HUD Scaling text
+	self.Interface.ScaleText = self.Interface:Add("DLabel")
+	self.Interface.ScaleText:Dock(TOP)
+	self.Interface.ScaleText:DockMargin(0, 0, 0, 0)
+	self.Interface.ScaleText:SetFont("DermaDefault")
+	self.Interface.ScaleText:SetColor(COLOR_WHITE)
+	self.Interface.ScaleText:SetContentAlignment(8)
+	self.Interface.ScaleText:SetText("HUD Scaling: " .. GAMEMODE.CVars.HUDScale:GetInt())
 
 	-- Add your own settings in this hook
 	hook.Run("HASPreferencesMenu", self.Interface)
@@ -612,11 +642,11 @@ function PANEL:Init()
 				draw.RoundedBox(0, 7, 45, w - 14, 17, Color(0, 0, 0))
 				draw.RoundedBox(0, 7, 45, (w * (GAMEMODE.AchievementsProgress[id] || 0) / ach.Goal) - 14, 17, Color(220, 20, 60))
 
-				draw.SimpleText((GAMEMODE.AchievementsProgress[id] || 0) .. "/" .. ach.Goal, "HNS.HUD.DR.Small", w / 2, 53, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+				draw.SimpleText((GAMEMODE.AchievementsProgress[id] || 0) .. "/" .. ach.Goal, "HNS.RobotoSmall", w / 2, 53, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 			end
 
-			draw.SimpleText(ach.Name, "HNS.HUD.DR.Medium", 5, 14, Color(0, 0, 0), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-			draw.SimpleText(ach.Name, "HNS.HUD.DR.Medium", 6, 15, COLOR_WHITE, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+			draw.SimpleText(ach.Name, "HNS.RobotoMedium", 5, 14, Color(0, 0, 0), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+			draw.SimpleText(ach.Name, "HNS.RobotoMedium", 6, 15, COLOR_WHITE, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 			draw.SimpleText(ach.Desc, "DermaDefault", 6, 30, Color(0, 0, 0), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 			draw.SimpleText(ach.Desc, "DermaDefault", 7, 31, COLOR_WHITE, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 

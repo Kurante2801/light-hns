@@ -18,6 +18,7 @@ GM.CVars.CrosshairA = CreateClientConVar("has_crosshair_a", 225, true, false)
 GM.CVars.CrosshairSize = CreateClientConVar("has_crosshair_size", 8, true, false)
 GM.CVars.CrosshairGap = CreateClientConVar("has_crosshair_gap", 6, true, false)
 GM.CVars.CrosshairThick = CreateClientConVar("has_crosshair_thick", 4, true, false)
+GM.CVars.HUDScale = CreateClientConVar("has_hud_scale", 2, true, false)
 
 -- Includes
 include("sh_init.lua")
@@ -96,8 +97,8 @@ function GM:PostDrawOpaqueRenderables()
 
 		-- Draw a text above head
 		cam.Start3D2D(ply:EyePos() + Vector(0, 0, 24), Angle(0, ang.y, 90), 0.075)
-			draw.SimpleTextOutlined(ply:Name(), "HNS.HUD.DR.Large", 0, 0, col, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 3, Color(0, 0, 0, 125))
-			draw.SimpleTextOutlined(ply:SteamID(), "HNS.HUD.DR.Spec", 0, 54, col, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 3, Color(0, 0, 0, 125))
+			draw.SimpleTextOutlined(ply:Name(), "HNS.RobotoSpec", 0, 0, col, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 3, Color(0, 0, 0, 125))
+			draw.SimpleTextOutlined(ply:SteamID(), "HNS.RobotoBig", 0, 54, col, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 3, Color(0, 0, 0, 125))
 		cam.End3D2D()
 	end
 end
