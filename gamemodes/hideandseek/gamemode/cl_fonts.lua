@@ -43,6 +43,12 @@ GM.UpdateFonts = function()
 		size = 18 * scale,
 		weight = 300 * scale,
 	})
+
+	surface.CreateFont("HNSHUD.CorbelSmall", {
+		font = "Roboto",
+		size = 9 * scale,
+		weight = 272 * scale,
+	})
 end
 
 GM.UpdateFonts()
