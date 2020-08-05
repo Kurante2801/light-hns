@@ -98,7 +98,7 @@ function PANEL:Paint(w, h)
 	-- Teams count (on the header)
 	self:ShadowedText("Hiders: " .. team.NumPlayers(TEAM_HIDE), "HNSHUD.CorbelSmall", 4 * scale, 40 * scale, Color(75, 150, 225), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 	self:ShadowedText("Seekers: " .. team.NumPlayers(TEAM_SEEK), "HNSHUD.CorbelSmall", w / 2, 40 * scale, Color(215, 75, 50), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-	self:ShadowedText("Spectators: " .. team.NumPlayers(TEAM_SEEK), "HNSHUD.CorbelSmall", w - 4 * scale, 40 * scale, Color(0, 175, 100), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+	self:ShadowedText("Spectators: " .. team.NumPlayers(TEAM_SPECTATOR), "HNSHUD.CorbelSmall", w - 4 * scale, 40 * scale, Color(0, 175, 100), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
 end
 
 -- Resize when HUD scale is changed
