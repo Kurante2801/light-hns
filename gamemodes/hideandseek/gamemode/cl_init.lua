@@ -142,16 +142,14 @@ function GM:ScoreboardShow()
 		self.Scoreboard = vgui.Create("HNS.Scoreboard")
 	end
 	self.Scoreboard:Show()
-	--self.Scoreboard:UpdateList()
+	self.Scoreboard:UpdateDimentions()
 end
 
 function GM:ScoreboardHide()
 	if IsValid(self.Scoreboard) then
-		self.Scoreboard:Remove()
-		self.Scoreboard = nil
-		--self.Scoreboard:Hide()
-		--self.Scoreboard:SetMouseInputEnabled(false)
-		--self.Scoreboard:SetKeyboardInputEnabled(false)
+		self.Scoreboard:Hide()
+		self.Scoreboard:SetMouseInputEnabled(false)
+		self.Scoreboard:SetKeyboardInputEnabled(false)
 	end
 end
 

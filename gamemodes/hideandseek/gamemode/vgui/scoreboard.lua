@@ -15,9 +15,10 @@ function PANEL:Init()
 	self.BigButton = self:Add("DButton")
 	self.BigButton:SetText("")
 	self.BigButton.Paint = function(this, w, h)
-		self:ShadowedText(GAMEMODE.CVars.ScoreboardText:GetString(), "HNSHUD.VerdanaLarge", w / 2, h / 2, Color(255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		GAMEMODE.DUtils.FadeHover(this, 1, 0, 0, w, h, Color(150, 150, 150, 125), 6, function(s) return s.Depressed || s:IsHovered() end)
 		surface.SetDrawColor(150, 150, 150, 255)
 		surface.DrawLine(w - 1, 0, w - 1, h)
+		self:ShadowedText(GAMEMODE.CVars.ScoreboardText:GetString(), "HNSHUD.VerdanaLarge", w / 2, h / 2, Color(255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 	end
 	self.BigButton.DoClick = function()
 		gui.OpenURL(GAMEMODE.CVars.ScoreboardURL:GetString())
@@ -131,15 +132,15 @@ function PANEL:UpdateDimentions()
 	-- Padding
 	self:DockPadding(0, 48 * scale, 0, 0)
 	-- Makes the width smaller than ScrW at all times
-	self:SetSize(math.min(scale * 275, ScrW() - 50), ScrH() - 100)
+	self:SetSize(math.min(scale * 250, ScrW() - 50), ScrH() - 100)
 	self:Center()
 	-- Github/server button
 	self.BigButton:SetSize(110 * scale, 32 * scale)
 	-- VBar
 	self.SP.VBar:SetWide(8 * scale)
 	-- Sort mode
-	self.Sort:SetSize(50 * scale, 10 * scale)
-	self.Sort:SetPos(self:GetWide() - 50 * scale, 22 * scale)
+	self.Sort:SetSize(60 * scale, 10 * scale)
+	self.Sort:SetPos(self:GetWide() - 60 * scale, 22 * scale)
 	self.Sort.DoClick = function()
 		if GAMEMODE.CVars.Sort:GetInt() == 1 then
 			GAMEMODE.CVars.Sort:SetInt(2)
@@ -164,6 +165,10 @@ function PANEL:UpdatePlayers(scale)
 	end
 	-- We set the zPos
 	for i, button in ipairs(self.Players) do
+		if !IsValid(button.Player) then
+			button:Remove()
+			continue
+		end
 		button:SetScale(scale)
 		local pos = 0
 		-- Sort players
@@ -301,7 +306,7 @@ function PANEL:BackgroundOverlayColor(w, h)
 		surface.DrawRect(0, 0, w, h)
 	end
 	-- Hover
-	GAMEMODE.DUtils.FadeHover(self, 1, 0, 0, w, h, ColorAlpha(self:GetTeamColor(), 25), 6)
+	GAMEMODE.DUtils.FadeHover(self, 1, 0, 0, w, h, ColorAlpha(self:GetTeamColor(), 50), 6)
 end
 
 -- Returns Playing when localplayer is a hider, returns team otherwise
@@ -343,4 +348,32 @@ function PANEL:ShadowedText(text, font, x, y, color, alignx, aligny)
 	return draw.SimpleText(text, font, x, y, color, alignx, aligny)
 end
 
+function PANEL:DoClick()
+	local menu = DermaMenu()
+
+	menu:AddOption(self.Player:IsMuted() && "Unmute" || "Mute", function()
+		self.Player:SetMuted(!self.Player:IsMuted())
+	end):SetIcon(self.Player:IsMuted() && "icon16/sound.png" || "icon16/sound_mute.png")
+	menu:AddOption("Open Profile", function()
+		self.Player:ShowProfile()
+	end):SetIcon("icon16/user.png")
+
+	menu:AddSpacer()
+
+	menu:AddOption("Copy Name", function()
+		SetClipboardText(self.Player:Name())
+	end):SetIcon("icon16/shield.png")
+	menu:AddOption("Copy Steam ID (" .. self.Player:Name() .. ")", function()
+		SetClipboardText(self.Player:SteamID())
+	end):SetIcon("icon16/shield.png")
+
+	menu:Open()
+end
+
 vgui.Register("HNS.ScoreboardPlayer", PANEL, "DButton")
+
+cvars.AddChangeCallback("has_hud_scale", function()
+	if IsValid(GAMEMODE.Scoreboard) then
+		GAMEMODE.Scoreboard:UpdateDimentions()
+	end
+end, "HNS.ScoreboardUpdate")
