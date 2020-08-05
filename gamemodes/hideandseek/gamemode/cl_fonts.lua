@@ -1,6 +1,6 @@
 GM.UpdateFonts = function()
-	local self = GM || GAMEMODE
-	local scale = self.CVars.HUDScale:GetInt()
+	local GAMEMODE = GM || GAMEMODE
+	local scale = GAMEMODE.CVars.HUDScale:GetInt()
 
 	surface.CreateFont("HNSHUD.VerdanaMedium", {
 		font = "Verdana",

@@ -6,6 +6,7 @@ local PANEL = {}
 
 function PANEL:Init()
 	self.Blur = Material("pp/blurscreen")
+	self.Star = Material("icon16/star.png")
 
 	self:SetTitle("")
 	self:ShowCloseButton(false)
@@ -34,6 +35,28 @@ function PANEL:Init()
 	-- Player list
 	self.SP = self:Add("DScrollPanel")
 	self.SP:Dock(FILL)
+	self.SP.VBar:SetHideButtons(true)
+	self.SP.VBar.Paint = function(this, w, h)
+		-- Blur
+		local blurx, blury = this:LocalToScreen(0, 0)
+		render.SetScissorRect(blurx, blury, blurx + w, blury + h, true)
+			surface.SetMaterial(self.Blur)
+			surface.SetDrawColor(255, 255, 255, 255)
+			surface.DrawTexturedRect(-blurx, -blury, ScrW(), ScrH())
+		render.SetScissorRect(0, 0, 0, 0, false)
+		-- Fill and outline
+		surface.SetDrawColor(0, 0, 0, 125)
+		surface.DrawRect(0, 0, w, h)
+		surface.SetDrawColor(150, 150, 150, 255)
+		surface.DrawOutlinedRect(0, 0, w, h)
+	end
+	self.SP.VBar.btnGrip.Paint = function(this, w, h)
+		-- Fill
+		surface.SetDrawColor(150, 150, 150, 75)
+		surface.DrawRect(0, 0, w, h)
+		-- Overlay
+		GAMEMODE.DUtils.FadeHover(this, 1, 0, 0, w, h, Color(150, 150, 150), 6, function(s) return s.Depressed end)
+	end
 
 	self.Players = {}
 	-- Adding players
@@ -42,8 +65,9 @@ function PANEL:Init()
 		button:SetPlayer(ply)
 		button:SetScale(GAMEMODE.CVars.HUDScale:GetInt())
 		button.Blur = self.Blur
+		button.Star = self.Star
 
-		self.Players[i] = button
+		table.insert(self.Players, button)
 	end
 	-- We do this last so everything is sized
 	self:UpdateDimentions()
@@ -111,9 +135,11 @@ function PANEL:UpdateDimentions()
 	self:Center()
 	-- Github/server button
 	self.BigButton:SetSize(110 * scale, 32 * scale)
+	-- VBar
+	self.SP.VBar:SetWide(8 * scale)
 	-- Sort mode
-	self.Sort:SetSize(50 * scale, 12 * scale)
-	self.Sort:SetPos(self:GetWide() - 50 * scale, 20 * scale)
+	self.Sort:SetSize(50 * scale, 10 * scale)
+	self.Sort:SetPos(self:GetWide() - 50 * scale, 22 * scale)
 	self.Sort.DoClick = function()
 		if GAMEMODE.CVars.Sort:GetInt() == 1 then
 			GAMEMODE.CVars.Sort:SetInt(2)
@@ -154,6 +180,7 @@ function PANEL:UpdatePlayers(scale)
 		end
 		-- Set ZPos
 		button:SetZPos(pos)
+		button:DockMargin(0, 0, self.SP.VBar.Enabled && (2 * scale) || 0, 2 * scale)
 	end
 end
 
@@ -162,15 +189,11 @@ function PANEL:ShadowedText(text, font, x, y, color, alignx, aligny)
 	return draw.SimpleText(text, font, x, y, color, alignx, aligny)
 end
 
-function PANEL:GetPlayerCount()
-	return team.NumPlayers(TEAM_HIDE) + team.NumPlayers(TEAM_SEEK)
-end
-
 -- Add missing players
 function PANEL:Think()
 	-- Loop through players
 	for _, ply in ipairs(player.GetAll()) do
-		if !IsValid(ply) then continue end
+		if !IsValid(ply) || ply:Team() == 0 then continue end
 		-- Loop through buttons
 		for _, button in ipairs(self.Players) do
 			if button.Player == ply then
@@ -182,11 +205,15 @@ function PANEL:Think()
 		-- So we add the button here
 		local button = self.SP:Add("HNS.ScoreboardPlayer")
 		button.Blur = self.Blur
+		button.Star = self.Star
 		button:SetPlayer(ply)
 		button:SetScale(GAMEMODE.CVars.HUDScale:GetInt())
 
 		table.insert(self.Players, button)
-		self:UpdatePlayers(GAMEMODE.CVars.HUDScale:GetInt())
+		-- We do this in a timer so it updates properly
+		timer.Simple(1, function()
+			self:UpdatePlayers(GAMEMODE.CVars.HUDScale:GetInt())
+		end)
 
 		::foundply::
 	end
@@ -206,7 +233,7 @@ end
 
 function PANEL:Paint(w, h)
 	-- Prevent lua error when player leaves
-	if !self.Player then
+	if !IsValid(self.Player) then
 		self:Remove()
 		return
 	end
@@ -241,6 +268,15 @@ function PANEL:Paint(w, h)
 	-- Points (frags)
 	self:ShadowedText("Points", "HNSHUD.CorbelSmall", w - 44 * scale, h / 2 - 4 * scale, self:GetTeamColor(), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 	self:ShadowedText(self.Player:Frags(), "HNSHUD.CorbelSmall", w - 44 * scale, h / 2 + 4 * scale, Color(255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+
+	-- Achievements master stars
+	if self.Player.AchMaster then
+		surface.SetDrawColor(255, 255, 255, 255)
+		surface.SetMaterial(self.Star)
+		surface.DrawTexturedRect(w / 2 - 8, h / 2 - 16, 16, 16)
+		surface.DrawTexturedRect(w / 2 - 17, h / 2, 16, 16)
+		surface.DrawTexturedRect(w / 2 + 1, h / 2, 16, 16)
+	end
 end
 
 function PANEL:SetPlayer(ply)
@@ -250,7 +286,6 @@ end
 function PANEL:SetScale(scale)
 	self.Scale = scale
 	self:SetTall(24 * scale)
-	self:DockMargin(0, 0, 0, 2 * scale)
 
 	self.Avatar:SetPos(4 * scale, 4 * scale)
 	self.Avatar:SetSize(16 * scale, 16 * scale)
@@ -261,7 +296,12 @@ function PANEL:BackgroundOverlayColor(w, h)
 	if self.Player == LocalPlayer() then
 		surface.SetDrawColor(255, 255, 255, math.sin(CurTime() * 4) * 20 + 25)
 		surface.DrawRect(0, 0, w, h)
+	elseif self.Player.AchMaster then
+		surface.SetDrawColor(255, 255, 0, math.sin(CurTime() * 4) * 20 + 25)
+		surface.DrawRect(0, 0, w, h)
 	end
+	-- Hover
+	GAMEMODE.DUtils.FadeHover(self, 1, 0, 0, w, h, ColorAlpha(self:GetTeamColor(), 25), 6)
 end
 
 -- Returns Playing when localplayer is a hider, returns team otherwise

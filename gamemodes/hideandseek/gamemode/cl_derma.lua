@@ -1,4 +1,23 @@
-include("vgui/scoreboard.lua")
+-- Shared utils
+GAMEMODE.DUtils = {}
+
+GAMEMODE.DUtils.FadeHover = function(panel, id, x, y, w, h, color, speed, func)
+	color = color || Color(255, 255, 255)
+	speed = speed || 6
+	func = func || function(this) return this:IsHovered() end
+	-- No previous fades
+	if !panel.FadeHover then
+		panel.FadeHover = {}
+	end
+	-- No fade on id
+	if !panel.FadeHover[id] then
+		panel.FadeHover[id] = 0
+	end
+	-- Fade
+	panel.FadeHover[id] = Lerp(FrameTime() * speed, panel.FadeHover[id], func(panel) && color.a || 0)
+	surface.SetDrawColor(ColorAlpha(color, panel.FadeHover[id]))
+	surface.DrawRect(x, y, w, h)
+end
 
 local PANEL = {}
 
