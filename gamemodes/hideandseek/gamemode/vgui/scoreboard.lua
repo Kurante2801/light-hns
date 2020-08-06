@@ -51,6 +51,7 @@ function PANEL:Init()
 		surface.SetDrawColor(150, 150, 150, 255)
 		surface.DrawOutlinedRect(-1, 0, w + 1, h)
 		-- Arrow
+		if !this.Shape || !this.ShapeShadow then return end
 		draw.NoTexture()
 		surface.SetDrawColor(0, 0, 0, 255)
 		surface.DrawPoly(this.ShapeShadow)
