@@ -29,7 +29,7 @@ function PANEL:Init()
 
 	self.Sort.Paint = function(this, w, h)
 		surface.SetDrawColor(150, 150, 150, 255)
-		surface.DrawOutlinedRect(0, 0, w, h)
+		surface.DrawOutlinedRect(0, 0, w + 1, h)
 
 		self:ShadowedText(sorts[GAMEMODE.CVars.Sort:GetInt()], "HNSHUD.CorbelSmall", w / 2, h / 2, Color(255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 	end
@@ -49,7 +49,7 @@ function PANEL:Init()
 	self.SortVertical:SetText("")
 	self.SortVertical.Paint = function(this, w, h)
 		surface.SetDrawColor(150, 150, 150, 255)
-		surface.DrawOutlinedRect(-1, 0, w + 1, h)
+		surface.DrawOutlinedRect(0, 0, w + 1, h)
 		-- Arrow
 		if !this.Shape || !this.ShapeShadow then return end
 		draw.NoTexture()
@@ -242,7 +242,13 @@ function PANEL:Think()
 	for _, ply in ipairs(player.GetAll()) do
 		if !IsValid(ply) || ply:Team() == 0 then continue end
 		-- Loop through buttons
-		for _, button in ipairs(self.Players) do
+		for i, button in ipairs(self.Players) do
+			-- We also check if a player is not valid here
+			if !IsValid(button.Player) then
+				table.remove(self.Players, i)
+				goto foundply -- Don't keep looking for a player that doesn't exist
+			end
+			-- We found the player we were looking for
 			if button.Player == ply then
 				goto foundply
 			end
