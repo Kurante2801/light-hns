@@ -127,8 +127,7 @@ function PANEL:Paint(w, h)
 	surface.DrawOutlinedRect(0, 0, w, 32 * scale)
 
 	-- Server info
-	self:ShadowedText("Server: ", "HNSHUD.CorbelSmall", 114 * scale, 7 * scale, Color(215, 215, 215), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-	self:ShadowedText(GetHostName(), "HNSHUD.CorbelSmall", 140 * scale, 7 * scale, Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+	self:ShadowedText(GetHostName(), "HNSHUD.CorbelSmall", 114 * scale, 7 * scale, Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 	-- Map name
 	self:ShadowedText("Map: ", "HNSHUD.CorbelSmall", 114 * scale, 16 * scale, Color(215, 215, 215), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 	self:ShadowedText(game.GetMap(), "HNSHUD.CorbelSmall", 134 * scale, 16 * scale, Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
