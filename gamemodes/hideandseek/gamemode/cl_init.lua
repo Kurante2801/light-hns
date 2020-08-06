@@ -19,6 +19,7 @@ GM.CVars.CrosshairSize = CreateClientConVar("has_crosshair_size", 8, true, false
 GM.CVars.CrosshairGap = CreateClientConVar("has_crosshair_gap", 6, true, false)
 GM.CVars.CrosshairThick = CreateClientConVar("has_crosshair_thick", 4, true, false)
 GM.CVars.HUDScale = CreateClientConVar("has_hud_scale", 2, true, false)
+GM.CVars.SortReversed = CreateClientConVar("has_scob_sort_reversed", 0, true, false)
 
 -- Includes
 include("sh_init.lua")

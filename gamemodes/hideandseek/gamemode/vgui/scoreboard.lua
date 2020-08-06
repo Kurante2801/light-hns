@@ -23,7 +23,7 @@ function PANEL:Init()
 	self.BigButton.DoClick = function()
 		gui.OpenURL(GAMEMODE.CVars.ScoreboardURL:GetString())
 	end
-	-- Sorting method
+	-- Sorting methods
 	self.Sort = self:Add("DButton")
 	self.Sort:SetText("")
 
@@ -31,7 +31,34 @@ function PANEL:Init()
 		surface.SetDrawColor(150, 150, 150, 255)
 		surface.DrawOutlinedRect(0, 0, w, h)
 
-		self:ShadowedText("Sort: " .. sorts[GAMEMODE.CVars.Sort:GetInt()], "HNSHUD.CorbelSmall", w / 2, h / 2, Color(255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		self:ShadowedText(sorts[GAMEMODE.CVars.Sort:GetInt()], "HNSHUD.CorbelSmall", w / 2, h / 2, Color(255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+	end
+	self.Sort.DoClick = function()
+		if GAMEMODE.CVars.Sort:GetInt() == 1 then
+			GAMEMODE.CVars.Sort:SetInt(2)
+		elseif GAMEMODE.CVars.Sort:GetInt() == 2 then
+			GAMEMODE.CVars.Sort:SetInt(3)
+		else
+			GAMEMODE.CVars.Sort:SetInt(1)
+		end
+		-- Resort
+		self:UpdatePlayers(GAMEMODE.CVars.HUDScale:GetInt())
+	end
+
+	self.SortVertical = self:Add("DButton")
+	self.SortVertical:SetText("")
+	self.SortVertical.Paint = function(this, w, h)
+		surface.SetDrawColor(150, 150, 150, 255)
+		surface.DrawOutlinedRect(-1, 0, w + 1, h)
+		-- Arrow
+		draw.NoTexture()
+		surface.SetDrawColor(0, 0, 0, 255)
+		surface.DrawPoly(this.ShapeShadow)
+		surface.SetDrawColor(255, 255, 255, 255)
+		surface.DrawPoly(this.Shape)
+	end
+	self.SortVertical.DoClick = function()
+		GAMEMODE.CVars.SortReversed:SetBool(!GAMEMODE.CVars.SortReversed:GetBool())
 	end
 	-- Player list
 	self.SP = self:Add("DScrollPanel")
@@ -137,21 +164,31 @@ function PANEL:UpdateDimentions()
 	-- Github/server button
 	self.BigButton:SetSize(110 * scale, 32 * scale)
 	-- VBar
-	self.SP.VBar:SetWide(8 * scale)
-	-- Sort mode
-	self.Sort:SetSize(60 * scale, 10 * scale)
-	self.Sort:SetPos(self:GetWide() - 60 * scale, 22 * scale)
-	self.Sort.DoClick = function()
-		if GAMEMODE.CVars.Sort:GetInt() == 1 then
-			GAMEMODE.CVars.Sort:SetInt(2)
-		elseif GAMEMODE.CVars.Sort:GetInt() == 2 then
-			GAMEMODE.CVars.Sort:SetInt(3)
-		else
-			GAMEMODE.CVars.Sort:SetInt(1)
-		end
-		-- Resort
-		self:UpdatePlayers(scale)
+	self.SP.VBar:SetWide(10 * scale)
+	-- Sort modes
+	self.Sort:SetSize(40 * scale, 10 * scale)
+	self.Sort:SetPos(self:GetWide() - 50 * scale, 22 * scale)
+	self.SortVertical:SetSize(10 * scale, 10 * scale)
+	self.SortVertical:SetPos(self:GetWide() - 10 * scale, 22 * scale)
+	-- Define sort arrow polygons
+	if GAMEMODE.CVars.SortReversed:GetBool() then
+		self.SortVertical.Shape = {
+			{ x = 5 * scale, y = 3 * scale },
+			{ x = 7 * scale, y = 7 * scale },
+			{ x = 3 * scale, y = 7 * scale },
+		}
+	else
+		self.SortVertical.Shape = {
+			{ x = 3 * scale, y = 3 * scale },
+			{ x = 7 * scale, y = 3 * scale },
+			{ x = 5 * scale, y = 7 * scale },
+		}
 	end
+	self.SortVertical.ShapeShadow = {
+		{ x = self.SortVertical.Shape[1].x + 1, y = self.SortVertical.Shape[1].y + 1 },
+		{ x = self.SortVertical.Shape[2].x + 1, y = self.SortVertical.Shape[2].y + 1 },
+		{ x = self.SortVertical.Shape[3].x + 1, y = self.SortVertical.Shape[3].y + 1 },
+	}
 	-- Players
 	self:UpdatePlayers(scale)
 end
@@ -160,7 +197,7 @@ function PANEL:UpdatePlayers(scale)
 	-- We sort by name here
 	if GAMEMODE.CVars.Sort:GetInt() == 3 then
 		table.sort(self.Players, function(a, b)
-			return a.Player:Name() < b.Player:Name()
+			return a.Player:Name() > b.Player:Name()
 		end)
 	end
 	-- We set the zPos
@@ -178,6 +215,10 @@ function PANEL:UpdatePlayers(scale)
 			pos = -button.Player:Frags() -- It's negative because we want higher points to be up
 		else
 			pos = i
+		end
+		-- Reverse the sorting
+		if GAMEMODE.CVars.SortReversed:GetBool() then
+			pos = -pos
 		end
 		-- Spectators always last
 		if button.Player:Team() == TEAM_SPECTATOR then
@@ -372,8 +413,10 @@ end
 
 vgui.Register("HNS.ScoreboardPlayer", PANEL, "DButton")
 
-cvars.AddChangeCallback("has_hud_scale", function()
+local function resort()
 	if IsValid(GAMEMODE.Scoreboard) then
 		GAMEMODE.Scoreboard:UpdateDimentions()
 	end
-end, "HNS.ScoreboardUpdate")
+end
+cvars.AddChangeCallback("has_hud_scale", resort, "HNS.ScoreboardUpdate")
+cvars.AddChangeCallback("has_scob_sort_reversed", resort, "HNS.ScoreboardUpdate")
