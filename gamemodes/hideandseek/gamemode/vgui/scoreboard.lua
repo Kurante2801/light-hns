@@ -98,6 +98,28 @@ function PANEL:Init()
 
 		table.insert(self.Players, button)
 	end
+	-- Server name
+	self.ServerName = self:Add("DPanel")
+	self.ServerName.Paint = function(this, w, h)
+		surface.SetFont("HNSHUD.CorbelSmall")
+		-- Scrolling text
+		if this.HostNameWide > w then
+			local offset = SysTime() % 10 / 10
+			this:Text(offset * -this.HostNameWide + this.HostNameWide, 0)
+			this:Text(offset * -this.HostNameWide, 0)
+		else
+			this:Text(0, 0)
+		end
+	end
+	self.ServerName.Text = function(this, x, y)
+		surface.SetTextColor(0, 0, 0, 255)
+		surface.SetTextPos(x + 1, y + 1)
+		surface.DrawText(GetHostName())
+
+		surface.SetTextColor(255, 255, 255, 255)
+		surface.SetTextPos(x, y)
+		surface.DrawText(GetHostName())
+	end
 	-- We do this last so everything is sized
 	self:UpdateDimentions()
 end
@@ -126,8 +148,6 @@ function PANEL:Paint(w, h)
 	surface.SetDrawColor(150, 150, 150, 255)
 	surface.DrawOutlinedRect(0, 0, w, 32 * scale)
 
-	-- Server info
-	self:ShadowedText(GetHostName(), "HNSHUD.CorbelSmall", 114 * scale, 7 * scale, Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 	-- Map name
 	self:ShadowedText("Map: ", "HNSHUD.CorbelSmall", 114 * scale, 16 * scale, Color(215, 215, 215), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 	self:ShadowedText(game.GetMap(), "HNSHUD.CorbelSmall", 134 * scale, 16 * scale, Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
@@ -191,6 +211,17 @@ function PANEL:UpdateDimentions()
 	}
 	-- Players
 	self:UpdatePlayers(scale)
+
+	-- Server name
+	surface.SetFont("HNSHUD.CorbelSmall")
+	self.ServerName.HostNameWide, self.HostNameTall = surface.GetTextSize(GetHostName())
+	-- Limit the bounds of the panel
+	self.ServerName:SetPos(114 * scale, 7 * scale - self.HostNameTall / 2)
+	self.ServerName:SetSize(self:GetWide() - 114 * scale, self.HostNameTall)
+	-- Pass values
+	self.ServerName.HostNameWide = self.ServerName.HostNameWide + 12 * scale -- Moar padding (for scrolling purposes)
+	self.ServerName.HostNameTall = self.HostNameTall
+	self.ServerName.Scale = scale
 end
 
 function PANEL:UpdatePlayers(scale)
