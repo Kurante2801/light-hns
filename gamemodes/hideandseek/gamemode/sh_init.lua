@@ -32,6 +32,7 @@ GM.CVars.ScoreboardURL = CreateConVar("has_scob_url", "https://github.com/Fafy28
 GM.CVars.HiderTrail = CreateConVar("has_lasthidertrail", 1, { FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Put a trail on the last remaining hider.")
 GM.CVars.HiderFlash = CreateConVar("has_hiderflashlight", 0, { FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Enable hider flashlights (only visible to them).")
 GM.CVars.TeamIndicators = CreateConVar("has_teamindicators", 0, { FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Draw an indicator over teammates heads when they are far away.")
+GM.CVars.InfiniteStamina = CreateConVar("has_infinitestamina", 0, { FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Can players run forever.")
 
 function GM:CreateTeams()
 	TEAM_HIDE = 1
@@ -100,6 +101,16 @@ end
 
 function GM:StaminaStart(ply)
 	local i = ply:EntIndex()
+	-- Don't drain when infinite
+	if self.CVars.InfiniteStamina:GetBool() then
+		-- Remove timers
+		timer.Remove("HNS.StaminaDrain" .. i)
+		timer.Remove("HNS.StaminaRegen" .. i)
+		timer.Remove("HNS.StaminaDelay" .. i)
+		-- Max stamina
+		ply.Stamina = 100
+		return
+	end
 	-- Already draining
 	if timer.Exists("HNS.StaminaDrain" .. i) then return end
 	-- Stops regeneration
@@ -118,6 +129,8 @@ function GM:StaminaStart(ply)
 end
 
 function GM:StaminaStop(ply)
+	-- Do nothing on infinite
+	if self.CVars.InfiniteStamina:GetBool() then return end
 	local i = ply:EntIndex()
 	-- Player did not sprint recently
 	if timer.Exists("HNS.StaminaDelay" .. i) || timer.Exists("HNS.StaminaRegen" .. i) then return end
