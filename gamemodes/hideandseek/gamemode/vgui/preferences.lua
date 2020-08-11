@@ -17,7 +17,7 @@ function PANEL:Init()
 	end
 	self.CB.Paint = function(this, w, h)
 		GAMEMODE.DUtils.FadeHover(this, 1, 0, 0, w, h, Color(0, 0, 0, 125))
-		draw.SimpleText("r", "Marlett", w / 2 + 1, h / 2 + 1, Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		draw.SimpleText("r", "Marlett", w / 2 + 1, h / 2 + 1, Color(0, 0, 0, 175), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		draw.SimpleText("r", "Marlett", w / 2, h / 2, Color(255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 	end
 	-- "Tabs" bar
@@ -28,8 +28,8 @@ function PANEL:Init()
 	self.Buttons = {}
 
 	-- Buttons to toggle panels
-	local texts = { "HUD - Interface", "Player Model", "Crosshair", "Server CVars" }
-	local tabs = { "HNS.PreferencesHUD", "DPanel", "DPanel", "DPanel" }
+	local texts = { "INTERFACE", "PLAYER MODEL", "CROSSHAIR", "SERVER CVARS" }
+	local tabs = { "DPanel", "DPanel", "DPanel", "DPanel" }
 	-- Create panel
 	for i, text in ipairs(texts) do
 		local button = self.TabsP:Add("DButton")
@@ -42,12 +42,12 @@ function PANEL:Init()
 		button.Panel:Hide()
 		-- Funcs
 		button.Paint = function(this, w, h)
-			surface.SetDrawColor(50, 50, 50, 255)
+			surface.SetDrawColor(125, 125, 125, 255)
 			surface.DrawRect(0, 0, w, h)
 			GAMEMODE.DUtils.FadeHover(this, 1, 0, 0, w, h, self:GetTint(), 6, function(s) return s.Active end)
 
-			draw.SimpleText(text, "DermaDefaultBold", w / 2 + 1, h / 2 + 1, Color(0, 0, 0), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-			draw.SimpleText(text, "DermaDefaultBold", w / 2, h / 2, Color(255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			draw.SimpleText(text, "HNS.RobotoSmall", w / 2 + 1, h / 2 + 1, Color(0, 0, 0, 175), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			draw.SimpleText(text, "HNS.RobotoSmall", w / 2, h / 2, Color(255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		end
 		button.DoClick = function(this)
 			-- Hide other panels
@@ -72,12 +72,12 @@ function PANEL:Init()
 end
 
 function PANEL:Paint(w, h)
-	surface.SetDrawColor(25, 25, 25, 255)
+	surface.SetDrawColor(255, 255, 255, 255)
 	surface.DrawRect(0, 0, w, h)
 	surface.SetDrawColor(self:GetTint())
 	surface.DrawRect(0, 0, w, 24)
-	draw.SimpleText("LHNS - Player Preferences", "DermaDefaultBold", 9, 13, Color(0, 0, 0), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-	draw.SimpleText("LHNS - Player Preferences", "DermaDefaultBold", 8, 12, Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+	draw.SimpleText("LHNS - PLAYER PREFERENCES", "HNS.RobotoSmall", 9, 13, Color(0, 0, 0, 175), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+	draw.SimpleText("LHNS - PLAYER PREFERENCES", "HNS.RobotoSmall", 8, 12, Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 end
 
 -- Should return HiderColor, SeekerColor or Specator color

@@ -66,8 +66,9 @@ surface.CreateFont("HNS.VerdanaLarge", {
 })
 
 surface.CreateFont("HNS.RobotoSmall", {
-	font = "Roboto Bold",
-	size = 15,
+	font = "Roboto",
+	size = 18,
+	weight = 550,
 	antialias = true,
 })
 surface.CreateFont("HNS.RobotoMedium", {
