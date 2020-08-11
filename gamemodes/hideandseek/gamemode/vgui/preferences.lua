@@ -29,7 +29,7 @@ function PANEL:Init()
 
 	-- Buttons to toggle panels
 	local texts = { "INTERFACE", "PLAYER MODEL", "CROSSHAIR", "SERVER CVARS" }
-	local tabs = { "DPanel", "DPanel", "DPanel", "DPanel" }
+	local tabs = { "HNS.PreferencesHUD", "DPanel", "DPanel", "DPanel" }
 	-- Create panel
 	for i, text in ipairs(texts) do
 		local button = self.TabsP:Add("DButton")
@@ -42,7 +42,7 @@ function PANEL:Init()
 		button.Panel:Hide()
 		-- Funcs
 		button.Paint = function(this, w, h)
-			surface.SetDrawColor(125, 125, 125, 255)
+			surface.SetDrawColor(self:GetTheme(2))
 			surface.DrawRect(0, 0, w, h)
 			GAMEMODE.DUtils.FadeHover(this, 1, 0, 0, w, h, self:GetTint(), 6, function(s) return s.Active end)
 
@@ -72,7 +72,7 @@ function PANEL:Init()
 end
 
 function PANEL:Paint(w, h)
-	surface.SetDrawColor(255, 255, 255, 255)
+	surface.SetDrawColor(self:GetTheme(1))
 	surface.DrawRect(0, 0, w, h)
 	surface.SetDrawColor(self:GetTint())
 	surface.DrawRect(0, 0, w, 24)
@@ -91,10 +91,32 @@ function PANEL:GetTint()
 	end
 end
 
+-- Differences between themes
+local light = {
+	Color(255, 255, 255),
+	Color(125, 125, 125),
+}
+
+local dark = {
+	Color(25, 25, 25),
+	Color(50, 50, 50),
+}
+
+function PANEL:GetTheme(i)
+	if GAMEMODE.CVars.DarkTheme:GetBool() then
+		return dark[i] || Color(0, 0, 0)
+	else
+		return light[i] || Color(255, 255, 255)
+	end
+end
+
 vgui.Register("HNS.Preferences", PANEL, "DFrame")
 vgui.Create("HNS.Preferences", PANEL, "DFrame")
 
 -- HUD settings panel
 PANEL = {}
+
+function PANEL:Paint()
+end
 
 vgui.Register("HNS.PreferencesHUD", PANEL, "DPanel")
