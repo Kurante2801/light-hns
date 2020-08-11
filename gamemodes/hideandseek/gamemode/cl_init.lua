@@ -28,6 +28,7 @@ include("cl_hud.lua")
 include("tdlib.lua")
 include("cl_derma.lua")
 include("vgui/scoreboard.lua")
+include("vgui/preferences.lua")
 include("sh_achievements_table.lua")
 
 -- Receive a chat message from gamemode
