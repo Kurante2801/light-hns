@@ -123,7 +123,12 @@ function GM:StaminaStart(ply)
 		elseif !ply:KeyDown(IN_SPEED) then
 			GAMEMODE:StaminaStop(ply)
 		elseif ply:Team() != TEAM_SPECTATOR && ply:GetVelocity():Length2D() >= 65 then
-			ply.Stamina = math.Clamp(ply.Stamina - 1, 0, 100)
+			-- We lose a tiny bit more of stamina as client to account for lag
+			if CLIENT then
+				ply.Stamina = math.Clamp(ply.Stamina - 1.1, 0, 100)
+			else
+				ply.Stamina = math.Clamp(ply.Stamina - 1, 0, 100)
+			end
 		end
 	end)
 end
