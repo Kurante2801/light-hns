@@ -62,6 +62,11 @@ function PANEL:Init()
 			end
 		end
 
+		button.GetTheme = self.GetTheme
+		button.GetTint = self.GetTint
+		button.Panel.GetTheme = self.GetTheme
+		button.Panel.GetTint = self.GetTint
+
 		table.insert(self.Buttons, button)
 
 		-- Show first panel
@@ -93,13 +98,15 @@ end
 
 -- Differences between themes
 local light = {
-	Color(255, 255, 255),
-	Color(125, 125, 125),
+	Color(255, 255, 255), -- BG
+	Color(125, 125, 125), -- Header
+	Color(0, 0, 0), -- Text
 }
 
 local dark = {
-	Color(25, 25, 25),
-	Color(50, 50, 50),
+	Color(25, 25, 25), -- BG
+	Color(50, 50, 50), -- Header
+	Color(255, 255, 255), -- Text
 }
 
 function PANEL:GetTheme(i)
@@ -111,12 +118,64 @@ function PANEL:GetTheme(i)
 end
 
 vgui.Register("HNS.Preferences", PANEL, "DFrame")
-vgui.Create("HNS.Preferences", PANEL, "DFrame")
+timer.Simple(0.1, function()
+	vgui.Create("HNS.Preferences", PANEL, "DFrame")
+end)
 
 -- HUD settings panel
 PANEL = {}
 
-function PANEL:Paint()
+function PANEL:Init()
+	self:DockPadding(0, 6, 0, 6)
+	-- Container
+	self.SP = self:Add("DScrollPanel")
+	self.SP:Dock(FILL)
+	-- HUD selection
+	self.HUD = self.SP:Add("DPanel")
+	self.HUD:Dock(TOP)
+	self.HUD:SetTall(22)
+	self.HUD.Paint = function(this, w, h)
+		-- Text
+		draw.SimpleText("HUD SELECTION", "HNS.RobotoSmall", 9, 1, Color(0, 0, 0, 125), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+		draw.SimpleText("HUD SELECTION", "HNS.RobotoSmall", 8, 0, self:GetTint(), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+		-- Selected name
+		local hud = GAMEMODE.HUDs[GAMEMODE.CVars.HUD:GetInt()]
+		if hud then
+			draw.SimpleText(hud.Name:upper(), "HNS.RobotoSmall", w - 116, 1, Color(0, 0, 0, 125), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+			draw.SimpleText(hud.Name:upper(), "HNS.RobotoSmall", w - 116, 0, self:GetTint(), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+		end
+	end
+	-- Slider
+	self.HUD.Selector = self.HUD:Add("DNumSlider")
+	self.HUD.Selector:Dock(FILL)
+	self.HUD.Selector:DockMargin(124, 0, 124, 0)
+	-- Disable all elements besides the slider
+	self.HUD.Selector.Label:Hide()
+	self.HUD.Selector.TextArea:Hide()
+	-- Make slider fancier
+	self.HUD.Selector.Slider.Paint = function(this, w, h)
+		surface.SetDrawColor(self:GetTheme(3))
+		surface.DrawLine(7, h / 2, w - 7, h / 2)
+
+		local space = (w - 16) / (self.HUD.Selector:GetMax() - 1)
+		-- Lines
+		for i = 0, self.HUD.Selector:GetMax() do
+			surface.DrawRect(8 + space * i, h / 2 + 2, 1, 4)
+		end
+	end
+	-- Values
+	self.HUD.Selector:SetMinMax(1, #GAMEMODE.HUDs)
+	self.HUD.Selector:SetValue(GAMEMODE.CVars.HUD:GetInt())
+	self.HUD.Selector:SetDecimals(0)
+	self.HUD.Selector.OnValueChanged = function(this, value)
+		value = math.Round(value)
+		this:SetValue(value)
+		-- Update HUD and text
+		GAMEMODE.CVars.HUD:SetInt(value)
+	end
+end
+
+function PANEL:Paint(w, h)
 end
 
 vgui.Register("HNS.PreferencesHUD", PANEL, "DPanel")
