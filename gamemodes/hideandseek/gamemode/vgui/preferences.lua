@@ -243,6 +243,7 @@ function PANEL:AddSlider(offsetx, offsety)
 			surface.DrawRect(8 + space * i, h / 2 + 2, 1, 4)
 		end
 	end
+	panel.OnChangeAdditional = function() end
 
 	return panel
 end
@@ -267,6 +268,7 @@ function PANEL:AddCheckbox(text, cvar, offsetx)
 		this.CVar:SetBool(!this.CVar:GetBool())
 		this.OnChangeAdditional(this, this.CVar:GetBool())
 	end
+	panel.OnChangeAdditional = function() end
 
 	return panel
 end
