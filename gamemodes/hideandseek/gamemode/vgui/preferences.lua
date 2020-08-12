@@ -126,7 +126,7 @@ end)
 PANEL = {}
 
 function PANEL:Init()
-	self:DockPadding(0, 6, 0, 6)
+	self:DockPadding(0, 10, 0, 6)
 	-- Container
 	self.SP = self:Add("DScrollPanel")
 	self.SP:Dock(FILL)
@@ -135,12 +135,12 @@ function PANEL:Init()
 	self.HUD.Paint = function(this, w, h)
 		-- Text
 		draw.SimpleText("HUD SELECTION", "HNS.RobotoSmall", 65, 1, Color(0, 0, 0, 125), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
-		draw.SimpleText("HUD SELECTION", "HNS.RobotoSmall", 64, 0, self:GetTint(), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+		draw.SimpleText("HUD SELECTION", "HNS.RobotoSmall", 64, 0, self:GetTheme(3), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 		-- Selected name
 		local hud = GAMEMODE.HUDs[GAMEMODE.CVars.HUD:GetInt()]
 		if hud then
 			draw.SimpleText(hud.Name:upper(), "HNS.RobotoSmall", w - 116, 1, Color(0, 0, 0, 125), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-			draw.SimpleText(hud.Name:upper(), "HNS.RobotoSmall", w - 116, 0, self:GetTint(), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+			draw.SimpleText(hud.Name:upper(), "HNS.RobotoSmall", w - 116, 0, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 		end
 	end
 	-- Values
@@ -158,10 +158,10 @@ function PANEL:Init()
 	self.Scale.Paint = function(this, w, h)
 		-- Text
 		draw.SimpleText("HUD SCALING", "HNS.RobotoSmall", 65, 1, Color(0, 0, 0, 125), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
-		draw.SimpleText("HUD SCALING", "HNS.RobotoSmall", 64, 0, self:GetTint(), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+		draw.SimpleText("HUD SCALING", "HNS.RobotoSmall", 64, 0, self:GetTheme(3), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 		-- Selected name
 		draw.SimpleText(GAMEMODE.CVars.HUDScale:GetInt(), "HNS.RobotoSmall", w - 116, 1, Color(0, 0, 0, 125), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-		draw.SimpleText(GAMEMODE.CVars.HUDScale:GetInt(), "HNS.RobotoSmall", w - 116, 0, self:GetTint(), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+		draw.SimpleText(GAMEMODE.CVars.HUDScale:GetInt(), "HNS.RobotoSmall", w - 116, 0, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 	end
 	-- Values
 	self.Scale.Slider:SetMinMax(1, 6)
@@ -178,6 +178,7 @@ end
 function PANEL:AddSlider(offsetx, offsety)
 	local panel = self.SP:Add("DPanel")
 	panel:Dock(TOP)
+	panel:DockMargin(0, 0, 0, 6)
 	-- Slider
 	panel.Slider = panel:Add("DNumSlider")
 	panel.Slider:Dock(FILL)
@@ -187,7 +188,7 @@ function PANEL:AddSlider(offsetx, offsety)
 	panel.Slider.TextArea:Hide()
 	-- Make slider fancier
 	panel.Slider.Paint = function(this, w, h)
-		surface.SetDrawColor(self:GetTheme(3))
+		surface.SetDrawColor(self:GetTint())
 		surface.DrawLine(7, h / 2, w - 7, h / 2)
 
 		local space = (w - 16) / (panel.Slider:GetMax() - 1)
