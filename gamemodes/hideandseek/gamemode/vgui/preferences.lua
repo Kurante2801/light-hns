@@ -29,7 +29,7 @@ function PANEL:Init()
 
 	-- Buttons to toggle panels
 	local texts = { "INTERFACE", "PLAYER MODEL", "CROSSHAIR", "PLACEHOLDER" }
-	local tabs = { "HNS.PreferencesHUD", "DPanel", "DPanel", "DPanel" }
+	local tabs = { "HNS.PreferencesHUD", "HNS.PreferencesPM", "DPanel", "DPanel" }
 	-- Create panel
 	for i, text in ipairs(texts) do
 		local button = self.TabsP:Add("DButton")
@@ -69,8 +69,8 @@ function PANEL:Init()
 
 		table.insert(self.Buttons, button)
 
-		-- Show first panel
-		if i == 1 then
+		-- Show first panel (second panel while I make it)
+		if i == 2 then
 			button:DoClick()
 		end
 	end
@@ -160,9 +160,16 @@ function PANEL:Init()
 		-- Text
 		draw.SimpleText("HUD SCALING", "HNS.RobotoSmall", 65, 1, Color(0, 0, 0, 125), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 		draw.SimpleText("HUD SCALING", "HNS.RobotoSmall", 64, 0, self:GetTheme(3), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
-		-- Selected name
-		draw.SimpleText(GAMEMODE.CVars.HUDScale:GetInt(), "HNS.RobotoSmall", w - 116, 1, Color(0, 0, 0, 125), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-		draw.SimpleText(GAMEMODE.CVars.HUDScale:GetInt(), "HNS.RobotoSmall", w - 116, 0, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+		local scale = GAMEMODE.CVars.HUDScale:GetInt()
+
+		-- Scaling
+		if scale == 2 then
+			draw.SimpleText("2 (DEFAULT)", "HNS.RobotoSmall", w - 116, 1, Color(0, 0, 0, 125), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+			draw.SimpleText("2 (DEFAULT)", "HNS.RobotoSmall", w - 116, 0, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+		else
+			draw.SimpleText(scale, "HNS.RobotoSmall", w - 116, 1, Color(0, 0, 0, 125), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+			draw.SimpleText(scale, "HNS.RobotoSmall", w - 116, 0, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+		end
 	end
 	-- Values
 	self.Scale.Slider:SetMinMax(1, 6)
@@ -219,6 +226,9 @@ function PANEL:Init()
 		self.Speed.SpeedY:SetEnabled(value)
 		self.Speed.SpeedC:SetEnabled(value)
 	end
+
+	-- Add your own settings in this hook
+	hook.Run("HASPreferencesMenu", self.SP)
 end
 
 function PANEL:AddSlider(offsetx, offsety)
@@ -276,3 +286,88 @@ end
 function PANEL:Paint() end
 
 vgui.Register("HNS.PreferencesHUD", PANEL, "DPanel")
+
+-- Player color and model gender settings
+PANEL = {}
+
+function PANEL:Init()
+	-- Scroll panel
+	self:DockPadding(2, 8, 0, 0)
+	self.SP = self:Add("DScrollPanel")
+	self.SP:Dock(FILL)
+	-- Color pickers
+	self.Lines = {}
+
+	for i = 1, 4 do
+		local line = self.SP:Add("DPanel")
+		table.insert(self.Lines, line)
+		line:Dock(TOP)
+		line:DockPadding(120, 0, 0, 0)
+		line:DockMargin(0, 0, 0, 2)
+		line:SetTall(35)
+		line.Paint = function(this, w, h)
+			if this.Text then
+				draw.SimpleText(this.Text, "HNS.RobotoSmall", 61, h / 2 + 1, Color(0, 0, 0, 125), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+				draw.SimpleText(this.Text, "HNS.RobotoSmall", 60, h / 2, self:GetTheme(3), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			else
+				draw.SimpleText(this.CVar:GetString():upper(), "HNS.RobotoSmall", 61, h / 2 + 1, Color(0, 0, 0, 125), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+				draw.SimpleText(this.CVar:GetString():upper(), "HNS.RobotoSmall", 60, h / 2, GAMEMODE:GetTeamShade(this.Team, this.CVar:GetString()), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			end
+		end
+		-- Displayed text
+		if i == 1 then
+			line.Text = "HIDER COLOR"
+		elseif i == 2 then
+			line.CVar = GAMEMODE.CVars.HiderColor
+			line.Team = TEAM_HIDE
+		elseif i == 3 then
+			line.Text = "SEEKER COLOR"
+		else
+			line.CVar = GAMEMODE.CVars.SeekerColor
+			line.Team = TEAM_SEEK
+		end
+	end
+
+	-- Insert colors
+	local i = 0
+
+	for name, color in pairs(GAMEMODE.HiderColors) do
+		local button = self:AddButton(name, color)
+		button:SetParent(self.Lines[i % 2 + 1])
+		button.CVar = GAMEMODE.CVars.HiderColor
+		i = i + 1
+	end
+
+	i = 0
+	for name, color in pairs(GAMEMODE.SeekerColors) do
+		local button = self:AddButton(name, color)
+		button:SetParent(self.Lines[i % 2 + 3])
+		button.CVar = GAMEMODE.CVars.SeekerColor
+		i = i + 1
+	end
+	-- Separate hider colors from seeker colors
+	self.Lines[2]:DockMargin(0, 0, 0, 4)
+end
+
+function PANEL:AddButton(name, color)
+	local button = self:Add("DButton")
+	button:Dock(LEFT)
+	button:DockMargin(0, 0, 2, 0)
+	button:SetWide(35)
+	button:SetText("")
+	button.Name = name
+	button.Color = color
+	button.Paint = function(this, w, h)
+		surface.SetDrawColor(this.Color)
+		surface.DrawRect(0, 0, w, h)
+	end
+	button.DoClick = function(this)
+		this.CVar:SetString(this.Name)
+	end
+
+	return button
+end
+
+function PANEL:Paint() end
+
+vgui.Register("HNS.PreferencesPM", PANEL, "DPanel")
