@@ -131,13 +131,11 @@ function PANEL:Init()
 	self.SP = self:Add("DScrollPanel")
 	self.SP:Dock(FILL)
 	-- HUD selection
-	self.HUD = self.SP:Add("DPanel")
-	self.HUD:Dock(TOP)
-	self.HUD:SetTall(22)
+	self.HUD = self:AddSlider(124, 124)
 	self.HUD.Paint = function(this, w, h)
 		-- Text
-		draw.SimpleText("HUD SELECTION", "HNS.RobotoSmall", 9, 1, Color(0, 0, 0, 125), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-		draw.SimpleText("HUD SELECTION", "HNS.RobotoSmall", 8, 0, self:GetTint(), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+		draw.SimpleText("HUD SELECTION", "HNS.RobotoSmall", 65, 1, Color(0, 0, 0, 125), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+		draw.SimpleText("HUD SELECTION", "HNS.RobotoSmall", 64, 0, self:GetTint(), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 		-- Selected name
 		local hud = GAMEMODE.HUDs[GAMEMODE.CVars.HUD:GetInt()]
 		if hud then
@@ -145,37 +143,63 @@ function PANEL:Init()
 			draw.SimpleText(hud.Name:upper(), "HNS.RobotoSmall", w - 116, 0, self:GetTint(), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 		end
 	end
-	-- Slider
-	self.HUD.Selector = self.HUD:Add("DNumSlider")
-	self.HUD.Selector:Dock(FILL)
-	self.HUD.Selector:DockMargin(124, 0, 124, 0)
-	-- Disable all elements besides the slider
-	self.HUD.Selector.Label:Hide()
-	self.HUD.Selector.TextArea:Hide()
-	-- Make slider fancier
-	self.HUD.Selector.Slider.Paint = function(this, w, h)
-		surface.SetDrawColor(self:GetTheme(3))
-		surface.DrawLine(7, h / 2, w - 7, h / 2)
-
-		local space = (w - 16) / (self.HUD.Selector:GetMax() - 1)
-		-- Lines
-		for i = 0, self.HUD.Selector:GetMax() do
-			surface.DrawRect(8 + space * i, h / 2 + 2, 1, 4)
-		end
-	end
 	-- Values
-	self.HUD.Selector:SetMinMax(1, #GAMEMODE.HUDs)
-	self.HUD.Selector:SetValue(GAMEMODE.CVars.HUD:GetInt())
-	self.HUD.Selector:SetDecimals(0)
-	self.HUD.Selector.OnValueChanged = function(this, value)
+	self.HUD.Slider:SetMinMax(1, #GAMEMODE.HUDs)
+	self.HUD.Slider:SetValue(GAMEMODE.CVars.HUD:GetInt())
+	self.HUD.Slider:SetDecimals(0)
+	self.HUD.Slider.OnValueChanged = function(this, value)
 		value = math.Round(value)
 		this:SetValue(value)
 		-- Update HUD and text
 		GAMEMODE.CVars.HUD:SetInt(value)
 	end
+	-- HUD Scaling
+	self.Scale = self:AddSlider(124, 124)
+	self.Scale.Paint = function(this, w, h)
+		-- Text
+		draw.SimpleText("HUD SCALING", "HNS.RobotoSmall", 65, 1, Color(0, 0, 0, 125), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+		draw.SimpleText("HUD SCALING", "HNS.RobotoSmall", 64, 0, self:GetTint(), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+		-- Selected name
+		draw.SimpleText(GAMEMODE.CVars.HUDScale:GetInt(), "HNS.RobotoSmall", w - 116, 1, Color(0, 0, 0, 125), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+		draw.SimpleText(GAMEMODE.CVars.HUDScale:GetInt(), "HNS.RobotoSmall", w - 116, 0, self:GetTint(), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+	end
+	-- Values
+	self.Scale.Slider:SetMinMax(1, 6)
+	self.Scale.Slider:SetValue(GAMEMODE.CVars.HUDScale:GetInt())
+	self.Scale.Slider:SetDecimals(0)
+	self.Scale.Slider.OnValueChanged = function(this, value)
+		value = math.Round(value)
+		this:SetValue(value)
+		-- Update HUD and text
+		GAMEMODE.CVars.HUDScale:SetInt(value)
+	end
 end
 
-function PANEL:Paint(w, h)
+function PANEL:AddSlider(offsetx, offsety)
+	local panel = self.SP:Add("DPanel")
+	panel:Dock(TOP)
+	-- Slider
+	panel.Slider = panel:Add("DNumSlider")
+	panel.Slider:Dock(FILL)
+	panel.Slider:DockMargin(offsetx, 0, offsety, 0)
+	-- Disable all elements besides the slider
+	panel.Slider.Label:Hide()
+	panel.Slider.TextArea:Hide()
+	-- Make slider fancier
+	panel.Slider.Paint = function(this, w, h)
+		surface.SetDrawColor(self:GetTheme(3))
+		surface.DrawLine(7, h / 2, w - 7, h / 2)
+
+		local space = (w - 16) / (panel.Slider:GetMax() - 1)
+		-- Lines
+		for i = 0, panel.Slider:GetMax() do
+			surface.DrawRect(8 + space * i, h / 2 + 2, 1, 4)
+		end
+	end
+
+	return panel
 end
+
+function PANEL:Paint() end
 
 vgui.Register("HNS.PreferencesHUD", PANEL, "DPanel")
