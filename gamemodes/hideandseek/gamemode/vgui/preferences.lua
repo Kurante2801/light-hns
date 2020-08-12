@@ -28,7 +28,7 @@ function PANEL:Init()
 	self.Buttons = {}
 
 	-- Buttons to toggle panels
-	local texts = { "INTERFACE", "PLAYER MODEL", "CROSSHAIR", "SERVER CVARS" }
+	local texts = { "INTERFACE", "PLAYER MODEL", "CROSSHAIR", "PLACEHOLDER" }
 	local tabs = { "HNS.PreferencesHUD", "DPanel", "DPanel", "DPanel" }
 	-- Create panel
 	for i, text in ipairs(texts) do
@@ -153,6 +153,7 @@ function PANEL:Init()
 		-- Update HUD and text
 		GAMEMODE.CVars.HUD:SetInt(value)
 	end
+
 	-- HUD Scaling
 	self.Scale = self:AddSlider(124, 124)
 	self.Scale.Paint = function(this, w, h)
@@ -172,6 +173,51 @@ function PANEL:Init()
 		this:SetValue(value)
 		-- Update HUD and text
 		GAMEMODE.CVars.HUDScale:SetInt(value)
+	end
+
+	-- Checkboxs
+	self:AddCheckbox("ENABLE DARK THEME", "has_darktheme", 124)
+	self:AddCheckbox("SHOW OTHER PLAYERS' STEAM ID", "has_showid", 124)
+	self:AddCheckbox("PUT YOURSELF AT THE TOP OF THE SCOREBOARD (TODO)", "has_scob_ontop", 124)
+	-- Speed and its wangs
+	self.Speed = self:AddCheckbox("SHOW MOVEMENT SPEED (X Y):", "has_showspeed", 124)
+	-- Panel that prevents button click
+	self.Speed.Panel = self.Speed:Add("DPanel")
+	self.Speed.Panel:Dock(FILL)
+	self.Speed.Panel:DockMargin(290, 0, 0, 0)
+	self.Speed.Panel.Paint = function() end
+	-- Wangs
+	self.Speed.SpeedX = self.Speed.Panel:Add("DNumberWang")
+	self.Speed.SpeedX:SetPos(0, 1)
+	self.Speed.SpeedX:SetSize(50, 22)
+	self.Speed.SpeedX:SetMinMax(45, ScrW() - 45)
+	self.Speed.SpeedX:SetValue(GAMEMODE.CVars.SpeedX:GetInt())
+	self.Speed.SpeedX:SetConVar("has_speedx")
+
+	self.Speed.SpeedY = self.Speed.Panel:Add("DNumberWang")
+	self.Speed.SpeedY:SetPos(54, 1)
+	self.Speed.SpeedY:SetSize(50, 22)
+	self.Speed.SpeedY:SetMinMax(30, ScrH() - 30)
+	self.Speed.SpeedY:SetValue(GAMEMODE.CVars.SpeedY:GetInt())
+	self.Speed.SpeedY:SetConVar("has_speedy")
+
+	-- Center button
+	self.Speed.SpeedC = self.Speed.Panel:Add("DButton")
+	self.Speed.SpeedC:SetPos(108, 1)
+	self.Speed.SpeedC:SetSize(50, 22)
+	self.Speed.SpeedC:SetText("Center")
+	self.Speed.SpeedC.DoClick = function()
+		self.Speed.SpeedX:SetValue(ScrW() / 2)
+		self.Speed.SpeedY:SetValue(ScrH() / 2)
+	end
+	-- Enable/Disable
+	self.Speed.SpeedX:SetEnabled(GAMEMODE.CVars.ShowSpeed:GetBool())
+	self.Speed.SpeedY:SetEnabled(GAMEMODE.CVars.ShowSpeed:GetBool())
+	self.Speed.SpeedC:SetEnabled(GAMEMODE.CVars.ShowSpeed:GetBool())
+	self.Speed.OnChangeAdditional = function(this, value)
+		self.Speed.SpeedX:SetEnabled(value)
+		self.Speed.SpeedY:SetEnabled(value)
+		self.Speed.SpeedC:SetEnabled(value)
 	end
 end
 
@@ -196,6 +242,30 @@ function PANEL:AddSlider(offsetx, offsety)
 		for i = 0, panel.Slider:GetMax() do
 			surface.DrawRect(8 + space * i, h / 2 + 2, 1, 4)
 		end
+	end
+
+	return panel
+end
+
+function PANEL:AddCheckbox(text, cvar, offsetx)
+	local panel = self.SP:Add("DButton")
+	panel:Dock(TOP)
+	panel:SetTall(24)
+	panel:SetText("")
+	panel:DockMargin(0, 0, 0, 6)
+	-- Cache cvar
+	panel.CVar = GetConVar(cvar)
+	-- Funcs
+	panel.Paint = function(this, w, h)
+		draw.SimpleText(text, "HNS.RobotoSmall", 65, h / 2 + 2, Color(0, 0, 0, 125), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+		draw.SimpleText(text, "HNS.RobotoSmall", 64, h / 2 + 1, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+
+		GAMEMODE.DUtils.Outline(24, 0, 24, 24, 2, self:GetTint())
+		GAMEMODE.DUtils.FadeHover(this, 1, 28, 4, 16, h - 8, self:GetTint(), 6, function(s) return s.CVar:GetBool() end)
+	end
+	panel.DoClick = function(this)
+		this.CVar:SetBool(!this.CVar:GetBool())
+		this.OnChangeAdditional(this, this.CVar:GetBool())
 	end
 
 	return panel
