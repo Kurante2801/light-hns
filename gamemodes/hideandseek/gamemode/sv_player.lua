@@ -319,6 +319,8 @@ end)
 
 -- Receive color update
 net.Receive("HNS.PlayerColorUpdate", function(_, ply)
+	if ply:Team() == TEAM_SPECTATOR then return end
+
 	ply:SetPlayerColor(GAMEMODE:GetPlayerTeamColor(ply):ToVector())
 	-- Update hider trail if applicable
 	if IsValid(ply.HiderTrail) then
