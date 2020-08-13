@@ -1,7 +1,7 @@
 local PANEL = {}
 
 function PANEL:Init()
-	self:SetSize(500, 400)
+	self:SetSize(500, 300)
 	self:Center()
 	self:MakePopup()
 	self:SetTitle("")
@@ -293,13 +293,11 @@ PANEL = {}
 function PANEL:Init()
 	-- Scroll panel
 	self:DockPadding(2, 8, 0, 0)
-	self.SP = self:Add("DScrollPanel")
-	self.SP:Dock(FILL)
 	-- Color pickers
 	self.Lines = {}
 
 	for i = 1, 4 do
-		local line = self.SP:Add("DPanel")
+		local line = self:Add("DPanel")
 		table.insert(self.Lines, line)
 		line:Dock(TOP)
 		line:DockPadding(120, 0, 0, 0)
@@ -347,6 +345,24 @@ function PANEL:Init()
 	end
 	-- Separate hider colors from seeker colors
 	self.Lines[2]:DockMargin(0, 0, 0, 4)
+
+	-- Model (No docking here)
+	self.Stand = self:Add("DPanel")
+	self.Stand:SetPos(340, 0)
+	self.Stand:SetSize(160, 252)
+	self.Stand.Paint = function(this, w, h)
+		surface.SetDrawColor(self:GetTheme(2))
+		surface.DrawRect(0, 0, w, h)
+	end
+
+	self.Model = self.Stand:Add("DModelPanel")
+	self.Model:Dock(FILL)
+	self.Model:SetFOV(50)
+	self.Model:SetModel(LocalPlayer():GetModel())
+	self.Model.Entity.PlyColor = LocalPlayer():GetPlayerColor() -- Changes with the buttons
+	self.Model.Entity.GetPlayerColor = function(this)
+		return this.PlyColor
+	end
 end
 
 function PANEL:AddButton(name, color)
@@ -363,6 +379,7 @@ function PANEL:AddButton(name, color)
 	end
 	button.DoClick = function(this)
 		this.CVar:SetString(this.Name)
+		self.Model.Entity.PlyColor = color:ToVector()
 	end
 
 	return button
