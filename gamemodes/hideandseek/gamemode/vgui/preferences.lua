@@ -363,6 +363,25 @@ function PANEL:Init()
 	self.Model.Entity.GetPlayerColor = function(this)
 		return this.PlyColor
 	end
+
+	-- Gender button
+	self.Gender = self:Add("DButton")
+	self.Gender:SetWide(150)
+	self.Gender:SetPos(95, 215)
+	self.Gender:SetText("")
+	self.Gender.CVar = GAMEMODE.CVars.Gender
+	self.Gender.Paint = function(this, w, h)
+		GAMEMODE.DUtils.Outline(0, 0, w, h, 2, self:GetTint())
+		surface.SetDrawColor(self:GetTint())
+		surface.DrawRect(GAMEMODE.DUtils.LerpNumber(this, 1, 0, w / 2, 8, function(s) return this.CVar:GetBool() end), 0, w / 2, h)
+		draw.SimpleText("MALE", "HNS.RobotoSmall", w / 4 + 1, h / 2 + 1, Color(0, 0, 0, 125), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		draw.SimpleText("MALE", "HNS.RobotoSmall", w / 4, h / 2, self:GetTheme(3), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		draw.SimpleText("FEMALE", "HNS.RobotoSmall", w - w / 4 + 1, h / 2 + 1, Color(0, 0, 0, 125), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		draw.SimpleText("FEMALE", "HNS.RobotoSmall", w - w / 4, h / 2, self:GetTheme(3), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+	end
+	self.Gender.DoClick = function(this)
+		this.CVar:SetBool(!this.CVar:GetBool())
+	end
 end
 
 function PANEL:AddButton(name, color)
@@ -385,6 +404,11 @@ function PANEL:AddButton(name, color)
 	return button
 end
 
-function PANEL:Paint() end
+function PANEL:Paint(w, h)
+	draw.SimpleText("PLAYERMODEL GENDER", "HNS.RobotoSmall", (w - 159) / 2, 181, Color(0, 0, 0, 125), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+	draw.SimpleText("PLAYERMODEL GENDER", "HNS.RobotoSmall", (w - 160) / 2, 180, self:GetTheme(3), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+	draw.SimpleText("(NEXT SPAWN, AFFECTS TAUNTS TOO)", "HNS.RobotoSmall", (w - 159) / 2, 201, Color(0, 0, 0, 125), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+	draw.SimpleText("(NEXT SPAWN, AFFECTS TAUNTS TOO)", "HNS.RobotoSmall", (w - 160) / 2, 200, self:GetTheme(3), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+end
 
 vgui.Register("HNS.PreferencesPM", PANEL, "DPanel")
