@@ -126,9 +126,6 @@ function PANEL:ShadowedText(text, font, x, y, color, alignx, aligny)
 end
 
 vgui.Register("HNS.Preferences", PANEL, "DFrame")
-timer.Simple(0.1, function()
-	vgui.Create("HNS.Preferences", PANEL, "DFrame")
-end)
 
 -- HUD settings panel
 PANEL = {}
