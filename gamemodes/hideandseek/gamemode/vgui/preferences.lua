@@ -64,8 +64,10 @@ function PANEL:Init()
 
 		button.GetTheme = self.GetTheme
 		button.GetTint = self.GetTint
+		button.ShadowedText = self.ShadowedText
 		button.Panel.GetTheme = self.GetTheme
 		button.Panel.GetTint = self.GetTint
+		button.Panel.ShadowedText = self.ShadowedText
 
 		table.insert(self.Buttons, button)
 
@@ -117,6 +119,12 @@ function PANEL:GetTheme(i)
 	end
 end
 
+-- Should clear a lot of code
+function PANEL:ShadowedText(text, font, x, y, color, alignx, aligny)
+	draw.SimpleText(text, font, x + 1, y + 1, Color(0, 0, 0, 125), alignx, aligny)
+	draw.SimpleText(text, font, x, y, color, alignx, aligny)
+end
+
 vgui.Register("HNS.Preferences", PANEL, "DFrame")
 timer.Simple(0.1, function()
 	vgui.Create("HNS.Preferences", PANEL, "DFrame")
@@ -134,13 +142,11 @@ function PANEL:Init()
 	self.HUD = self:AddSlider(124, 124)
 	self.HUD.Paint = function(this, w, h)
 		-- Text
-		draw.SimpleText("HUD SELECTION", "HNS.RobotoSmall", 65, 1, Color(0, 0, 0, 125), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
-		draw.SimpleText("HUD SELECTION", "HNS.RobotoSmall", 64, 0, self:GetTheme(3), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+		self:ShadowedText("HUD SELECTION", "HNS.RobotoSmall", 64, 0, self:GetTheme(3), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 		-- Selected name
 		local hud = GAMEMODE.HUDs[GAMEMODE.CVars.HUD:GetInt()]
 		if hud then
-			draw.SimpleText(hud.Name:upper(), "HNS.RobotoSmall", w - 116, 1, Color(0, 0, 0, 125), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-			draw.SimpleText(hud.Name:upper(), "HNS.RobotoSmall", w - 116, 0, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+			self:ShadowedText(hud.Name:upper(), "HNS.RobotoSmall", w - 116, 0, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 		end
 	end
 	-- Values
@@ -158,17 +164,14 @@ function PANEL:Init()
 	self.Scale = self:AddSlider(124, 124)
 	self.Scale.Paint = function(this, w, h)
 		-- Text
-		draw.SimpleText("HUD SCALING", "HNS.RobotoSmall", 65, 1, Color(0, 0, 0, 125), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
-		draw.SimpleText("HUD SCALING", "HNS.RobotoSmall", 64, 0, self:GetTheme(3), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+		self:ShadowedText("HUD SCALING", "HNS.RobotoSmall", 64, 0, self:GetTheme(3), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 		local scale = GAMEMODE.CVars.HUDScale:GetInt()
 
 		-- Scaling
 		if scale == 2 then
-			draw.SimpleText("2 (DEFAULT)", "HNS.RobotoSmall", w - 116, 1, Color(0, 0, 0, 125), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-			draw.SimpleText("2 (DEFAULT)", "HNS.RobotoSmall", w - 116, 0, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+			self:ShadowedText("2 (DEFAULT)", "HNS.RobotoSmall", w - 116, 0, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 		else
-			draw.SimpleText(scale, "HNS.RobotoSmall", w - 116, 1, Color(0, 0, 0, 125), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-			draw.SimpleText(scale, "HNS.RobotoSmall", w - 116, 0, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+			self:ShadowedText(scale, "HNS.RobotoSmall", w - 116, 0, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 		end
 	end
 	-- Values
@@ -268,8 +271,7 @@ function PANEL:AddCheckbox(text, cvar, offsetx)
 	panel.CVar = GetConVar(cvar)
 	-- Funcs
 	panel.Paint = function(this, w, h)
-		draw.SimpleText(text, "HNS.RobotoSmall", 65, h / 2 + 2, Color(0, 0, 0, 125), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-		draw.SimpleText(text, "HNS.RobotoSmall", 64, h / 2 + 1, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+		self:ShadowedText(text, "HNS.RobotoSmall", 64, h / 2 + 1, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 
 		GAMEMODE.DUtils.Outline(24, 0, 24, 24, 2, self:GetTint())
 		GAMEMODE.DUtils.FadeHover(this, 1, 28, 4, 16, h - 8, self:GetTint(), 6, function(s) return s.CVar:GetBool() end)
@@ -305,11 +307,9 @@ function PANEL:Init()
 		line:SetTall(35)
 		line.Paint = function(this, w, h)
 			if this.Text then
-				draw.SimpleText(this.Text, "HNS.RobotoSmall", 61, h / 2 + 1, Color(0, 0, 0, 125), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-				draw.SimpleText(this.Text, "HNS.RobotoSmall", 60, h / 2, self:GetTheme(3), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+				self:ShadowedText(this.Text, "HNS.RobotoSmall", 60, h / 2, self:GetTheme(3), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 			else
-				draw.SimpleText(this.CVar:GetString():upper(), "HNS.RobotoSmall", 61, h / 2 + 1, Color(0, 0, 0, 125), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-				draw.SimpleText(this.CVar:GetString():upper(), "HNS.RobotoSmall", 60, h / 2, GAMEMODE:GetTeamShade(this.Team, this.CVar:GetString()), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+				self:ShadowedText(this.CVar:GetString():upper(), "HNS.RobotoSmall", 60, h / 2, GAMEMODE:GetTeamShade(this.Team, this.CVar:GetString()), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 			end
 		end
 		-- Displayed text
@@ -374,10 +374,8 @@ function PANEL:Init()
 		GAMEMODE.DUtils.Outline(0, 0, w, h, 2, self:GetTint())
 		surface.SetDrawColor(self:GetTint())
 		surface.DrawRect(GAMEMODE.DUtils.LerpNumber(this, 1, 0, w / 2, 8, function(s) return this.CVar:GetBool() end), 0, w / 2, h)
-		draw.SimpleText("MALE", "HNS.RobotoSmall", w / 4 + 1, h / 2 + 1, Color(0, 0, 0, 125), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-		draw.SimpleText("MALE", "HNS.RobotoSmall", w / 4, h / 2, self:GetTheme(3), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-		draw.SimpleText("FEMALE", "HNS.RobotoSmall", w - w / 4 + 1, h / 2 + 1, Color(0, 0, 0, 125), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-		draw.SimpleText("FEMALE", "HNS.RobotoSmall", w - w / 4, h / 2, self:GetTheme(3), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		self:ShadowedText("MALE", "HNS.RobotoSmall", w / 4, h / 2, self:GetTheme(3), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		self:ShadowedText("FEMALE", "HNS.RobotoSmall", w - w / 4, h / 2, self:GetTheme(3), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 	end
 	self.Gender.DoClick = function(this)
 		this.CVar:SetBool(!this.CVar:GetBool())
@@ -405,10 +403,8 @@ function PANEL:AddButton(name, color)
 end
 
 function PANEL:Paint(w, h)
-	draw.SimpleText("PLAYERMODEL GENDER", "HNS.RobotoSmall", (w - 159) / 2, 181, Color(0, 0, 0, 125), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-	draw.SimpleText("PLAYERMODEL GENDER", "HNS.RobotoSmall", (w - 160) / 2, 180, self:GetTheme(3), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-	draw.SimpleText("(NEXT SPAWN, AFFECTS TAUNTS TOO)", "HNS.RobotoSmall", (w - 159) / 2, 201, Color(0, 0, 0, 125), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-	draw.SimpleText("(NEXT SPAWN, AFFECTS TAUNTS TOO)", "HNS.RobotoSmall", (w - 160) / 2, 200, self:GetTheme(3), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+	self:ShadowedText("PLAYERMODEL GENDER", "HNS.RobotoSmall", (w - 160) / 2, 180, self:GetTheme(3), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+	self:ShadowedText("(NEXT SPAWN, AFFECTS TAUNTS TOO)", "HNS.RobotoSmall", (w - 160) / 2, 200, self:GetTheme(3), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 end
 
 vgui.Register("HNS.PreferencesPM", PANEL, "DPanel")
@@ -427,8 +423,7 @@ function PANEL:Init()
 	self.Button.CVar = GAMEMODE.CVars.CrosshairEnable
 	-- Funcs
 	self.Button.Paint = function(this, w, h)
-		draw.SimpleText("ENABLE CUSTOM CROSSHAIR", "HNS.RobotoSmall", 49, h / 2 + 2, Color(0, 0, 0, 125), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-		draw.SimpleText("ENABLE CUSTOM CROSSHAIR", "HNS.RobotoSmall", 48, h / 2 + 1, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+		self:ShadowedText("ENABLE CUSTOM CROSSHAIR", "HNS.RobotoSmall", 48, h / 2 + 1, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 
 		GAMEMODE.DUtils.Outline(16, 0, 24, 24, 2, self:GetTint())
 		GAMEMODE.DUtils.FadeHover(this, 1, 20, 4, 16, h - 8, self:GetTint(), 6, function(s) return s.CVar:GetBool() end)
@@ -466,21 +461,14 @@ function PANEL:Init()
 end
 
 function PANEL:Paint(w, h)
-	draw.SimpleText("RED", "HNS.RobotoSmall", 333, 53, Color(0, 0, 0, 125), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-	draw.SimpleText("RED", "HNS.RobotoSmall", 332, 52, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-	draw.SimpleText("GREEN", "HNS.RobotoSmall", 333, 78, Color(0, 0, 0, 125), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-	draw.SimpleText("GREEN", "HNS.RobotoSmall", 332, 77, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-	draw.SimpleText("BLUE", "HNS.RobotoSmall", 333, 102, Color(0, 0, 0, 125), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-	draw.SimpleText("BLUE", "HNS.RobotoSmall", 332, 101, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-	draw.SimpleText("ALPHA", "HNS.RobotoSmall", 333, 126, Color(0, 0, 0, 125), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-	draw.SimpleText("ALPHA", "HNS.RobotoSmall", 332, 125, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+	self:ShadowedText("RED", "HNS.RobotoSmall", 332, 52, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+	self:ShadowedText("GREEN", "HNS.RobotoSmall", 332, 77, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+	self:ShadowedText("BLUE", "HNS.RobotoSmall", 332, 101, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+	self:ShadowedText("ALPHA", "HNS.RobotoSmall", 332, 125, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 
-	draw.SimpleText("SIZE", "HNS.RobotoSmall", 429, 53, Color(0, 0, 0, 125), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
-	draw.SimpleText("SIZE", "HNS.RobotoSmall", 428, 52, self:GetTheme(3), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
-	draw.SimpleText("GAP", "HNS.RobotoSmall", 429, 78, Color(0, 0, 0, 125), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
-	draw.SimpleText("GAP", "HNS.RobotoSmall", 428, 77, self:GetTheme(3), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
-	draw.SimpleText("THICK", "HNS.RobotoSmall", 429, 102, Color(0, 0, 0, 125), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
-	draw.SimpleText("THICK", "HNS.RobotoSmall", 428, 101, self:GetTheme(3), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+	self:ShadowedText("SIZE", "HNS.RobotoSmall", 428, 52, self:GetTheme(3), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+	self:ShadowedText("GAP", "HNS.RobotoSmall", 428, 77, self:GetTheme(3), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+	self:ShadowedText("THICK", "HNS.RobotoSmall", 428, 101, self:GetTheme(3), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
 
 	surface.SetDrawColor(125, 125, 125, 255)
 	surface.DrawRect(402, 154, 80, 80)
