@@ -29,7 +29,7 @@ function PANEL:Init()
 
 	-- Buttons to toggle panels
 	local texts = { "INTERFACE", "PLAYER MODEL", "CROSSHAIR", "PLACEHOLDER" }
-	local tabs = { "HNS.PreferencesHUD", "HNS.PreferencesPM", "DPanel", "DPanel" }
+	local tabs = { "HNS.PreferencesHUD", "HNS.PreferencesPM", "HNS.PreferencesCrosshair", "DPanel" }
 	-- Create panel
 	for i, text in ipairs(texts) do
 		local button = self.TabsP:Add("DButton")
@@ -69,8 +69,8 @@ function PANEL:Init()
 
 		table.insert(self.Buttons, button)
 
-		-- Show first panel (second panel while I make it)
-		if i == 2 then
+		-- Show first panel (third panel while I make it)
+		if i == 3 then
 			button:DoClick()
 		end
 	end
@@ -344,7 +344,7 @@ function PANEL:Init()
 		i = i + 1
 	end
 	-- Separate hider colors from seeker colors
-	self.Lines[2]:DockMargin(0, 0, 0, 4)
+	self.Lines[2]:DockMargin(0, 0, 0, 8)
 
 	-- Model (No docking here)
 	self.Stand = self:Add("DPanel")
@@ -412,3 +412,84 @@ function PANEL:Paint(w, h)
 end
 
 vgui.Register("HNS.PreferencesPM", PANEL, "DPanel")
+
+-- Crosshair section
+PANEL = {}
+
+function PANEL:Init()
+	self.CR = {}
+	-- Enabled
+	self.Button = self:Add("DButton")
+	self.Button:SetPos(0, 12)
+	self.Button:SetSize(300, 24)
+	self.Button:SetText("")
+	-- Cache cvar
+	self.Button.CVar = GAMEMODE.CVars.CrosshairEnable
+	-- Funcs
+	self.Button.Paint = function(this, w, h)
+		draw.SimpleText("ENABLE CUSTOM CROSSHAIR", "HNS.RobotoSmall", 49, h / 2 + 2, Color(0, 0, 0, 125), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+		draw.SimpleText("ENABLE CUSTOM CROSSHAIR", "HNS.RobotoSmall", 48, h / 2 + 1, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+
+		GAMEMODE.DUtils.Outline(16, 0, 24, 24, 2, self:GetTint())
+		GAMEMODE.DUtils.FadeHover(this, 1, 20, 4, 16, h - 8, self:GetTint(), 6, function(s) return s.CVar:GetBool() end)
+	end
+	self.Button.DoClick = function(this)
+		this.CVar:SetBool(!this.CVar:GetBool())
+	end
+	-- Color stuff
+	self.Mixer = self:Add("DColorMixer")
+	self.Mixer:SetPalette(false)
+	self.Mixer:SetPos(14, 42)
+	self.Mixer:SetSize(314, 200)
+	self.Mixer:SetConVarA("has_crosshair_a")
+	self.Mixer:SetConVarR("has_crosshair_r")
+	self.Mixer:SetConVarG("has_crosshair_g")
+	self.Mixer:SetConVarB("has_crosshair_b")
+	-- Crosshair dimentions
+	for i = 0, 2 do
+		local wang = self:Add("DNumberWang")
+		wang:SetPos(432, 42 + 24 * i)
+		wang:SetWide(50)
+		wang:SetMinMax(0, 20)
+
+		if i == 0 then
+			wang:SetValue(GAMEMODE.CVars.CrosshairSize:GetInt())
+			wang:SetConVar("has_crosshair_size")
+		elseif i == 1 then
+			wang:SetValue(GAMEMODE.CVars.CrosshairGap:GetInt())
+			wang:SetConVar("has_crosshair_gap")
+		else
+			wang:SetValue(GAMEMODE.CVars.CrosshairThick:GetInt())
+			wang:SetConVar("has_crosshair_thick")
+		end
+	end
+end
+
+function PANEL:Paint(w, h)
+	draw.SimpleText("RED", "HNS.RobotoSmall", 331, 53, Color(0, 0, 0, 125), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+	draw.SimpleText("RED", "HNS.RobotoSmall", 330, 52, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+	draw.SimpleText("GREEN", "HNS.RobotoSmall", 331, 78, Color(0, 0, 0, 125), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+	draw.SimpleText("GREEN", "HNS.RobotoSmall", 330, 77, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+	draw.SimpleText("BLUE", "HNS.RobotoSmall", 331, 102, Color(0, 0, 0, 125), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+	draw.SimpleText("BLUE", "HNS.RobotoSmall", 330, 101, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+	draw.SimpleText("ALPHA", "HNS.RobotoSmall", 331, 126, Color(0, 0, 0, 125), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+	draw.SimpleText("ALPHA", "HNS.RobotoSmall", 330, 125, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+
+	draw.SimpleText("SIZE", "HNS.RobotoSmall", 429, 53, Color(0, 0, 0, 125), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+	draw.SimpleText("SIZE", "HNS.RobotoSmall", 428, 52, self:GetTheme(3), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+	draw.SimpleText("GAP", "HNS.RobotoSmall", 429, 78, Color(0, 0, 0, 125), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+	draw.SimpleText("GAP", "HNS.RobotoSmall", 428, 77, self:GetTheme(3), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+	draw.SimpleText("THICK", "HNS.RobotoSmall", 429, 102, Color(0, 0, 0, 125), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+	draw.SimpleText("THICK", "HNS.RobotoSmall", 428, 101, self:GetTheme(3), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+
+	surface.SetDrawColor(125, 125, 125, 255)
+	surface.DrawRect(402, 154, 80, 80)
+
+	self.CR.Size = GAMEMODE.CVars.CrosshairSize:GetInt()
+	self.CR.Gap = GAMEMODE.CVars.CrosshairGap:GetInt()
+	self.CR.Thick = GAMEMODE.CVars.CrosshairThick:GetInt()
+	self.CR.Color = Color(GAMEMODE.CVars.CrosshairR:GetInt(), GAMEMODE.CVars.CrosshairG:GetInt(), GAMEMODE.CVars.CrosshairB:GetInt(), GAMEMODE.CVars.CrosshairA:GetInt())
+	GAMEMODE:DrawCrosshair(442, 194, self.CR)
+end
+
+vgui.Register("HNS.PreferencesCrosshair", PANEL, "DPanel")
