@@ -185,7 +185,7 @@ function PANEL:Init()
 	-- Checkboxs
 	self:AddCheckbox("ENABLE DARK THEME", "has_darktheme", 124)
 	self:AddCheckbox("SHOW OTHER PLAYERS' STEAM ID", "has_showid", 124)
-	self:AddCheckbox("PUT YOURSELF AT THE TOP OF THE SCOREBOARD (TODO)", "has_scob_ontop", 124)
+	self:AddCheckbox("PUT YOURSELF AT THE TOP OF THE SCOREBOARD", "has_scob_ontop", 124)
 	-- Speed and its wangs
 	self.Speed = self:AddCheckbox("SHOW MOVEMENT SPEED (X Y):", "has_showspeed", 124)
 	-- Panel that prevents button click

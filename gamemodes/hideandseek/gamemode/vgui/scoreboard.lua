@@ -254,6 +254,9 @@ function PANEL:UpdatePlayers(scale)
 		-- Spectators always last
 		if button.Player:Team() == TEAM_SPECTATOR then
 			pos = pos + game.MaxPlayers()
+		-- Local player first
+		elseif GAMEMODE.CVars.ShowOnTop:GetBool() && button.Player == LocalPlayer() then
+			pos = pos - game.MaxPlayers()
 		end
 		-- Set ZPos
 		button:SetZPos(pos)
