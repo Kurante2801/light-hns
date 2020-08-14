@@ -228,7 +228,7 @@ function PANEL:Init()
 	end
 
 	-- Add your own settings in this hook
-	hook.Run("HASPreferencesMenu", self.SP)
+	hook.Run("HASPreferencesMenu", self)
 end
 
 function PANEL:AddSlider(offsetx, offsety)
