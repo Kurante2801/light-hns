@@ -71,8 +71,8 @@ function PANEL:Init()
 
 		table.insert(self.Buttons, button)
 
-		-- Show first panel (third panel while I make it)
-		if i == 3 then
+		-- Show first panel
+		if i == 1 then
 			button:DoClick()
 		end
 	end
