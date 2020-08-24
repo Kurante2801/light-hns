@@ -151,7 +151,7 @@ end
 
 -- Should clear a lot of code
 function PANEL:ShadowedText(text, font, x, y, color, alignx, aligny)
-	draw.SimpleText(text, font, x + 1, y + 1, Color(0, 0, 0, 125), alignx, aligny)
+	draw.SimpleText(text, font, x + 1, y + 1, Color(0, 0, 0, 200), alignx, aligny)
 	return draw.SimpleText(text, font, x, y, color, alignx, aligny)
 end
 
