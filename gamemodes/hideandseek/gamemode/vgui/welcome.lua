@@ -156,4 +156,3 @@ function PANEL:ShadowedText(text, font, x, y, color, alignx, aligny)
 end
 
 vgui.Register("HNS.Welcome", PANEL, "DFrame")
-vgui.Create("HNS.Welcome")

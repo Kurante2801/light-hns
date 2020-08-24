@@ -30,6 +30,7 @@ include("tdlib.lua")
 include("cl_derma.lua")
 include("vgui/scoreboard.lua")
 include("vgui/preferences.lua")
+include("vgui/welcome.lua")
 include("sh_achievements_table.lua")
 
 -- Receive a chat message from gamemode
@@ -66,10 +67,12 @@ net.Receive("HNS.PlayerEvent", function()
 	end
 end)
 
--- Notify the server that we are ready to receive net messages
 function GM:InitPostEntity()
+	-- Notify the server that we are ready to receive net messages
 	net.Start("HNS.PlayerNetReady")
 	net.SendToServer()
+	-- Create welcome screen
+	vgui.Create("HNS.Welcome")
 end
 
 function GM:Tick()
