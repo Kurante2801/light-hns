@@ -124,7 +124,7 @@ function GM:PlayerBindPress(ply, bind)
 	if bind == "gm_showteam" then
 		vgui.Create("HNS.F2.Derma")
 	elseif bind == "gm_showhelp" then
-		vgui.Create("HNS.F1.Derma")
+		vgui.Create("HNS.Welcome")
 	-- Flashlight
 	elseif bind == "impulse 100" then
 		-- Allowed?

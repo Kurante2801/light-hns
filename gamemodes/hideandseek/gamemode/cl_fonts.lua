@@ -44,7 +44,7 @@ GM.UpdateFonts = function()
 		weight = 300 * scale,
 	})
 
-	surface.CreateFont("HNSHUD.CorbelSmall", {
+	surface.CreateFont("HNSHUD.RobotoThin", {
 		font = "Roboto",
 		size = 9 * scale,
 		weight = 272 * scale,
@@ -71,6 +71,13 @@ surface.CreateFont("HNS.RobotoSmall", {
 	weight = 550,
 	antialias = true,
 })
+
+surface.CreateFont("HNS.RobotoThin", {
+	font = "Roboto",
+	size = 18,
+	weight = 275,
+})
+
 surface.CreateFont("HNS.RobotoMedium", {
 	font = "Roboto",
 	size = 20,

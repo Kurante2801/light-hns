@@ -31,7 +31,7 @@ function PANEL:Init()
 		surface.SetDrawColor(150, 150, 150, 255)
 		surface.DrawOutlinedRect(0, 0, w + 1, h)
 
-		self:ShadowedText(sorts[GAMEMODE.CVars.Sort:GetInt()], "HNSHUD.CorbelSmall", w / 2, h / 2, Color(255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		self:ShadowedText(sorts[GAMEMODE.CVars.Sort:GetInt()], "HNSHUD.RobotoThin", w / 2, h / 2, Color(255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 	end
 	self.Sort.DoClick = function()
 		if GAMEMODE.CVars.Sort:GetInt() == 1 then
@@ -101,7 +101,7 @@ function PANEL:Init()
 	-- Server name
 	self.ServerName = self:Add("DPanel")
 	self.ServerName.Paint = function(this, w, h)
-		surface.SetFont("HNSHUD.CorbelSmall")
+		surface.SetFont("HNSHUD.RobotoThin")
 		-- Scrolling text
 		if this.HostNameWide > w then
 			local offset = SysTime() % 10 / 10
@@ -149,11 +149,11 @@ function PANEL:Paint(w, h)
 	surface.DrawOutlinedRect(0, 0, w, 32 * scale)
 
 	-- Map name
-	self:ShadowedText("Map: ", "HNSHUD.CorbelSmall", 114 * scale, 16 * scale, Color(215, 215, 215), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-	self:ShadowedText(game.GetMap(), "HNSHUD.CorbelSmall", 134 * scale, 16 * scale, Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+	self:ShadowedText("Map: ", "HNSHUD.RobotoThin", 114 * scale, 16 * scale, Color(215, 215, 215), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+	self:ShadowedText(game.GetMap(), "HNSHUD.RobotoThin", 134 * scale, 16 * scale, Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 	-- Player count
-	self:ShadowedText("Players: ", "HNSHUD.CorbelSmall", 114 * scale, 25 * scale, Color(215, 215, 215), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-	self:ShadowedText(player.GetCount() .. "/" .. game.MaxPlayers(), "HNSHUD.CorbelSmall", 144 * scale, 25 * scale, Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+	self:ShadowedText("Players: ", "HNSHUD.RobotoThin", 114 * scale, 25 * scale, Color(215, 215, 215), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+	self:ShadowedText(player.GetCount() .. "/" .. game.MaxPlayers(), "HNSHUD.RobotoThin", 144 * scale, 25 * scale, Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 
 	-- Player list header
 	render.SetScissorRect(blurx, blury + 34 * scale, blurx + w, blury + 46 * scale, true)
@@ -168,9 +168,9 @@ function PANEL:Paint(w, h)
 	surface.DrawOutlinedRect(0, 34 * scale, w, 12 * scale)
 
 	-- Teams count (on the header)
-	self:ShadowedText("Hiders: " .. team.NumPlayers(TEAM_HIDE), "HNSHUD.CorbelSmall", 4 * scale, 40 * scale, Color(75, 150, 225), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-	self:ShadowedText("Seekers: " .. team.NumPlayers(TEAM_SEEK), "HNSHUD.CorbelSmall", w / 2, 40 * scale, Color(215, 75, 50), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-	self:ShadowedText("Spectators: " .. team.NumPlayers(TEAM_SPECTATOR), "HNSHUD.CorbelSmall", w - 4 * scale, 40 * scale, Color(0, 175, 100), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+	self:ShadowedText("Hiders: " .. team.NumPlayers(TEAM_HIDE), "HNSHUD.RobotoThin", 4 * scale, 40 * scale, Color(75, 150, 225), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+	self:ShadowedText("Seekers: " .. team.NumPlayers(TEAM_SEEK), "HNSHUD.RobotoThin", w / 2, 40 * scale, Color(215, 75, 50), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+	self:ShadowedText("Spectators: " .. team.NumPlayers(TEAM_SPECTATOR), "HNSHUD.RobotoThin", w - 4 * scale, 40 * scale, Color(0, 175, 100), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
 end
 
 -- Resize when HUD scale is changed
@@ -213,7 +213,7 @@ function PANEL:UpdateDimentions()
 	self:UpdatePlayers(scale)
 
 	-- Server name
-	surface.SetFont("HNSHUD.CorbelSmall")
+	surface.SetFont("HNSHUD.RobotoThin")
 	self.ServerName.HostNameWide, self.HostNameTall = surface.GetTextSize(GetHostName())
 	-- Limit the bounds of the panel
 	self.ServerName:SetPos(114 * scale, 7 * scale - self.HostNameTall / 2)
@@ -346,14 +346,14 @@ function PANEL:Paint(w, h)
 	surface.DrawRect(4 * scale, 4 * scale, 16 * scale, 16 * scale)
 
 	-- Player team and name
-	self:ShadowedText(self:GetTeamName(), "HNSHUD.CorbelSmall", 23 * scale, h / 2 - 4 * scale, self:GetTeamColor(), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-	self:ShadowedText(self.Player:Name(), "HNSHUD.CorbelSmall", 23 * scale, h / 2 + 4 * scale, Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+	self:ShadowedText(self:GetTeamName(), "HNSHUD.RobotoThin", 23 * scale, h / 2 - 4 * scale, self:GetTeamColor(), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+	self:ShadowedText(self.Player:Name(), "HNSHUD.RobotoThin", 23 * scale, h / 2 + 4 * scale, Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 	-- Ping
-	self:ShadowedText("Ping", "HNSHUD.CorbelSmall", w - 12 * scale, h / 2 - 4 * scale, self:GetTeamColor(), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-	self:ShadowedText(self.Player:Ping(), "HNSHUD.CorbelSmall", w - 12 * scale, h / 2 + 4 * scale, Color(255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+	self:ShadowedText("Ping", "HNSHUD.RobotoThin", w - 12 * scale, h / 2 - 4 * scale, self:GetTeamColor(), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+	self:ShadowedText(self.Player:Ping(), "HNSHUD.RobotoThin", w - 12 * scale, h / 2 + 4 * scale, Color(255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 	-- Points (frags)
-	self:ShadowedText("Points", "HNSHUD.CorbelSmall", w - 44 * scale, h / 2 - 4 * scale, self:GetTeamColor(), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-	self:ShadowedText(self.Player:Frags(), "HNSHUD.CorbelSmall", w - 44 * scale, h / 2 + 4 * scale, Color(255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+	self:ShadowedText("Points", "HNSHUD.RobotoThin", w - 44 * scale, h / 2 - 4 * scale, self:GetTeamColor(), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+	self:ShadowedText(self.Player:Frags(), "HNSHUD.RobotoThin", w - 44 * scale, h / 2 + 4 * scale, Color(255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 
 	-- Achievements master stars
 	if self.Player.AchMaster then
