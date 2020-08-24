@@ -19,6 +19,19 @@ function PANEL:Init()
 		GAMEMODE.DUtils.FadeHover(this, 1, 0, 0, w, h, Color(0, 0, 0, 125))
 		self:ShadowedText("r", "Marlett", w / 2, h / 2, Color(255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 	end
+	-- Back button
+	self.BB = self:Add("DButton")
+	self.BB:SetSize(24, 24)
+	self.BB:SetPos(452, 0)
+	self.BB:SetText("")
+	self.BB.DoClick = function()
+		self:Close()
+		vgui.Create("HNS.Welcome")
+	end
+	self.BB.Paint = function(this, w, h)
+		GAMEMODE.DUtils.FadeHover(this, 1, 0, 0, w, h, Color(0, 0, 0, 125))
+		self:ShadowedText("3", "Marlett", w / 2, h / 2, Color(255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+	end
 	-- "Tabs" bar
 	self.TabsP = self:Add("DPanel")
 	self.TabsP:Dock(TOP)
