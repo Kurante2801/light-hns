@@ -81,6 +81,7 @@ end
 
 function PANEL:Paint(w, h)
 	Derma_DrawBackgroundBlur(self, self.BlurStart)
+
 	surface.SetDrawColor(self:GetTheme(1))
 	surface.DrawRect(0, 0, w, h)
 	surface.SetDrawColor(self:GetTint())

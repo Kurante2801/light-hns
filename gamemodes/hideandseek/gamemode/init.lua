@@ -11,6 +11,7 @@ AddCSLuaFile("vgui/scoreboard.lua")
 AddCSLuaFile("vgui/preferences.lua")
 AddCSLuaFile("vgui/welcome.lua")
 AddCSLuaFile("vgui/teamselection.lua")
+AddCSLuaFile("vgui/achievements.lua")
 AddCSLuaFile("tdlib.lua")
 
 include("sv_player.lua")

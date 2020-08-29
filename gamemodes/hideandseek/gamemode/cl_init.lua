@@ -32,6 +32,7 @@ include("vgui/scoreboard.lua")
 include("vgui/preferences.lua")
 include("vgui/welcome.lua")
 include("vgui/teamselection.lua")
+include("vgui/achievements.lua")
 include("sh_achievements_table.lua")
 
 -- Receive a chat message from gamemode
@@ -104,8 +105,8 @@ function GM:PostDrawOpaqueRenderables()
 		if ply == LocalPlayer() then continue end
 
 		-- Draw a text above head
-		cam.Start3D2D(ply:EyePos() + Vector(0, 0, 24), Angle(0, ang.y, 90), 0.075)
-			draw.SimpleTextOutlined(ply:Name(), "HNS.RobotoSpec", 0, 0, col, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 3, Color(0, 0, 0, 125))
+		cam.Start3D2D(ply:EyePos() + Vector(0, 0, 18), Angle(0, ang.y, 90), 0.075)
+			draw.SimpleTextOutlined(ply:Name(), "HNS.RobotoSpec", 0, 0, col, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, 125))
 			draw.SimpleTextOutlined(Entity(1):SteamID(), "HNS.RobotoLarge", 0, 54, col, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, 125))
 		cam.End3D2D()
 	end
