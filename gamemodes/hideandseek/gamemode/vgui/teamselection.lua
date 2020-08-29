@@ -41,7 +41,14 @@ function PANEL:Init()
 	self.Play:SetSize(150, 150)
 	self.Play:SetText("")
 	self.Play.Paint = function(this, w, h)
-		GAMEMODE.DUtils.Outline(0, 0, w, h, 4, Color(220, 20, 60))
+		-- If player is a spectator, draw red (because you're a seeker after joining)
+		if LocalPlayer():Team() == TEAM_SPECTATOR then
+			this.Color = GAMEMODE:GetTeamShade(TEAM_SEEK, GAMEMODE.CVars.SeekerColor:GetString())
+		else
+			this.Color = self:GetTint()
+		end
+
+		GAMEMODE.DUtils.Outline(0, 0, w, h, 4, this.Color)
 		this:HoverAnim(w, h)
 		self:ShadowedText("PLAY!", "HNS.RobotoLarge", w / 2, h / 2, self:GetTheme(3), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 	end
