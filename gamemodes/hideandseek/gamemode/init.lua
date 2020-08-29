@@ -10,6 +10,7 @@ AddCSLuaFile("cl_derma.lua")
 AddCSLuaFile("vgui/scoreboard.lua")
 AddCSLuaFile("vgui/preferences.lua")
 AddCSLuaFile("vgui/welcome.lua")
+AddCSLuaFile("vgui/teamselection.lua")
 AddCSLuaFile("tdlib.lua")
 
 include("sv_player.lua")

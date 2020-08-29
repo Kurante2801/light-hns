@@ -96,9 +96,8 @@ surface.CreateFont("HNS.RobotoTeamSelection", {
 	antialias = true,
 })
 surface.CreateFont("HNS.RobotoLarge", {
-	font = "Roboto Bold",
-	size = 48,
-	antialias = true,
+	font = "Roboto Black",
+	size = 30,
 })
 surface.CreateFont("HNS.RobotoSpec", {
 	font = "Roboto Bold",

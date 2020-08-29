@@ -31,6 +31,7 @@ include("cl_derma.lua")
 include("vgui/scoreboard.lua")
 include("vgui/preferences.lua")
 include("vgui/welcome.lua")
+include("vgui/teamselection.lua")
 include("sh_achievements_table.lua")
 
 -- Receive a chat message from gamemode
@@ -125,7 +126,7 @@ function GM:PlayerBindPress(ply, bind)
 
 	-- Team selection menu
 	if bind == "gm_showteam" then
-		vgui.Create("HNS.F2.Derma")
+		vgui.Create("HNS.TeamSelection")
 	elseif bind == "gm_showhelp" then
 		vgui.Create("HNS.Welcome")
 	-- Flashlight
