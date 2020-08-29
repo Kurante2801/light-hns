@@ -43,14 +43,14 @@ function PANEL:Init()
 		GAMEMODE.DUtils.FadeHover(this, 1, 0, 0, w, h, this.Color)
 
 		-- Text
-		self:ShadowedText("Let's Play!", "HNS.VerdanaLarge", w / 2, h / 2, self:GetTheme(3), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		self:ShadowedText("LET'S PLAY!", "HNS.RobotoLarge", w / 2, h / 2, self:GetTheme(3), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 	end
 	self.Play.DoClick = function()
 		self:Close()
 		-- Open once
 		if !GAMEMODE.TeamSelectionOpenedFromF1 then
 			GAMEMODE.TeamSelectionOpenedFromF1 = true
-			vgui.Create("HNS.F2.Derma")
+			vgui.Create("HNS.TeamSelection")
 		end
 	end
 
@@ -95,21 +95,21 @@ function PANEL:Paint(w, h)
 	if !self.DefaultDescription then return end
 
 	-- Gameplay explanation
-	self:ShadowedText("HOW TO PLAY", "HNS.RobotoSmall", 10, 30, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+	draw.SimpleText("HOW TO PLAY", "HNS.RobotoSmall", 10, 30, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 
-	self.TeamWide = self:ShadowedText("Hiders ", "HNS.RobotoThin", 10, 48, Color(100, 175, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-	self:ShadowedText("must avoid seekers until the round timer ends to win.", "HNS.RobotoThin", self.TeamWide + 10, 48, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-	self.TeamWide = self:ShadowedText("Seekers ", "HNS.RobotoThin", 10, 66, Color(235, 100, 75), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-	self:ShadowedText("must find and catch all hiders they can to aid their team.", "HNS.RobotoThin", self.TeamWide + 10, 66, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+	self.TeamWide = draw.SimpleText("Hiders ", "HNS.RobotoThin", 10, 48, Color(100, 175, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+	draw.SimpleText("must avoid seekers until the round timer ends to win.", "HNS.RobotoThin", self.TeamWide + 10, 48, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+	self.TeamWide = draw.SimpleText("Seekers ", "HNS.RobotoThin", 10, 66, Color(235, 100, 75), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+	draw.SimpleText("must find and catch all hiders they can to aid their team.", "HNS.RobotoThin", self.TeamWide + 10, 66, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 
-	self:ShadowedText("Hiders will turn into Seekers when caught and the round will also end ", "HNS.RobotoThin", 10, 90, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-	self:ShadowedText("when there are no more Hiders standing.", "HNS.RobotoThin", 10, 108, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+	draw.SimpleText("Hiders will turn into Seekers when caught and the round will also end ", "HNS.RobotoThin", 10, 90, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+	draw.SimpleText("when there are no more Hiders standing.", "HNS.RobotoThin", 10, 108, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 
 	-- Default binds
-	self:ShadowedText("DEFAULT BINDS", "HNS.RobotoSmall", 10, 136, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-	self:ShadowedText("F1 - Open this window. Binded to gm_showhelp", "HNS.RobotoThin", 10, 154, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-	self:ShadowedText("F2 - Open team selection. Binded to gm_showteam", "HNS.RobotoThin", 10, 172, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-	self:ShadowedText("R - Play a random taunt. Binded to +reload", "HNS.RobotoThin", 10, 190, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+	draw.SimpleText("DEFAULT BINDS", "HNS.RobotoSmall", 10, 136, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+	draw.SimpleText("F1 - Open this window. Binded to gm_showhelp", "HNS.RobotoThin", 10, 154, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+	draw.SimpleText("F2 - Open team selection. Binded to gm_showteam", "HNS.RobotoThin", 10, 172, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+	draw.SimpleText("R - Play a random taunt. Binded to +reload", "HNS.RobotoThin", 10, 190, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 end
 
 -- https://stackoverflow.com/questions/929103/convert-a-number-range-to-another-range-maintaining-ratio
