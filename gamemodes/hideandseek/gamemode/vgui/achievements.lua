@@ -139,4 +139,3 @@ function PANEL:Map(value, oldMin, oldMax, newMin, newMax)
 end
 
 vgui.Register("HNS.Achievements", PANEL, "DFrame")
-vgui.Create("HNS.Achievements")
