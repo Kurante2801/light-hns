@@ -38,12 +38,6 @@ GM.UpdateFonts = function()
 		weight = 300 * scale,
 	})
 
-	surface.CreateFont("HNSHUD.Marlett", {
-		font = "Trebuchet MS",
-		size = 18 * scale,
-		weight = 300 * scale,
-	})
-
 	surface.CreateFont("HNSHUD.RobotoThin", {
 		font = "Roboto",
 		size = 9 * scale,
@@ -53,17 +47,6 @@ end
 
 GM.UpdateFonts()
 cvars.AddChangeCallback("has_hud_scale", GM.UpdateFonts, "HNS.UpdateFonts")
-
-surface.CreateFont("HNS.VerdanaMedium", {
-	font = "Verdana",
-	size = 22,
-	weight = 275,
-})
-surface.CreateFont("HNS.VerdanaLarge", {
-	font = "Verdana",
-	size = 28,
-	weight = 575,
-})
 
 surface.CreateFont("HNS.RobotoSmall", {
 	font = "Roboto",
@@ -78,29 +61,8 @@ surface.CreateFont("HNS.RobotoThin", {
 	weight = 275,
 })
 
-surface.CreateFont("HNS.RobotoMedium", {
-	font = "Roboto",
-	size = 20,
-	antialias = true,
-})
-surface.CreateFont("HNS.RobotoBig", {
-	font = "Roboto",
-	size = 38,
-	weight = 600,
-	antialias = true,
-})
-surface.CreateFont("HNS.RobotoTeamSelection", {
-	font = "Roboto",
-	size = 30,
-	weight = 550,
-	antialias = true,
-})
+
 surface.CreateFont("HNS.RobotoLarge", {
 	font = "Roboto Black",
 	size = 30,
-})
-surface.CreateFont("HNS.RobotoSpec", {
-	font = "Roboto Bold",
-	size = 84,
-	antialias = true,
 })

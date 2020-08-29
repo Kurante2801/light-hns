@@ -8,6 +8,7 @@ function PANEL:Init()
 	self:ShowCloseButton(false)
 	self:DockPadding(0, 0, 0, 0)
 	self:SetDraggable(false)
+	self.BlurStart = SysTime()
 	-- New close button
 	self.CB = self:Add("DButton")
 	self.CB:SetSize(24, 24)
@@ -72,7 +73,7 @@ function PANEL:Init()
 end
 
 function PANEL:Paint(w, h)
-	Derma_DrawBackgroundBlur(self)
+	Derma_DrawBackgroundBlur(self, self.BlurStart)
 	surface.SetDrawColor(self:GetTheme(1))
 	surface.DrawRect(0, 0, w, h)
 	surface.SetDrawColor(self:GetTint())
