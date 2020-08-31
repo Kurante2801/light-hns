@@ -40,8 +40,8 @@ function PANEL:Init()
 	self.Buttons = {}
 
 	-- Buttons to toggle panels
-	local texts = { "INTERFACE", "PLAYER MODEL", "CROSSHAIR", "PLACEHOLDER" }
-	local tabs = { "HNS.PreferencesHUD", "HNS.PreferencesPM", "HNS.PreferencesCrosshair", "DPanel" }
+	local texts = { "INTERFACE", "PLAYER MODEL", "CROSSHAIR", "SERVER CVARS" }
+	local tabs = { "HNS.PreferencesHUD", "HNS.PreferencesPM", "HNS.PreferencesCrosshair", "HNS.PreferencesCVars" }
 	-- Create panel
 	for i, text in ipairs(texts) do
 		local button = self.TabsP:Add("DButton")
@@ -83,7 +83,7 @@ function PANEL:Init()
 		table.insert(self.Buttons, button)
 
 		-- Show first panel
-		if i == 1 then
+		if i == 4 then
 			button:DoClick()
 		end
 	end
@@ -488,3 +488,102 @@ function PANEL:Paint(w, h)
 end
 
 vgui.Register("HNS.PreferencesCrosshair", PANEL, "DPanel")
+
+PANEL = {}
+
+-- Ignores dark theme setting and is always dark for readability
+function PANEL:Init()
+	self.SP = self:Add("DScrollPanel")
+	self.SP:Dock(FILL)
+
+	self.Text = self.SP:Add("DPanel")
+	self.Text:Dock(TOP)
+	self.Text:SetTall(32)
+	self.Text.Paint = function(this, w, h)
+		self:ShadowedText("TYPE ON SERVER/HOST CONSOLE", "HNS.RobotoSmall", w / 2, h / 2, self:GetTheme(3), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+	end
+
+	self:AddCVar("NUMBER", "has_maxrounds", "Rounds until map change")
+	self:AddCVar("SECONDS", "has_timelimit", "Time to seek (0 is infinite)")
+	self:AddCVar("BOOLEAN", "has_envdmgallowed", "Will the map hurt players?")
+	self:AddCVar("SECONDS", "has_blindtime", "Time to hide (seekers are blinded)")
+	self:AddCVar("NUMBER", "has_hidereward", "How many points to award hiders per round won")
+	self:AddCVar("NUMBER", "has_seekreward", "How many points to award seekers per hider tag")
+	self:AddCVar("NUMBER", "has_hiderrunspeed", "Speed at which hiders run at")
+	self:AddCVar("NUMBER", "has_seekerrunspeed", "Speed at which seekers run at")
+	self:AddCVar("NUMBER", "has_hiderwalkspeed", "Speed at which hiders walk at")
+	self:AddCVar("NUMBER", "has_seekerwalkspeed", "Speed at which seekers walk at")
+	self:AddCVar("NUMBER", "has_jumppower", "Force everyone jumps with")
+	self:AddCVar("NUMBER", "has_clickrange", "Range at which seekers can click tag")
+	self:AddCVar("TEXT", "has_scob_text", "Text for the scoreboard button (top left button)")
+	self:AddCVar("URL", "has_scob_url", "Link the scoreboard button will open")
+	self:AddCVar("BOOLEAN", "has_lasthidertrail", "Put a trail on the last remaining hider")
+	self:AddCVar("BOOLEAN", "has_hiderflashlight", "Enable hider flashlights (only visible to them)")
+	self:AddCVar("BOOLEAN", "has_teamindicators", "Draw an indicator over far away teammates")
+
+	self.Why = self.SP:Add("DPanel")
+	self.Why:Dock(TOP)
+	self.Why:SetTall(24)
+	self.Why.Text = self.Texts[math.random(#self.Texts)]
+	self.Why.Paint = function(this, w, h)
+		self:ShadowedText(this.Text, "HNS.RobotoThin", w / 2, 0, self:GetTheme(3), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+	end
+end
+
+function PANEL:Paint() end
+
+function PANEL:AddCVar(type, cvar, desc)
+	local panel = self.SP:Add("DButton")
+	panel:Dock(TOP)
+	panel:DockMargin(16, 0, 16, 8)
+	panel:DockPadding(0, 0, 0, 0)
+	panel:SetTall(72)
+	panel:SetText("")
+	panel.Name = cvar
+	panel.Type = type
+	panel.Desc = desc
+	panel.CVar = GetConVar(cvar)
+
+	panel.Paint = function(this, w, h)
+		surface.SetDrawColor(self:GetTint())
+		surface.DrawRect(0, 0, 100, 24)
+
+		this.Value = this.CVar:GetString()
+		this.Default = this.CVar:GetDefault()
+
+		self:ShadowedText(this.Type, "HNS.RobotoSmall", 50, 12, Color(255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		self:ShadowedText(this.Name, "HNS.RobotoThin", 110, 12, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+
+		surface.SetDrawColor(self:GetTheme(2))
+		surface.DrawRect(0, 24, 100, 24)
+
+		self:ShadowedText("DESCRIPTION", "HNS.RobotoSmall", 50, 36, Color(255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		self:ShadowedText(this.Desc, "HNS.RobotoThin", 110, 36, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+
+		surface.SetDrawColor(75, 75, 75, 255)
+		surface.DrawRect(0, 48, 100, 24)
+
+		self:ShadowedText("VALUE", "HNS.RobotoSmall", 50, 60, Color(255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+
+		if this.Value == this.Default then
+			self:ShadowedText(this.Value, "HNS.RobotoThin", 110, 60, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+		else
+			self:ShadowedText(this.Value .. " (default: " .. this.Default .. ")", "HNS.RobotoThin", 110, 60, self:GetTheme(3), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+		end
+	end
+	panel.DoClick = function(this)
+		local menu = DermaMenu()
+		menu:AddOption("HELL", function() end)
+		menu:Open()
+	end
+end
+
+PANEL.Texts = { 
+	"Why do we all have to wear these ridiculous ties?",
+	"It is good day to be not dead",
+	"Ok so for some reason CreateConVar() doesn't set help text",
+}
+
+vgui.Register("HNS.PreferencesCVars", PANEL, "DPanel")
+
+vgui.Create("HNS.Preferences")
