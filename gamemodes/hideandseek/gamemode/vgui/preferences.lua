@@ -83,7 +83,7 @@ function PANEL:Init()
 		table.insert(self.Buttons, button)
 
 		-- Show first panel
-		if i == 4 then
+		if i == 1 then
 			button:DoClick()
 		end
 	end
@@ -500,7 +500,7 @@ function PANEL:Init()
 	self.Text:Dock(TOP)
 	self.Text:SetTall(32)
 	self.Text.Paint = function(this, w, h)
-		self:ShadowedText("TYPE ON SERVER/HOST CONSOLE", "HNS.RobotoSmall", w / 2, h / 2, self:GetTheme(3), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		self:ShadowedText("CHANGE ON SERVER/HOST CONSOLE", "HNS.RobotoSmall", w / 2, h / 2, self:GetTheme(3), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 	end
 
 	self:AddCVar("NUMBER", "has_maxrounds", "Rounds until map change")
@@ -573,7 +573,15 @@ function PANEL:AddCVar(type, cvar, desc)
 	end
 	panel.DoClick = function(this)
 		local menu = DermaMenu()
-		menu:AddOption("HELL", function() end)
+		menu:AddOption("Copy " .. this.Name, function()
+			SetClipboardText(this.Name)
+		end)
+		menu:AddOption("Copy default value", function()
+			SetClipboardText(this.CVar:GetDefault())
+		end)
+		menu:AddOption("Copy current value", function()
+			SetClipboardText(this.CVar:GetString())
+		end)
 		menu:Open()
 	end
 end
@@ -585,5 +593,3 @@ PANEL.Texts = {
 }
 
 vgui.Register("HNS.PreferencesCVars", PANEL, "DPanel")
-
-vgui.Create("HNS.Preferences")
