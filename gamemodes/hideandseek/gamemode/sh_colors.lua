@@ -6,7 +6,7 @@ GM.HiderColors = {
 	["Shark"] = Color(75, 150, 225),
 	["Full Blue"] = Color(0, 0, 255),
 	["Dark Blue"] = Color(0, 0, 175),
-	["Super Light Blue"] = Color(0, 255, 255),
+	["Cyan"] = Color(0, 255, 255),
 	["Light Blue"] = Color(20, 130, 200),
 }
 

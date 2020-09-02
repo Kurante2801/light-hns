@@ -19,13 +19,19 @@ GM.CVars.CrosshairSize = CreateClientConVar("has_crosshair_size", 8, true, false
 GM.CVars.CrosshairGap = CreateClientConVar("has_crosshair_gap", 6, true, false)
 GM.CVars.CrosshairThick = CreateClientConVar("has_crosshair_thick", 4, true, false)
 GM.CVars.HUDScale = CreateClientConVar("has_hud_scale", 2, true, false)
+GM.CVars.SortReversed = CreateClientConVar("has_scob_sort_reversed", 0, true, false)
+GM.CVars.DarkTheme = CreateClientConVar("has_darktheme", 1, true, false)
 
 -- Includes
 include("sh_init.lua")
 include("cl_fonts.lua")
 include("cl_hud.lua")
-include("tdlib.lua")
 include("cl_derma.lua")
+include("vgui/scoreboard.lua")
+include("vgui/preferences.lua")
+include("vgui/welcome.lua")
+include("vgui/teamselection.lua")
+include("vgui/achievements.lua")
 include("sh_achievements_table.lua")
 
 -- Receive a chat message from gamemode
@@ -62,10 +68,12 @@ net.Receive("HNS.PlayerEvent", function()
 	end
 end)
 
--- Notify the server that we are ready to receive net messages
 function GM:InitPostEntity()
+	-- Notify the server that we are ready to receive net messages
 	net.Start("HNS.PlayerNetReady")
 	net.SendToServer()
+	-- Create welcome screen
+	vgui.Create("HNS.Welcome")
 end
 
 function GM:Tick()
@@ -96,9 +104,9 @@ function GM:PostDrawOpaqueRenderables()
 		if ply == LocalPlayer() then continue end
 
 		-- Draw a text above head
-		cam.Start3D2D(ply:EyePos() + Vector(0, 0, 24), Angle(0, ang.y, 90), 0.075)
-			draw.SimpleTextOutlined(ply:Name(), "HNS.RobotoSpec", 0, 0, col, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 3, Color(0, 0, 0, 125))
-			draw.SimpleTextOutlined(ply:SteamID(), "HNS.RobotoBig", 0, 54, col, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 3, Color(0, 0, 0, 125))
+		cam.Start3D2D(ply:EyePos() + Vector(0, 0, 18), Angle(0, ang.y, 90), 0.075)
+			draw.SimpleTextOutlined(ply:Name(), "HNS.RobotoSpec", 0, 0, col, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, 125))
+			draw.SimpleTextOutlined(ply:SteamID(), "HNS.RobotoLarge", 0, 54, col, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, 125))
 		cam.End3D2D()
 	end
 end
@@ -118,9 +126,9 @@ function GM:PlayerBindPress(ply, bind)
 
 	-- Team selection menu
 	if bind == "gm_showteam" then
-		vgui.Create("HNS.F2.Derma")
+		vgui.Create("HNS.TeamSelection")
 	elseif bind == "gm_showhelp" then
-		vgui.Create("HNS.F1.Derma")
+		vgui.Create("HNS.Welcome")
 	-- Flashlight
 	elseif bind == "impulse 100" then
 		-- Allowed?
@@ -141,7 +149,7 @@ function GM:ScoreboardShow()
 		self.Scoreboard = vgui.Create("HNS.Scoreboard")
 	end
 	self.Scoreboard:Show()
-	self.Scoreboard:UpdateList()
+	self.Scoreboard:UpdateDimentions()
 end
 
 function GM:ScoreboardHide()

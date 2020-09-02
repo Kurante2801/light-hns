@@ -235,7 +235,7 @@ function GM:HUDPaint()
 			local alpha = math.Clamp((ply:GetPos():Distance(mate:GetPos()) - 200) * 255 / 600, 0, 255)
 			pos = pos:ToScreen()
 
-			draw.SimpleTextOutlined("v", "HNSHUD.Marlett", pos.x, pos.y, ColorAlpha(mate:GetPlayerColor():ToColor(), alpha), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, alpha * 0.35))
+			draw.SimpleTextOutlined("v", "HNSHUD.RobotoLarge", pos.x, pos.y, ColorAlpha(mate:GetPlayerColor():ToColor(), alpha), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, alpha * 0.35))
 		end
 	end
 end
