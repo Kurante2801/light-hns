@@ -49,7 +49,7 @@ GM.UpdateFonts()
 cvars.AddChangeCallback("has_hud_scale", GM.UpdateFonts, "HNS.UpdateFonts")
 
 surface.CreateFont("HNS.RobotoSmall", {
-	font = "Roboto",
+	font = "Roboto Black",
 	size = 18,
 	weight = 550,
 	antialias = true,
