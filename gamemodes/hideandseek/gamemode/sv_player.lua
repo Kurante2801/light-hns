@@ -382,7 +382,7 @@ hook.Add("Tick", "HNS.PlayerStuckPrevention", function()
 
 		-- Check for near players
 		for _, ply2 in ipairs(GAMEMODE.PlayersCache) do
-			if  !IsValid(ply2) || ply2:Team() == TEAM_SPECTATOR || ply == ply2 then continue end
+			if !IsValid(ply2) || ply2:Team() == TEAM_SPECTATOR || ply == ply2 || ply2:GetObserverMode() != OBS_MODE_NONE then continue end
 
 			shouldCalculate = false
 
@@ -405,7 +405,7 @@ hook.Add("Tick", "HNS.PlayerStuckPrevention", function()
 			hullb = hullb - Vector(2, 2, 2)
 
 			for _, ent in ipairs(ents.FindInBox(ply:GetPos() + hulla, ply:GetPos() + hullb)) do
-				if ent == ply || !ent:IsPlayer () || ply:Team() == TEAM_SPECTATOR then continue end
+				if ent == ply || !ent:IsPlayer () || ply:Team() == TEAM_SPECTATOR || ent:GetObserverMode() != OBS_MODE_NONE then continue end
 
 				ent:SetCollisionGroup(COLLISION_GROUP_WEAPON)
 				ent:SetRenderMode(RENDERMODE_TRANSCOLOR)
