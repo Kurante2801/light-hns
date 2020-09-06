@@ -2,18 +2,18 @@
 
 A recoding of the classic Hide and Seek gamemode for Garry's Mod that is more secure, optimized and customizable. The reason I've done this is because I want the gamemode to live again, or not to completely die out as it is my favorite gamemode since years.
 
-I am using [Threebow](https://www.threebow.com/)'s [Derma Lib](https://threebow.gitbooks.io/tdlib/) for cool looking derma (the windows).
-
 This gamemode WILL CONFLICT with [classic Hide and Seek](https://steamcommunity.com/sharedfiles/filedetails/?id=266512527), so make sure you uninstall it.
 
 ## Main Features
 
 * Multiple HUDs and settings.
+* HUD scaling for people with big screens.
 * Player gender and color shade choices.
 * More server-side settings and optimization.
-* More secure (pretty sure I'm not using SendLua anywhere).
+* More secure (not using insecure networking).
 * Active development.
-* Per-server achievements.
+* Per-server achievements (and you can add your own too!).
+* Flashlights for hiders. (disabled by default, see ConVars)
 
 ## TO DO
 * Votemap (currently, you'll need to hook your own votemap to `HASVotemapStart`)
@@ -53,6 +53,8 @@ This gamemode WILL CONFLICT with [classic Hide and Seek](https://steamcommunity.
 `has_hiderflashlight` *Boolean (0 or 1)* = Will hiders be able to use flashlights? They will only be visible for themselves and will not produce a sound.
 
 `has_teamindicators` *Boolean (0 or 1)* = Will players be able to see their teammates' position with a V over their heads?.
+
+`has_infinitestamina` *Boolean (0 or 1)* = Can players run forever.
 
 ## Additional info
 

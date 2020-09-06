@@ -96,5 +96,17 @@
 			"type"		"CheckBox"
 			"default"	"0"
 		}
+		16 {
+			"name"		"has_teamindicators"
+			"text"		"Draw an indicator over teammates heads when they are far away."
+			"type"		"CheckBox"
+			"default"	"0"
+		}
+		17 {
+			"name"		"has_infinitestamina"
+			"text"		"Can players run forever."
+			"type"		"CheckBox"
+			"default"	"0"
+		}
 	}
 }
