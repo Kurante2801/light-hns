@@ -37,6 +37,7 @@ if SERVER then
 					net.Start("HNS.StaminaChange")	
 						net.WriteInt(100, 8)
 					net.Send(hider)
+					hider.Stamina = 100
 					-- Last hider trail
 					if self.CVars.HiderTrail:GetBool() && IsValid(hider) then
 						hider.HiderTrail = util.SpriteTrail(hider, 0, self:GetTeamShade(TEAM_HIDE, hider:GetInfo("has_hidercolor", "Default")), true, 8, 0, 1.75, 0.01, "trails/laser.vmt")
