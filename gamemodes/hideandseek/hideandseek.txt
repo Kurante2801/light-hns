@@ -104,7 +104,7 @@
 		}
 		17 {
 			"name"		"has_infinitestamina"
-			"text"		"Can players run forever."
+			"text"		"Enable infinite stamina."
 			"type"		"CheckBox"
 			"default"	"0"
 		}
