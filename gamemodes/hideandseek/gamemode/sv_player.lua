@@ -7,12 +7,13 @@ function GM:PlayerInitialSpawn(ply)
 	if ply:IsBot() then
 		ply:SetTeam(TEAM_SEEK)
 		ply.Achs = {}
-		return
 	end
-	ply:SetTeam(TEAM_SPECTATOR)
 end
 
 function GM:HASPlayerNetReady(ply)
+	-- Setting a non bot player's team in GM:PlayerInitialSpawn() causes the server to crash, so we do it here
+	ply:SetTeam(TEAM_SPECTATOR)
+	
 	-- Get achievements from sql and also network etc
 	ply:ProcessAchievements()
 	-- Send round info
