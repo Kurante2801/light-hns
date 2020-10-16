@@ -111,6 +111,13 @@ function GM:PostDrawOpaqueRenderables()
 	end
 end
 
+function GM:PrePlayerDraw(ply)
+	-- Don't draw spectators
+	if ply:Team() == TEAM_SPECTATOR then
+		return true
+	end
+end
+
 function GM:KeyPress(ply, key)
 	if ply != LocalPlayer() then return end
 	-- Scoreboard

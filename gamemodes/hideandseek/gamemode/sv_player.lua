@@ -43,22 +43,12 @@ function GM:PlayerSpawn(ply)
 
 	if ply:Team() == TEAM_SPECTATOR then
 		self:PlayerSpawnAsSpectator(ply)
-		ply:SetNoDraw(false)
-		ply:SetMaterial("models/effects/vol_light001")
-		ply:SetRenderMode(RENDERMODE_TRANSALPHA)
-		ply:SetColor(Color(0, 0, 0, 0))
-		ply:SetModelScale(0)
+		ply:SetNoDraw(false) -- We hide spectators on PrePlayerDraw
 		ply:AllowFlashlight(false)
 		return true
 	end
 	-- Calling base spawn for stuff fixing
 	self.BaseClass:PlayerSpawn(ply)
-
-	-- Fixing spectator stuff
-	ply:SetMaterial("")
-	ply:SetRenderMode(RENDERMODE_NORMAL)
-	ply:SetColor(COLOR_WHITE)
-	ply:SetModelScale(1)
 
 	-- Set current gender
 	ply.Gender = ply:GetInfoNum("has_gender", 0) == 1
