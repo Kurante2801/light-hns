@@ -225,6 +225,13 @@ function PANEL:UpdateDimentions()
 end
 
 function PANEL:UpdatePlayers(scale)
+	-- Fix nil players
+	for i = 1, #self.Players do
+		if !IsValid(self.Players[i]) then
+			table.remove(self.Players, i)
+			i = i - 1
+		end
+	end
 	-- We sort by name here
 	if GAMEMODE.CVars.Sort:GetInt() == 3 then
 		table.sort(self.Players, function(a, b)
