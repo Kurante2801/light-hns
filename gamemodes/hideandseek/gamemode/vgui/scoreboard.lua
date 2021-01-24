@@ -227,7 +227,7 @@ end
 function PANEL:UpdatePlayers(scale)
 	-- Fix nil players
 	for i = 1, #self.Players do
-		if !IsValid(self.Players[i]) then
+		if !IsValid(self.Players[i].Player) then
 			table.remove(self.Players, i)
 			i = i - 1
 		end
