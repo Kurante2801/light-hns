@@ -108,5 +108,11 @@
 			"type"		"CheckBox"
 			"default"	"0"
 		}
+		18 {
+			"name"		"has_firstcaughtseeks"
+			"text"		"First player caught will seek next round."
+			"type"		"CheckBox"
+			"default"	"0"
+		}
 	}
 }
