@@ -109,8 +109,14 @@ if SERVER then
 			self.RoundCount = self.RoundCount + 1
 			self:RoundTimer(self.CVars.TimeLimit:GetInt() + self.CVars.BlindTime:GetInt())
 
-			-- Select random seeker and spawn
-			local seeker = team.GetPlayers(TEAM_HIDE)[math.random(team.NumPlayers(TEAM_HIDE))]
+			-- Select seeker
+			local seeker
+			if self.CVars.FirstSeeks:GetBool() && IsValid(self.FirstCaught) && self.FirstCaught:Team() != TEAM_SPECTATOR then
+				seeker = self.FirstCaught
+			else
+				seeker = team.GetPlayers(TEAM_HIDE)[math.random(team.NumPlayers(TEAM_HIDE))]
+			end
+			self.FirstCaught = nil
 			seeker:SetTeam(TEAM_SEEK)
 			seeker:Spawn()
 

@@ -240,6 +240,13 @@ function GM:KeyPress(ply, key)
 	end
 end
 
+function GM:HASPlayerCaught(seeker, ply)
+	if self.RoundCount < 1 || !self.CVars.FirstSeeks:GetBool() then return end
+	if IsValid(self.FirstCaught) && self.FirstCaught:Team() != TEAM_SPECTATOR then return end
+
+	self.FirstCaught = ply
+end
+
 local using = nil
 hook.Add("Move", "HNS.SprintPrevention", function(ply, data)
 	using = ply:GetEntityInUse()
