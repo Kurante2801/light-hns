@@ -56,6 +56,8 @@ This gamemode WILL CONFLICT with [classic Hide and Seek](https://steamcommunity.
 
 `has_infinitestamina` *Boolean (0 or 1)* = Can players run forever.
 
+`has_firstcaughtseeks` *Boolean (0 or 1)* = First player caught will seek next round.
+
 ## Additional info
 
 This gamemode was created to be exclusive to the GFL community, but now is free for everyone to use, that's why you may see server references, bad commit names or me just being a dick on the comments on older commits.
