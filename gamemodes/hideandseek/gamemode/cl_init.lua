@@ -167,6 +167,20 @@ function GM:ScoreboardHide()
 	end
 end
 
+function GM:HASAchievementsMenu()
+	vgui.Create("HNS.Achievements")
+end
+
+function GM:HASScoreboardMenu(menu, ply)
+	menu:AddOption(ply:IsMuted() && "Unmute" || "Mute", function()
+		ply:SetMuted(!ply:IsMuted())
+	end):SetIcon(ply:IsMuted() && "icon16/sound.png" || "icon16/sound_mute.png")
+	menu:AddOption("Open Profile", function()
+		ply:ShowProfile()
+	end):SetIcon("icon16/user.png")
+end
+
+
 -- Update playercolor
 local function PlayerColorUpdate()
 	net.Start("HNS.PlayerColorUpdate")

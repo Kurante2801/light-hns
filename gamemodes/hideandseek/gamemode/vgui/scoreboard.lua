@@ -436,12 +436,7 @@ end
 function PANEL:DoClick()
 	local menu = DermaMenu()
 
-	menu:AddOption(self.Player:IsMuted() && "Unmute" || "Mute", function()
-		self.Player:SetMuted(!self.Player:IsMuted())
-	end):SetIcon(self.Player:IsMuted() && "icon16/sound.png" || "icon16/sound_mute.png")
-	menu:AddOption("Open Profile", function()
-		self.Player:ShowProfile()
-	end):SetIcon("icon16/user.png")
+	hook.Run("HASScoreboardMenu", menu, self.Player)
 
 	menu:AddSpacer()
 

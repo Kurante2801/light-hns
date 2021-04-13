@@ -81,7 +81,7 @@ function PANEL:Init()
 	end
 	self.Achs.DoClick = function()
 		self:Close()
-		vgui.Create("HNS.Achievements")
+		hook.Run("HASAchievementsMenu")
 	end
 end
 
