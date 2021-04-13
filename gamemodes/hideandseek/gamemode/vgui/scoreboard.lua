@@ -229,7 +229,7 @@ function PANEL:UpdatePlayers(scale)
 	if GAMEMODE.CVars.Sort:GetInt() == 3 then
 		table.sort(self.Players, function(a, b)
 			if !IsValid(a.Player) || !IsValid(b.Player) then
-				return true
+				return false
 			end
 
 			return a.Player:Name() > b.Player:Name()
