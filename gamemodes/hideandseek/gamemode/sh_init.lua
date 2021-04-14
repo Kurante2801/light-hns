@@ -101,9 +101,8 @@ function GM:StaminaLinearDeplete(x)
 	return x * self.CVars.StaminaDeplete:GetFloat()
 end
 
-local max = 100
 function GM:PlayerTick(ply, data)
-	max = self.CVars.MaxStamina:GetInt()
+	local max = self.CVars.MaxStamina:GetInt()
 	-- Make sure values exist
 	ply.StaminaLastAmmount = ply.StaminaLastAmmount || max
 	ply.StaminaLastTime = ply.StaminaLastTime || CurTime()
@@ -175,7 +174,7 @@ end
 
 function PLAYER:GetStamina()
 	if GAMEMODE.CVars.InfiniteStamina:GetBool() then
-		return max
+		return GAMEMODE.CVars.MaxStamina:GetInt()
 	end
 
 	return self.Stamina
