@@ -104,20 +104,26 @@ end
 function GM:PlayerTick(ply, data)
 	local max = self.CVars.MaxStamina:GetInt()
 	-- Make sure values exist
-	ply.StaminaLastAmmount = ply.StaminaLastAmmount || max
-	ply.StaminaLastTime = ply.StaminaLastTime || CurTime()
+	local lastSprint = ply:GetNWFloat("has_staminalastsprinted", -1)
+
+	if lastSprint < 0 then
+		lastSprint = nil
+	end
+
+	local lastAmmount = ply:GetNWFloat("has_staminalastammount", max)
+	local lastTime = ply:GetNWFloat("has_staminalasttime", CurTime())
 
 	-- If player sprinted at some point (defined on KeyPress)
-	if ply.StaminaLastSprinted then
+	if lastSprint then
 		-- And we're still sprinting
 		if data:KeyDown(IN_SPEED) then
-			ply.Stamina = ply.StaminaLastAmmount - self:StaminaLinearDeplete(CurTime() - ply.StaminaLastSprinted)
-			ply.StaminaLastTime = CurTime() -- Don't refill
+			ply.Stamina = lastAmmount - self:StaminaLinearDeplete(CurTime() - lastSprint)
+			ply:SetNWFloat("has_staminalasttime", CurTime())
 		else
 			-- If we aren't sprinting, we delete StaminaLastSprinted and define last stamina aquired
-			ply.StaminaLastAmmount = ply.Stamina || max
-			ply.StaminaLastTime = CurTime()
-			ply.StaminaLastSprinted = nil
+			ply:SetNWFloat("has_staminalastammount", ply.Stamina || max)
+			ply:SetNWFloat("has_staminalasttime", CurTime())
+			ply:SetNWFloat("has_staminalastsprinted", -1)
 		end
 
 		ply.Stamina = math.Clamp(ply.Stamina, 0, max)
@@ -125,22 +131,22 @@ function GM:PlayerTick(ply, data)
 	end
 
 	-- Last time since stamina was changed
-	local since = CurTime() - ply.StaminaLastTime
+	local since = CurTime() - lastTime
 
 	-- We wait to refill stamina
 	if since <= self.CVars.StaminaWait:GetFloat() then
-		ply.Stamina = ply.StaminaLastAmmount
+		ply.Stamina = lastAmmount
 	else
-		ply.Stamina = ply.StaminaLastAmmount + self:StaminaLinearFunction(since - self.CVars.StaminaWait:GetFloat())
+		ply.Stamina = lastAmmount + self:StaminaLinearFunction(since - self.CVars.StaminaWait:GetFloat())
 	end
 
 	ply.Stamina = math.Clamp(ply.Stamina, 0, max)
 end
 
 hook.Add("KeyPress", "HNS.StaminaStart", function(ply, key)
-	if key == IN_SPEED then
-		ply.StaminaLastSprinted = CurTime()
-		ply.StaminaLastAmmount = ply.Stamina
+	if IsFirstTimePredicted() && key == IN_SPEED then
+		ply:SetNWFloat("has_staminalastsprinted", CurTime())
+		ply:SetNWFloat("has_staminalastammount", ply.Stamina)
 	end
 end)
 
