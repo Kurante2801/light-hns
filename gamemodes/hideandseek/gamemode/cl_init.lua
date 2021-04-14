@@ -112,15 +112,6 @@ function GM:PrePlayerDraw(ply)
 	end
 end
 
-function GM:KeyPress(ply, key)
-	if ply != LocalPlayer() then return end
-	-- Scoreboard
-	if key == IN_ATTACK2 && ply:KeyDown(IN_SCORE) && IsValid(self.Scoreboard) then
-		self.Scoreboard:MakePopup()
-		self.Scoreboard:SetKeyboardInputEnabled(false) -- Not needed
-	end
-end
-
 function GM:PlayerBindPress(ply, bind)
 	-- Safe check
 	if ply != LocalPlayer() then return end
@@ -264,6 +255,18 @@ net.Receive("HNS.AchievementsGet", function()
 	end)
 end)
 
+net.Receive("HNS.StaminaUnpredictedChange", function()
+	local ply = LocalPlayer()
+	local ammount = net.ReadUInt(32)
+	local time = net.ReadFloat()
+	ply.StaminaLastAmmount = ammount
+	ply.StaminaLastTime = time
+
+	if ply.StaminaLastSprinted then
+		ply.StaminaLastSprinted = time
+	end
+end)
+
 hook.Add("OnPlayerChat", "HNS.Commands", function(ply, text)
 	-- Using hooks instead of a function in case there's an addon overriting the gamemode function
 	text = string.lower(text)
@@ -283,3 +286,12 @@ hook.Add("OnPlayerChat", "HNS.Commands", function(ply, text)
 		return true
 	end
 end, HOOK_HIGH)
+
+hook.Add("KeyPress", "HNS.ScoreboardOpen", function(ply, key)
+	if ply != LocalPlayer() then return end
+	-- Scoreboard
+	if key == IN_ATTACK2 && ply:KeyDown(IN_SCORE) && IsValid(GAMEMODE.Scoreboard) then
+		GAMEMODE.Scoreboard:MakePopup()
+		GAMEMODE.Scoreboard:SetKeyboardInputEnabled(false) -- Not needed
+	end
+end)

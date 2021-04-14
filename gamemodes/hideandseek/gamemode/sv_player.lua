@@ -157,7 +157,7 @@ end
 
 function GM:GetFallDamage(ply, speed)
 	if self.RoundState != ROUND_ACTIVE then return end
-
+	print(speed)
 	local time = math.Round(speed / 666, 1)
 
 	if speed >= 600 then
@@ -174,13 +174,18 @@ function GM:GetFallDamage(ply, speed)
 			end
 		end)
 
+		-- Stop refilling stamina
+		if speed < 650 then
+			ply:SetStamina(ply:GetStamina())
+		end
+
 		hook.Run ("HASPlayerFallDamage", ply)
 	end
 
-	if speed >= 760 then
+	if speed >= 650 then
 		ply:EmitSound("physics/cardboard/cardboard_box_strain1.wav")
 		-- Lower stamina
-		ply:SetStamina(time * -10)
+		ply:SetStamina(ply:GetStamina() - time * 50)
 
 		-- Moan
 		timer.Simple(math.random(2, 4), function()
