@@ -103,8 +103,8 @@ end
 
 function GM:StaminaPrediction(ply, sprinting)
 	if ply:Team() == TEAM_SPECTATOR then return end
-
 	local max = self.CVars.MaxStamina:GetInt()
+	ply.Stamina = ply.Stamina || max
 	-- Make sure values exist
 	local lastSprint = ply:GetNWFloat("has_staminalastsprinted", -1)
 
