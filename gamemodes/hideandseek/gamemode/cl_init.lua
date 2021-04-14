@@ -180,6 +180,33 @@ function GM:HASScoreboardMenu(menu, ply)
 	end):SetIcon("icon16/user.png")
 end
 
+function GM:OnPlayerChat(ply, text, teamChat, dead)
+	-- CONSOLE: on invalid/unloaded
+	if !IsValid(ply) then
+		chat.AddText(Color(125, 125, 125), "CONSOLE: ", Color(255, 255, 255), text)
+	end
+
+	local line = {}
+
+	if teamChat then
+		table.insert(line, Color(30, 160, 40))
+		table.insert(line, "(TEAM) ")
+	end
+
+	if ply:Team() != TEAM_SPECTATOR then
+		table.insert(line, self:GetPlayerTeamColor(ply) || team.GetColor(ply:Team()))
+		table.insert(line, ply:Name())
+	else
+		table.insert(line, ply)
+	end
+
+	table.insert(line, Color(255, 255, 255))
+	table.insert(line, ": " .. text)
+
+	chat.AddText(unpack(line))
+	return true
+end
+
 
 -- Update playercolor
 local function PlayerColorUpdate()
