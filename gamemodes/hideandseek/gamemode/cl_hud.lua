@@ -23,7 +23,7 @@ GM.HUDs[1] = {
 		if ply:Team() != TEAM_SPECTATOR then
 			draw.RoundedBoxEx(8 * scale, 110 * scale, ScrH() - 24 * scale, 54 * scale, 16 * scale, Color(0, 0, 0, 200), false, true, false, true)
 			draw.RoundedBox(6 * scale, 12 * scale, ScrH() - 22 * scale, 150 * scale, 12 * scale, Color(0, 0, 0, 200))
-			draw.RoundedBox(6 * scale, 12 * scale, ScrH() - 22 * scale, stamina * 1.5 * scale, 12 * scale, ColorAlpha(tint, math.sin(CurTime() * 6) * 50 + 100))
+			draw.RoundedBox(6 * scale, 12 * scale, ScrH() - 22 * scale, 150 * stamina / GAMEMODE.CVars.MaxStamina:GetInt() * scale, 12 * scale, ColorAlpha(tint, math.sin(CurTime() * 6) * 50 + 100))
 		end
 
 		-- Round indicators
@@ -83,7 +83,7 @@ GM.HUDs[2] = {
 			this:ShadowedText("Press F2 to join the game!", "HNSHUD.TahomaSmall", 42 * scale + 1, ScrH() - 17 * scale, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 		else
 			draw.RoundedBox(0, 40 * scale + 1, ScrH() - 20 * scale + 1, this.BarWide, 12 * scale, Color(0, 0, 0, 175))
-			draw.RoundedBox(0, 41 * scale + 1, ScrH() - 19 * scale + 1, (this.BarWide - 2 * scale) * stamina / 100, 10 * scale, ColorAlpha(tint, math.sin(CurTime() * 4) * 60 + 120))
+			draw.RoundedBox(0, 41 * scale + 1, ScrH() - 19 * scale + 1, (this.BarWide - 2 * scale) * stamina / GAMEMODE.CVars.MaxStamina:GetInt(), 10 * scale, ColorAlpha(tint, math.sin(CurTime() * 4) * 60 + 120))
 		end
 	end,
 	AvatarFunc = function(this, scale)
@@ -112,7 +112,7 @@ GM.HUDs[3] = {
 			-- Black back
 			draw.RoundedBox(0, 12 * scale + 1, ScrH() - 25 * scale, 150 * scale, 12 * scale + 1, Color(0, 0, 0, 215))
 			-- Tinted bar
-			draw.RoundedBox(0, 12 * scale + 1, ScrH() - 25 * scale, stamina * 1.5 * scale, 12 * scale + 1, tint)
+			draw.RoundedBox(0, 12 * scale + 1, ScrH() - 25 * scale, stamina / GAMEMODE.CVars.MaxStamina:GetInt() * 150 * scale, 12 * scale + 1, tint)
 		end
 		-- Background
 		draw.RoundedBox(0, 10 * scale, ScrH() - 60 * scale, 155 * scale, 50 * scale, ColorAlpha(tint, 5))

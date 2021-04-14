@@ -34,6 +34,7 @@ GM.CVars.HiderFlash = CreateConVar("has_hiderflashlight", 0, { FCVAR_ARCHIVE, FC
 GM.CVars.TeamIndicators = CreateConVar("has_teamindicators", 0, { FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Draw an indicator over teammates heads when they are far away.")
 GM.CVars.InfiniteStamina = CreateConVar("has_infinitestamina", 0, { FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Enable infinite stamina.")
 GM.CVars.FirstSeeks = CreateConVar("has_firstcaughtseeks", 0, { FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "First player caught will seek next round.")
+GM.CVars.MaxStamina = CreateConVar("has_maxstamina", 100, { FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Maximum ammount of stamina players can refill.")
 
 function GM:CreateTeams()
 	TEAM_HIDE = 1
@@ -81,11 +82,60 @@ hook.Add("Tick", "HNS.SeekerBlinded", function()
 	end
 end)
 
+
 function GM:Move(ply, data)
 	-- Prevent seekers from moving on blind time
 	return self.SeekerBlinded && ply:Team() == TEAM_SEEK
 end
 
+function GM:StaminaLinearFunction(x)
+	return x * 20 / 3
+end
+
+function GM:StaminaLinearDeplete(x)
+	return x * 40 / 3
+end
+
+local recharge_offset = 2
+--Entity(1).StaminaLastAmmount = 50
+--Entity(1).StaminaLastTime = CurTime()
+function GM:PlayerTick(ply, data)
+
+	ply.StaminaLastAmmount = math.Clamp(ply.StaminaLastAmmount || 0, 0, self.CVars.MaxStamina:GetInt())
+	ply.StaminaLastTime = ply.StaminaLastTime || CurTime()
+
+	local sta = 0
+	local since = CurTime() - ply.StaminaLastTime
+
+	if since <= recharge_offset then
+		sta = ply.StaminaLastAmmount
+	else
+		sta = ply.StaminaLastAmmount + self:StaminaLinearFunction(since - recharge_offset)
+	end
+
+	if ply.StaminaLastSprinted then
+		if data:KeyDown(IN_SPEED) then
+			ply.StaminaSprinting = ply.StaminaLastAmmount - self:StaminaLinearDeplete(CurTime() - ply.StaminaLastSprinted)
+			ply.StaminaLastTime = CurTime()
+
+			sta = ply.StaminaSprinting
+		else
+			ply.StaminaLastAmmount = ply.StaminaSprinting
+			sta = ply.StaminaLastAmmount
+			ply.StaminaLastSprinted = nil
+			ply.StaminaSprinting = nil
+		end
+	end
+
+	sta = math.Clamp(sta, 0, self.CVars.MaxStamina:GetInt())
+	print(sta)
+end
+
+hook.Add("KeyPress", "HELL", function(ply, key)
+	if key == IN_SPEED then
+		ply.StaminaLastSprinted = CurTime()
+	end
+end)
 -- Stamina
 function GM:StartCommand(ply, cmd)
 	if cmd:KeyDown(IN_SPEED) then
@@ -127,9 +177,9 @@ function GM:StaminaStart(ply)
 		elseif ply:Team() != TEAM_SPECTATOR && ply:GetVelocity():Length2D() >= 65 then
 			-- We lose a tiny bit more of stamina as client to account for lag
 			if CLIENT then
-				ply:SetStamina(math.Clamp(ply:GetStamina() - 1.05, 0, 100))
+				ply:SetStamina(ply:GetStamina() - 1.05)
 			else
-				ply:SetStamina(math.Clamp(ply:GetStamina() - 1, 0, 100))
+				ply:SetStamina(ply:GetStamina() - 1)
 			end
 		end
 	end)
@@ -155,9 +205,9 @@ function GM:StaminaStop(ply)
 				return
 			end
 
-			ply:SetStamina(math.Clamp(ply:GetStamina() + 0.4, 0, 100))
+			ply:SetStamina(ply:GetStamina() + 0.4)
 			-- Stop regen timer when full
-			if ply:GetStamina() >= 100 then
+			if ply:GetStamina() >= GAMEMODE.CVars.MaxStamina:GetInt() then
 				timer.Remove(staregen)
 			end
 		end)
@@ -166,22 +216,17 @@ end
 
 local PLAYER = FindMetaTable("Player")
 
-function PLAYER:SetStamina(sta)
-	if SERVER then
-		self:SetNWFloat("has_stamina", sta)
-	else
-		self.Stamina = sta
-	end
+function PLAYER:SetStamina(sta, predicted)
+	sta = math.Clamp(sta, 0, GAMEMODE.CVars.MaxStamina:GetInt())
+
+	self:SetNWFloat("has_stamina", sta)
 end
 
 function PLAYER:GetStamina()
+	local max = GAMEMODE.CVars.MaxStamina:GetInt()
 	if GAMEMODE.CVars.InfiniteStamina:GetBool() then
-		return 100
+		return max
 	end
 
-	if CLIENT && self == LocalPlayer() then
-		return self.Stamina || self:GetNWFloat("has_stamina", 100)
-	end
-
-	return self:GetNWFloat("has_stamina", 100)
+	return math.Clamp(self:GetNWFloat("has_stamina", max), 0, max)
 end

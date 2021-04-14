@@ -34,7 +34,7 @@ if SERVER then
 				if !self.PlayedLastHiderSound && team.NumPlayers(TEAM_HIDE) == 1 then
 					local hider = team.GetPlayers(TEAM_HIDE)[1]
 					-- Refill stamina
-					hider:SetStamina(100)
+					hider:SetStamina(GAMEMODE.CVars.MaxStamina:GetInt())
 					-- Last hider trail
 					if self.CVars.HiderTrail:GetBool() && IsValid(hider) then
 						hider.HiderTrail = util.SpriteTrail(hider, 0, self:GetTeamShade(TEAM_HIDE, hider:GetInfo("has_hidercolor", "Default")), true, 8, 0, 1.75, 0.01, "trails/laser.vmt")
@@ -96,7 +96,7 @@ if SERVER then
 				ply:Spawn()
 			end
 			-- Refill stamina
-			ply:SetStamina(100)
+			ply:SetStamina(GAMEMODE.CVars.MaxStamina:GetInt())
 		end
 
 		-- Check for enough players
