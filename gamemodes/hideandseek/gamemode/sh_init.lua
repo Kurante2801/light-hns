@@ -101,7 +101,9 @@ function GM:StaminaLinearDeplete(x)
 	return x * self.CVars.StaminaDeplete:GetFloat()
 end
 
-function GM:PlayerTick(ply, data)
+function GM:StaminaPrediction(ply, sprinting)
+	if ply:Team() == TEAM_SPECTATOR then return end
+
 	local max = self.CVars.MaxStamina:GetInt()
 	-- Make sure values exist
 	local lastSprint = ply:GetNWFloat("has_staminalastsprinted", -1)
@@ -116,7 +118,7 @@ function GM:PlayerTick(ply, data)
 	-- If player sprinted at some point (defined on KeyPress)
 	if lastSprint then
 		-- And we're still sprinting
-		if data:KeyDown(IN_SPEED) then
+		if sprinting  then
 			ply.Stamina = lastAmmount - self:StaminaLinearDeplete(CurTime() - lastSprint)
 			ply:SetNWFloat("has_staminalasttime", CurTime())
 		else
@@ -143,6 +145,10 @@ function GM:PlayerTick(ply, data)
 	ply.Stamina = math.Clamp(ply.Stamina, 0, max)
 end
 
+function GM:PlayerTick(ply, data)
+	self:StaminaPrediction(ply, data:KeyDown(IN_SPEED))
+end
+
 hook.Add("KeyPress", "HNS.StaminaStart", function(ply, key)
 	if IsFirstTimePredicted() && key == IN_SPEED then
 		ply:SetNWFloat("has_staminalastsprinted", CurTime())
@@ -153,8 +159,15 @@ end)
 function GM:StartCommand(ply, cmd)
 	if ply:Team() == TEAM_SPECTATOR then return end
 	-- Prevent running
-	if cmd:KeyDown(IN_SPEED) && ply:GetStamina() <= 0  then
-		cmd:SetButtons(cmd:GetButtons() - IN_SPEED)
+	if cmd:KeyDown(IN_SPEED) then
+		if ply:GetStamina() <= 0  then
+			cmd:SetButtons(cmd:GetButtons() - IN_SPEED)
+			ply:SetNWBool("has_sprinting", false)
+		else
+			ply:SetNWBool("has_sprinting", true)
+		end
+	else
+		ply:SetNWBool("has_sprinting", false)
 	end
 end
 
@@ -178,6 +191,11 @@ end
 function PLAYER:GetStamina()
 	if GAMEMODE.CVars.InfiniteStamina:GetBool() then
 		return GAMEMODE.CVars.MaxStamina:GetInt()
+	end
+
+	-- We want to get the stamina of another player
+	if CLIENT && self != LocalPlayer() then
+		GAMEMODE:StaminaPrediction(self, self:GetNWBool("has_sprinting", false))
 	end
 
 	return self.Stamina
