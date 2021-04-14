@@ -37,7 +37,7 @@ if SERVER then
 					hider:SetStamina(GAMEMODE.CVars.MaxStamina:GetInt())
 					-- Last hider trail
 					if self.CVars.HiderTrail:GetBool() && IsValid(hider) then
-						hider.HiderTrail = util.SpriteTrail(hider, 0, self:GetTeamShade(TEAM_HIDE, hider:GetInfo("has_hidercolor", "Default")), true, 8, 0, 1.75, 0.01, "trails/laser.vmt")
+						hider.HiderTrail = util.SpriteTrail(hider, 0, self:GetTeamShade(TEAM_HIDE, hider:GetNWString("has_hidercolor", "Default")), true, 8, 0, 1.75, 0.01, "trails/laser.vmt")
 					end
 					self:BroadcastSound("ui/medic_alert.wav")
 					self:BroadcastChat(COLOR_WHITE, "[", Color(155, 155, 255), "HNS", COLOR_WHITE, "] ", Color(155, 155, 155), "1 hider left.")
@@ -127,7 +127,7 @@ if SERVER then
 				-- Create trail
 				if self.CVars.HiderTrail:GetBool() then
 					local hider = team.GetPlayers(TEAM_HIDE)[1]
-					hider.HiderTrail = util.SpriteTrail(hider, 0, self:GetTeamShade(TEAM_HIDE, hider:GetInfo("has_hidercolor", "Default")), true, 8, 0, 1.75, 0.01, "trails/laser.vmt")
+					hider.HiderTrail = util.SpriteTrail(hider, 0, self:GetTeamShade(TEAM_HIDE, hider:GetNWString("has_hidercolor", "Default")), true, 8, 0, 1.75, 0.01, "trails/laser.vmt")
 				end
 			else
 				self.PlayedLastHiderSound = false
