@@ -2,7 +2,7 @@ DeriveGamemode("base")
 
 GM.Name = "Light Hide and Seek"
 GM.Author = "Fafy"
-GM.Email = "fafy@gflclan.com"
+GM.Email = ""
 
 include("sh_colors.lua")
 AddCSLuaFile("sh_colors.lua")
