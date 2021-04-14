@@ -5,43 +5,43 @@ GM.UpdateFonts = function()
 	surface.CreateFont("HNSHUD.VerdanaMedium", {
 		font = "Verdana",
 		size = 11 * scale,
-		weight = 190 * scale,
+		weight = 380,
 	})
 
 	surface.CreateFont("HNSHUD.TahomaSmall", {
 		font = "Tahoma",
 		size = 7 * scale,
-		weight = 280 * scale,
+		weight = 560,
 	})
 
 	surface.CreateFont("HNSHUD.TahomaThin", {
 		font = "Tahoma",
 		size = 7 * scale,
-		weight = 140 * scale,
+		weight = 280,
 	})
 
 	surface.CreateFont("HNSHUD.VerdanaLarge", {
 		font = "Verdana",
 		size = 14 * scale,
-		weight = 287 * scale,
+		weight = 575,
 	})
 
 	surface.CreateFont("HNSHUD.RobotoLarge", {
 		font = "Roboto",
 		size = 16 * scale,
-		weight = 200 * scale,
+		weight = 400,
 	})
 
 	surface.CreateFont("HNSHUD.TahomaLarge", {
 		font = "Tahoma",
 		size = 22 * scale,
-		weight = 300 * scale,
+		weight = 600,
 	})
 
 	surface.CreateFont("HNSHUD.RobotoThin", {
 		font = "Roboto",
 		size = 9 * scale,
-		weight = 272 * scale,
+		weight = 550,
 	})
 end
 
