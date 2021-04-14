@@ -264,18 +264,6 @@ net.Receive("HNS.AchievementsGet", function()
 	end)
 end)
 
-net.Receive("HNS.StaminaUnpredictedChange", function()
-	local ply = LocalPlayer()
-	local ammount = net.ReadUInt(32)
-	local time = net.ReadFloat()
-	ply.StaminaLastAmmount = ammount
-	ply.StaminaLastTime = time
-
-	if ply.StaminaLastSprinted then
-		ply.StaminaLastSprinted = time
-	end
-end)
-
 hook.Add("OnPlayerChat", "HNS.Commands", function(ply, text)
 	-- Using hooks instead of a function in case there's an addon overriting the gamemode function
 	text = string.lower(text)

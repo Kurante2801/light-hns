@@ -157,7 +157,6 @@ end
 
 function GM:GetFallDamage(ply, speed)
 	if self.RoundState != ROUND_ACTIVE then return end
-	print(speed)
 	local time = math.Round(speed / 666, 1)
 
 	if speed >= 600 then

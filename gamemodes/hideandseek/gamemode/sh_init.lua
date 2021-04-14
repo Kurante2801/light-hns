@@ -164,17 +164,14 @@ local PLAYER = FindMetaTable("Player")
 if SERVER then
 	function PLAYER:SetStamina(sta)
 		sta = math.Clamp(sta, 0, GAMEMODE.CVars.MaxStamina:GetInt())
-		self.StaminaLastAmmount = sta
-		self.StaminaLastTime = CurTime()
+		self:SetNWFloat("has_staminalastammount", sta)
+		self:SetNWFloat("has_staminalasttime", CurTime())
 
-		if self.StaminaLastSprinted then
-			self.StaminaLastSprinted = time
+		local lastSprint = self:GetNWFloat("has_staminalastsprinted", -1)
+
+		if lastSprint >= 0 then
+			self:SetNWFloat("has_staminalastsprinted", CurTime())
 		end
-
-		net.Start("HNS.StaminaUnpredictedChange")
-			net.WriteUInt(sta, 32)
-			net.WriteFloat(self.StaminaLastTime)
-		net.Send(self)
 	end
 end
 
