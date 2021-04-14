@@ -60,9 +60,15 @@ function GM:PlayerSpawn(ply)
 		ply:SetModel("models/player/group01/male_0" .. math.random(9) .. ".mdl")
 	end
 
+	local hidercolor = ply:GetInfo("has_hidercolor", "Default")
+	local seekercolor = ply:GetInfo("has_seekercolor", "Default")
+
+	ply:SetNWString("has_hidercolor", hidercolor)
+	ply:SetNWString("has_seekercolor", seekercolor)
+
 	if ply:Team() == TEAM_HIDE then
 		-- Setting desired color shade
-		ply:SetPlayerColor(self:GetTeamShade(TEAM_HIDE, ply:GetInfo("has_hidercolor", "Default")):ToVector())
+		ply:SetPlayerColor(self:GetTeamShade(TEAM_HIDE, hidercolor):ToVector())
 		-- Setting movement vars
 		ply:SetRunSpeed(self.CVars.HiderRunSpeed:GetInt())
 		ply:SetWalkSpeed(self.CVars.HiderWalkSpeed:GetInt())
@@ -70,7 +76,7 @@ function GM:PlayerSpawn(ply)
 		ply:AllowFlashlight(false)
 	else
 		-- Setting desired color shade
-		ply:SetPlayerColor(self:GetTeamShade(TEAM_SEEK, ply:GetInfo("has_seekercolor", "Default")):ToVector())
+		ply:SetPlayerColor(self:GetTeamShade(TEAM_SEEK, seekercolor):ToVector())
 		-- Setting movement vars
 		ply:SetRunSpeed(self.CVars.SeekerRunSpeed:GetInt())
 		ply:SetWalkSpeed(self.CVars.SeekerWalkSpeed:GetInt())
@@ -316,12 +322,18 @@ end)
 
 -- Receive color update
 net.Receive("HNS.PlayerColorUpdate", function(_, ply)
+	local hidercolor = ply:GetInfo("has_hidercolor", "Default")
+	local seekercolor = ply:GetInfo("has_seekercolor", "Default")
+
+	ply:SetNWString("has_hidercolor", hidercolor)
+	ply:SetNWString("has_seekercolor", seekercolor)
+
 	if ply:Team() == TEAM_SPECTATOR then return end
 
 	ply:SetPlayerColor(GAMEMODE:GetPlayerTeamColor(ply):ToVector())
 	-- Update hider trail if applicable
 	if IsValid(ply.HiderTrail) then
-		ply.HiderTrail:Fire("Color", tostring(GAMEMODE:GetTeamShade(TEAM_HIDE, ply:GetInfo("has_hidercolor", "Default"))))
+		ply.HiderTrail:Fire("Color", tostring(GAMEMODE:GetTeamShade(TEAM_HIDE, hidercolor)))
 	end
 end)
 

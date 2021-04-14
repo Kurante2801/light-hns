@@ -35,16 +35,8 @@ end
 -- Wrapper for GM:GetTeamShade
 function GM:GetPlayerTeamColor(ply)
 	if ply:Team() == TEAM_HIDE then
-		if SERVER then
-			return self:GetTeamShade(TEAM_HIDE, ply:GetInfo("has_hidercolor", "Default"))
-		else
-			return self:GetTeamShade(TEAM_HIDE, GetConVar("has_hidercolor"):GetString())
-		end
+		return self:GetTeamShade(TEAM_HIDE, ply:GetNWString("has_hidercolor", "Default"))
 	elseif ply:Team() == TEAM_SEEK then
-		if SERVER then
-			return self:GetTeamShade(TEAM_SEEK, ply:GetInfo("has_seekercolor", "Default"))
-		else
-			return self:GetTeamShade(TEAM_SEEK, GetConVar("has_seekercolor"):GetString())
-		end
+		return self:GetTeamShade(TEAM_SEEK, ply:GetNWString("has_seekercolor", "Default"))
 	end
 end
