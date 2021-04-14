@@ -180,10 +180,7 @@ function GM:GetFallDamage(ply, speed)
 	if speed >= 760 then
 		ply:EmitSound("physics/cardboard/cardboard_box_strain1.wav")
 		-- Lower stamina
-		net.Start("HNS.StaminaChange")
-			net.WriteInt(time * -10, 8)
-		net.Send(ply)
-		ply.Stamina = ply.Stamina - time * 10
+		ply:SetStamina(time * -10)
 
 		-- Moan
 		timer.Simple(math.random(2, 4), function()
@@ -267,7 +264,9 @@ hook.Add("Move", "HNS.SprintPrevention", function(ply, data)
 	end
 end)
 
-FindMetaTable("Player").Caught = function(self, ply)
+local PLAYER = FindMetaTable("Player")
+
+function PLAYER:Caught(ply)
 	-- Change team
 	self:SetTeam(TEAM_SEEK)
 	-- Parameters

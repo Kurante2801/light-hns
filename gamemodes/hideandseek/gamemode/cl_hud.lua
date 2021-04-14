@@ -181,7 +181,7 @@ function GM:HUDPaint()
 		self.SelectedHUD:AvatarFunc(scale)
 	end
 	-- Draw HUD
-	self.SelectedHUD:Draw(ply, GetDrawColor(), ply.Stamina || 100, self:StringToMinutesSeconds(self.TimeLeft), GetRoundText(), self.TimeLeft - self.RoundLength, scale)
+	self.SelectedHUD:Draw(ply, GetDrawColor(), ply:GetStamina(), self:StringToMinutesSeconds(self.TimeLeft), GetRoundText(), self.TimeLeft - self.RoundLength, scale)
 
 	-- Stuck prevention
 	if ply:GetCollisionGroup() == COLLISION_GROUP_WEAPON then

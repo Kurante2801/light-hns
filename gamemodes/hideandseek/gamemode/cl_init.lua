@@ -74,6 +74,8 @@ function GM:InitPostEntity()
 	net.SendToServer()
 	-- Create welcome screen
 	vgui.Create("HNS.Welcome")
+
+	LocalPlayer().Stamina = 100
 end
 
 function GM:Tick()
@@ -83,14 +85,6 @@ function GM:Tick()
 		self.FlashlightIsOn = nil
 	end
 end
-
-net.Receive("HNS.StaminaChange", function()
-	local sta = net.ReadInt(8)
-	local ply = LocalPlayer()
-	ply.Stamina = math.Clamp(ply.Stamina + sta, 0, 100)
-	-- Stop regen
-	GAMEMODE:StaminaStop(ply)
-end)
 
 function GM:PostDrawOpaqueRenderables()
 	-- Draw spectators' names
