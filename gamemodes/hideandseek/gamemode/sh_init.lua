@@ -137,12 +137,12 @@ function GM:PlayerTick(ply, data)
 	ply.Stamina = math.Clamp(ply.Stamina, 0, max)
 end
 
-function GM:KeyPress(ply, key)
+hook.Add("KeyPress", "HNS.StaminaStart", function(ply, key)
 	if key == IN_SPEED then
 		ply.StaminaLastSprinted = CurTime()
 		ply.StaminaLastAmmount = ply.Stamina
 	end
-end
+end)
 
 function GM:StartCommand(ply, cmd)
 	if ply:Team() == TEAM_SPECTATOR then return end

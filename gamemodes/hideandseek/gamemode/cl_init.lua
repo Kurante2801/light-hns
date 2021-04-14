@@ -112,6 +112,15 @@ function GM:PrePlayerDraw(ply)
 	end
 end
 
+function GM:KeyPress(ply, key)
+	if ply != LocalPlayer() then return end
+	-- Scoreboard
+	if key == IN_ATTACK2 && ply:KeyDown(IN_SCORE) && IsValid(GAMEMODE.Scoreboard) then
+		GAMEMODE.Scoreboard:MakePopup()
+		GAMEMODE.Scoreboard:SetKeyboardInputEnabled(false) -- Not needed
+	end
+end
+
 function GM:PlayerBindPress(ply, bind)
 	-- Safe check
 	if ply != LocalPlayer() then return end
@@ -286,12 +295,3 @@ hook.Add("OnPlayerChat", "HNS.Commands", function(ply, text)
 		return true
 	end
 end, HOOK_HIGH)
-
-hook.Add("KeyPress", "HNS.ScoreboardOpen", function(ply, key)
-	if ply != LocalPlayer() then return end
-	-- Scoreboard
-	if key == IN_ATTACK2 && ply:KeyDown(IN_SCORE) && IsValid(GAMEMODE.Scoreboard) then
-		GAMEMODE.Scoreboard:MakePopup()
-		GAMEMODE.Scoreboard:SetKeyboardInputEnabled(false) -- Not needed
-	end
-end)
