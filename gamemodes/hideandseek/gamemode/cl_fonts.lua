@@ -41,7 +41,7 @@ GM.UpdateFonts = function()
 	surface.CreateFont("HNSHUD.RobotoThin", {
 		font = "Roboto",
 		size = 9 * scale,
-		weight = 550,
+		weight = 500,
 	})
 end
 
