@@ -60,8 +60,8 @@ function GM:PlayerSpawn(ply)
 		ply:SetModel("models/player/group01/male_0" .. math.random(9) .. ".mdl")
 	end
 
-	local hidercolor = ply:GetNWString("has_hidercolor", "Default")
-	local seekercolor = ply:GetNWString("has_seekercolor", "Default")
+	local hidercolor = ply:GetInfo("has_hidercolor", "Default")
+	local seekercolor = ply:GetInfo("has_seekercolor", "Default")
 
 	ply:SetNWString("has_hidercolor", hidercolor)
 	ply:SetNWString("has_seekercolor", seekercolor)
