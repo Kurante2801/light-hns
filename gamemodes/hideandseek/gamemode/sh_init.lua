@@ -115,10 +115,15 @@ function GM:StaminaPrediction(ply, sprinting)
 	local lastAmmount = ply:GetNWFloat("has_staminalastammount", max)
 	local lastTime = ply:GetNWFloat("has_staminalasttime", CurTime())
 
+	if sprinting && !lastSprint then
+		lastSprint = CurTime()
+		ply:SetNWFloat("has_staminalastsprinted", lastSprint)
+	end
+
 	-- If player sprinted at some point (defined on KeyPress)
 	if lastSprint then
 		-- And we're still sprinting
-		if sprinting  then
+		if sprinting && ply:GetVelocity():Length2DSqr() >= 4225	 then
 			ply.Stamina = lastAmmount - self:StaminaLinearDeplete(CurTime() - lastSprint)
 			ply:SetNWFloat("has_staminalasttime", CurTime())
 		else
@@ -160,7 +165,7 @@ function GM:StartCommand(ply, cmd)
 	if ply:Team() == TEAM_SPECTATOR then return end
 	-- Prevent running
 	if cmd:KeyDown(IN_SPEED) then
-		if ply:GetStamina() <= 0  then
+		if ply:GetStamina() <= 0 then
 			cmd:SetButtons(cmd:GetButtons() - IN_SPEED)
 			ply:SetNWBool("has_sprinting", false)
 		else
