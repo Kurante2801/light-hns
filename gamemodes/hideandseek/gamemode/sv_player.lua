@@ -184,7 +184,7 @@ function GM:GetFallDamage(ply, speed)
 	if speed >= 650 then
 		ply:EmitSound("physics/cardboard/cardboard_box_strain1.wav")
 		-- Lower stamina
-		ply:SetStamina(ply:GetStamina() - time * 50)
+		ply:SetStamina(ply:GetStamina() - time * 20)
 
 		-- Moan
 		timer.Simple(math.random(2, 4), function()
