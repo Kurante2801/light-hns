@@ -74,6 +74,8 @@ function GM:InitPostEntity()
 	net.SendToServer()
 	-- Create welcome screen
 	vgui.Create("HNS.Welcome")
+
+	LocalPlayer().Stamina = 100
 end
 
 function GM:Tick()
@@ -83,14 +85,6 @@ function GM:Tick()
 		self.FlashlightIsOn = nil
 	end
 end
-
-net.Receive("HNS.StaminaChange", function()
-	local sta = net.ReadInt(8)
-	local ply = LocalPlayer()
-	ply.Stamina = math.Clamp(ply.Stamina + sta, 0, 100)
-	-- Stop regen
-	GAMEMODE:StaminaStop(ply)
-end)
 
 function GM:PostDrawOpaqueRenderables()
 	-- Draw spectators' names
@@ -121,9 +115,9 @@ end
 function GM:KeyPress(ply, key)
 	if ply != LocalPlayer() then return end
 	-- Scoreboard
-	if key == IN_ATTACK2 && ply:KeyDown(IN_SCORE) && IsValid(self.Scoreboard) then
-		self.Scoreboard:MakePopup()
-		self.Scoreboard:SetKeyboardInputEnabled(false) -- Not needed
+	if key == IN_ATTACK2 && ply:KeyDown(IN_SCORE) && IsValid(GAMEMODE.Scoreboard) then
+		GAMEMODE.Scoreboard:MakePopup()
+		GAMEMODE.Scoreboard:SetKeyboardInputEnabled(false) -- Not needed
 	end
 end
 

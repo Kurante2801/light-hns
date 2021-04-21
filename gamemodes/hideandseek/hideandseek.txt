@@ -114,5 +114,29 @@
 			"type"		"CheckBox"
 			"default"	"0"
 		}
+		19 {
+			"name"		"has_maxstamina"
+			"text"		"Maximum ammount of stamina players can refill."
+			"type"		"Numeric"
+			"default"	"100"
+		}
+		20 {
+			"name"		"has_staminarefill"
+			"text"		"Rate at which stamina is filled."
+			"type"		"Numeric"
+			"default"	"6.6"
+		}
+		21 {
+			"name"		"has_staminadeplete"
+			"text"		"Rate at which stamina is depleted."
+			"type"		"Numeric"
+			"default"	"13.3"
+		}
+		22 {
+			"name"		"has_staminawait"
+			"text"		"How many seconds to wait before filling stamina."
+			"type"		"Numeric"
+			"default"	"2"
+		}
 	}
 }

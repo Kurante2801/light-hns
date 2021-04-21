@@ -2,7 +2,7 @@ DeriveGamemode("base")
 
 GM.Name = "Light Hide and Seek"
 GM.Author = "Fafy"
-GM.Email = "fafy@gflclan.com"
+GM.Email = ""
 
 include("sh_colors.lua")
 AddCSLuaFile("sh_colors.lua")
@@ -34,6 +34,10 @@ GM.CVars.HiderFlash = CreateConVar("has_hiderflashlight", 0, { FCVAR_ARCHIVE, FC
 GM.CVars.TeamIndicators = CreateConVar("has_teamindicators", 0, { FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Draw an indicator over teammates heads when they are far away.")
 GM.CVars.InfiniteStamina = CreateConVar("has_infinitestamina", 0, { FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Enable infinite stamina.")
 GM.CVars.FirstSeeks = CreateConVar("has_firstcaughtseeks", 0, { FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "First player caught will seek next round.")
+GM.CVars.MaxStamina = CreateConVar("has_maxstamina", 100, { FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Maximum ammount of stamina players can refill.")
+GM.CVars.StaminaRefill = CreateConVar("has_staminarefill", 6.6, { FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Rate at which stamina is filled.")
+GM.CVars.StaminaDeplete = CreateConVar("has_staminadeplete", 13.3, { FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Rate at which stamina is depleted.")
+GM.CVars.StaminaWait = CreateConVar("has_staminawait", 2, { FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "How many seconds to wait before filling stamina.")
 
 function GM:CreateTeams()
 	TEAM_HIDE = 1
@@ -81,80 +85,123 @@ hook.Add("Tick", "HNS.SeekerBlinded", function()
 	end
 end)
 
+
 function GM:Move(ply, data)
 	-- Prevent seekers from moving on blind time
 	return self.SeekerBlinded && ply:Team() == TEAM_SEEK
 end
 
--- Stamina
-function GM:StartCommand(ply, cmd)
-	ply.Stamina = ply.Stamina || 100
-
-	if cmd:KeyDown(IN_SPEED) then
-		-- Reduce stamina
-		self:StaminaStart(ply)
-		-- Prevent sprint
-		if ply.Stamina <= 0 && ply:Team() != TEAM_SPECTATOR then
-			cmd:SetButtons(cmd:GetButtons() - IN_SPEED)
-		end
-	end
+function GM:StaminaLinearFunction(x)
+	--return x * 20 / 3
+	return x * self.CVars.StaminaRefill:GetFloat()
 end
 
-function GM:StaminaStart(ply)
-	local i = ply:EntIndex()
-	-- Don't drain when infinite
-	if self.CVars.InfiniteStamina:GetBool() then
-		-- Remove timers
-		timer.Remove("HNS.StaminaDrain" .. i)
-		timer.Remove("HNS.StaminaRegen" .. i)
-		timer.Remove("HNS.StaminaDelay" .. i)
-		-- Max stamina
-		ply.Stamina = 100
+function GM:StaminaLinearDeplete(x)
+	--return x * 40 / 3
+	return x * self.CVars.StaminaDeplete:GetFloat()
+end
+
+function GM:StaminaPrediction(ply, sprinting)
+	if ply:Team() == TEAM_SPECTATOR then return end
+	local max = self.CVars.MaxStamina:GetInt()
+	ply.Stamina = ply.Stamina || max
+	-- Make sure values exist
+	local lastSprint = ply:GetNWFloat("has_staminalastsprinted", -1)
+
+	if lastSprint < 0 then
+		lastSprint = nil
+	end
+
+	local lastAmmount = ply:GetNWFloat("has_staminalastammount", max)
+	local lastTime = ply:GetNWFloat("has_staminalasttime", CurTime())
+
+	if sprinting && !lastSprint then
+		lastSprint = CurTime()
+		ply:SetNWFloat("has_staminalastsprinted", lastSprint)
+	end
+
+	-- If player sprinted at some point (defined on KeyPress)
+	if lastSprint then
+		-- And we're still sprinting
+		if sprinting && ply:GetVelocity():Length2DSqr() >= 4225	 then
+			ply.Stamina = lastAmmount - self:StaminaLinearDeplete(CurTime() - lastSprint)
+			ply:SetNWFloat("has_staminalasttime", CurTime())
+		else
+			-- If we aren't sprinting, we delete StaminaLastSprinted and define last stamina aquired
+			ply:SetNWFloat("has_staminalastammount", ply.Stamina || max)
+			ply:SetNWFloat("has_staminalasttime", CurTime())
+			ply:SetNWFloat("has_staminalastsprinted", -1)
+		end
+
+		ply.Stamina = math.Clamp(ply.Stamina, 0, max)
 		return
 	end
-	-- Already draining
-	if timer.Exists("HNS.StaminaDrain" .. i) then return end
-	-- Stops regeneration
-	timer.Remove("HNS.StaminaRegen" .. i)
-	timer.Remove("HNS.StaminaDelay" .. i)
-	-- Drain
-	timer.Create("HNS.StaminaDrain" .. i, 0.055, 0, function()
-		if !IsValid(ply) then
-			timer.Remove("HNS.StaminaDrain" .. i)
-		elseif !ply:KeyDown(IN_SPEED) then
-			GAMEMODE:StaminaStop(ply)
-		elseif ply:Team() != TEAM_SPECTATOR && ply:GetVelocity():Length2D() >= 65 then
-			-- We lose a tiny bit more of stamina as client to account for lag
-			if CLIENT then
-				ply.Stamina = math.Clamp(ply.Stamina - 1.1, 0, 100)
-			else
-				ply.Stamina = math.Clamp(ply.Stamina - 1, 0, 100)
-			end
-		end
-	end)
+
+	-- Last time since stamina was changed
+	local since = CurTime() - lastTime
+
+	-- We wait to refill stamina
+	if since <= self.CVars.StaminaWait:GetFloat() then
+		ply.Stamina = lastAmmount
+	else
+		ply.Stamina = lastAmmount + self:StaminaLinearFunction(since - self.CVars.StaminaWait:GetFloat())
+	end
+
+	ply.Stamina = math.Clamp(ply.Stamina, 0, max)
 end
 
-function GM:StaminaStop(ply)
-	-- Do nothing on infinite
-	if self.CVars.InfiniteStamina:GetBool() then return end
-	local i = ply:EntIndex()
-	-- Player did not sprint recently
-	if timer.Exists("HNS.StaminaDelay" .. i) || timer.Exists("HNS.StaminaRegen" .. i) then return end
-	-- Stop draining stamina
-	timer.Remove("HNS.StaminaDrain" .. i)
-	-- Create a delay before filling stamina
-	timer.Create("HNS.StaminaDelay" .. i, 2, 1, function()
-		timer.Create("HNS.StaminaRegen" .. i, 0.05, 0, function()
-			if !IsValid(ply) then
-				timer.Remove("HNS.StaminaRegen" .. i)
-				return
-			end
+function GM:PlayerTick(ply, data)
+	self:StaminaPrediction(ply, data:KeyDown(IN_SPEED))
+end
 
-			ply.Stamina = math.Clamp(ply.Stamina + 0.4, 0, 100)
-			-- Stop regen timer when full
-			if ply.Stamina >= 100 then
-				timer.Remove("HNS.StaminaRegen" .. i)
-			end
-		end)
-	end)
+hook.Add("KeyPress", "HNS.StaminaStart", function(ply, key)
+	if IsFirstTimePredicted() && key == IN_SPEED then
+		ply:SetNWFloat("has_staminalastsprinted", CurTime())
+		ply:SetNWFloat("has_staminalastammount", ply.Stamina)
+	end
+end)
+
+function GM:StartCommand(ply, cmd)
+	if ply:Team() == TEAM_SPECTATOR then return end
+	-- Prevent running
+	if cmd:KeyDown(IN_SPEED) then
+		if ply:GetStamina() <= 0 then
+			cmd:SetButtons(cmd:GetButtons() - IN_SPEED)
+			ply:SetNWBool("has_sprinting", false)
+		else
+			ply:SetNWBool("has_sprinting", true)
+		end
+	else
+		ply:SetNWBool("has_sprinting", false)
+	end
+end
+
+local PLAYER = FindMetaTable("Player")
+
+-- This function will always be unpredicted
+if SERVER then
+	function PLAYER:SetStamina(sta)
+		sta = math.Clamp(sta, 0, GAMEMODE.CVars.MaxStamina:GetInt())
+		self:SetNWFloat("has_staminalastammount", sta)
+		self:SetNWFloat("has_staminalasttime", CurTime())
+
+		local lastSprint = self:GetNWFloat("has_staminalastsprinted", -1)
+
+		if lastSprint >= 0 then
+			self:SetNWFloat("has_staminalastsprinted", CurTime())
+		end
+	end
+end
+
+function PLAYER:GetStamina()
+	if GAMEMODE.CVars.InfiniteStamina:GetBool() then
+		return GAMEMODE.CVars.MaxStamina:GetInt()
+	end
+
+	-- We want to get the stamina of another player
+	if CLIENT && self != LocalPlayer() then
+		GAMEMODE:StaminaPrediction(self, self:GetNWBool("has_sprinting", false))
+	end
+
+	return self.Stamina
 end

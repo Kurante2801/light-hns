@@ -23,7 +23,7 @@ GM.HUDs[1] = {
 		if ply:Team() != TEAM_SPECTATOR then
 			draw.RoundedBoxEx(8 * scale, 110 * scale, ScrH() - 24 * scale, 54 * scale, 16 * scale, Color(0, 0, 0, 200), false, true, false, true)
 			draw.RoundedBox(6 * scale, 12 * scale, ScrH() - 22 * scale, 150 * scale, 12 * scale, Color(0, 0, 0, 200))
-			draw.RoundedBox(6 * scale, 12 * scale, ScrH() - 22 * scale, stamina * 1.5 * scale, 12 * scale, ColorAlpha(tint, math.sin(CurTime() * 6) * 50 + 100))
+			draw.RoundedBox(6 * scale, 12 * scale, ScrH() - 22 * scale, 150 * stamina / GAMEMODE.CVars.MaxStamina:GetInt() * scale, 12 * scale, ColorAlpha(tint, math.sin(CurTime() * 6) * 50 + 100))
 		end
 
 		-- Round indicators
@@ -83,14 +83,15 @@ GM.HUDs[2] = {
 			this:ShadowedText("Press F2 to join the game!", "HNSHUD.TahomaSmall", 42 * scale + 1, ScrH() - 17 * scale, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 		else
 			draw.RoundedBox(0, 40 * scale + 1, ScrH() - 20 * scale + 1, this.BarWide, 12 * scale, Color(0, 0, 0, 175))
-			draw.RoundedBox(0, 41 * scale + 1, ScrH() - 19 * scale + 1, (this.BarWide - 2 * scale) * stamina / 100, 10 * scale, ColorAlpha(tint, math.sin(CurTime() * 4) * 60 + 120))
+			draw.RoundedBox(0, 41 * scale + 1, ScrH() - 19 * scale + 1, (this.BarWide - 2 * scale) * stamina / GAMEMODE.CVars.MaxStamina:GetInt(), 10 * scale, ColorAlpha(tint, math.sin(CurTime() * 4) * 60 + 120))
 		end
 	end,
-	AvatarFunc = function(this, scale)
+	AvatarFunc = function(this, scale, ply)
 		this.Avatar = vgui.Create("AvatarImage")
 		this.Avatar:SetPos(8 * scale, ScrH() - 40 * scale)
 		this.Avatar:SetSize(32 * scale, 32 * scale)
-		this.Avatar:SetPlayer(LocalPlayer(), 32 * scale)
+		this.Avatar.Player = ply || LocalPlayer()
+		this.Avatar:SetPlayer(this.Avatar.Player, 32 * scale)
 		this.Avatar:SetPaintedManually(true)
 		this.Avatar:MoveToBack()
 	end,
@@ -112,7 +113,7 @@ GM.HUDs[3] = {
 			-- Black back
 			draw.RoundedBox(0, 12 * scale + 1, ScrH() - 25 * scale, 150 * scale, 12 * scale + 1, Color(0, 0, 0, 215))
 			-- Tinted bar
-			draw.RoundedBox(0, 12 * scale + 1, ScrH() - 25 * scale, stamina * 1.5 * scale, 12 * scale + 1, tint)
+			draw.RoundedBox(0, 12 * scale + 1, ScrH() - 25 * scale, stamina / GAMEMODE.CVars.MaxStamina:GetInt() * 150 * scale, 12 * scale + 1, tint)
 		end
 		-- Background
 		draw.RoundedBox(0, 10 * scale, ScrH() - 60 * scale, 155 * scale, 50 * scale, ColorAlpha(tint, 5))
@@ -141,13 +142,13 @@ GM.SelectedHUD = GM.HUDs[GM.CVars.HUD:GetInt()] || GM.HUDs[2]
 GM.HiderColor = GM:GetTeamShade(TEAM_HIDE, GM.CVars.HiderColor:GetString())
 GM.SeekerColor = GM:GetTeamShade(TEAM_SEEK, GM.CVars.SeekerColor:GetString())
 
-local function GetDrawColor()
-	if LocalPlayer():Team() == TEAM_HIDE then
+local function GetDrawColor(ply)
+	if ply:Team() == TEAM_HIDE then
 		return GAMEMODE:GetTeamShade(TEAM_HIDE, GAMEMODE.CVars.HiderColor:GetString())
-	elseif LocalPlayer():Team() == TEAM_SEEK then
+	elseif ply:Team() == TEAM_SEEK then
 		return GAMEMODE:GetTeamShade(TEAM_SEEK, GAMEMODE.CVars.SeekerColor:GetString())
 	else
-		return team.GetColor(LocalPlayer():Team())
+		return team.GetColor(ply:Team())
 	end
 end
 local function GetRoundText()
@@ -173,15 +174,27 @@ end
 
 function GM:HUDPaint()
 	ply = LocalPlayer()
+
+	-- Are we spectating someone else?
+	local target = ply:GetObserverTarget()
+
+	if IsValid(target) && target:IsPlayer() then
+		ply = target
+	end
+
 	scale = self.CVars.HUDScale:GetInt()
 
 	self.SelectedHUD = self.HUDs[self.CVars.HUD:GetInt()] || self.HUDs[2]
 	-- Create avatar
-	if self.SelectedHUD.AvatarFunc && !self.SelectedHUD.Avatar then
-		self.SelectedHUD:AvatarFunc(scale)
+	if IsValid(self.SelectedHUD.Avatar) && self.SelectedHUD.Avatar.Player != ply then
+		self.SelectedHUD.Avatar:Remove()
+		self.SelectedHUD:AvatarFunc(scale, ply)
+	end
+	if self.SelectedHUD.AvatarFunc && !IsValid(self.SelectedHUD.Avatar) then
+		self.SelectedHUD:AvatarFunc(scale, ply)
 	end
 	-- Draw HUD
-	self.SelectedHUD:Draw(ply, GetDrawColor(), ply.Stamina || 100, self:StringToMinutesSeconds(self.TimeLeft), GetRoundText(), self.TimeLeft - self.RoundLength, scale)
+	self.SelectedHUD:Draw(ply, GetDrawColor(ply), ply:GetStamina(), self:StringToMinutesSeconds(self.TimeLeft), GetRoundText(), self.TimeLeft - self.RoundLength, scale)
 
 	-- Stuck prevention
 	if ply:GetCollisionGroup() == COLLISION_GROUP_WEAPON then

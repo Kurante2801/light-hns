@@ -34,13 +34,10 @@ if SERVER then
 				if !self.PlayedLastHiderSound && team.NumPlayers(TEAM_HIDE) == 1 then
 					local hider = team.GetPlayers(TEAM_HIDE)[1]
 					-- Refill stamina
-					net.Start("HNS.StaminaChange")	
-						net.WriteInt(100, 8)
-					net.Send(hider)
-					hider.Stamina = 100
+					hider:SetStamina(GAMEMODE.CVars.MaxStamina:GetInt())
 					-- Last hider trail
 					if self.CVars.HiderTrail:GetBool() && IsValid(hider) then
-						hider.HiderTrail = util.SpriteTrail(hider, 0, self:GetTeamShade(TEAM_HIDE, hider:GetInfo("has_hidercolor", "Default")), true, 8, 0, 1.75, 0.01, "trails/laser.vmt")
+						hider.HiderTrail = util.SpriteTrail(hider, 0, self:GetTeamShade(TEAM_HIDE, hider:GetNWString("has_hidercolor", "Default")), true, 8, 0, 1.75, 0.01, "trails/laser.vmt")
 					end
 					self:BroadcastSound("ui/medic_alert.wav")
 					self:BroadcastChat(COLOR_WHITE, "[", Color(155, 155, 255), "HNS", COLOR_WHITE, "] ", Color(155, 155, 155), "1 hider left.")
@@ -99,7 +96,7 @@ if SERVER then
 				ply:Spawn()
 			end
 			-- Refill stamina
-			ply.Stamina = 100
+			ply:SetStamina(GAMEMODE.CVars.MaxStamina:GetInt())
 		end
 
 		-- Check for enough players
@@ -130,7 +127,7 @@ if SERVER then
 				-- Create trail
 				if self.CVars.HiderTrail:GetBool() then
 					local hider = team.GetPlayers(TEAM_HIDE)[1]
-					hider.HiderTrail = util.SpriteTrail(hider, 0, self:GetTeamShade(TEAM_HIDE, hider:GetInfo("has_hidercolor", "Default")), true, 8, 0, 1.75, 0.01, "trails/laser.vmt")
+					hider.HiderTrail = util.SpriteTrail(hider, 0, self:GetTeamShade(TEAM_HIDE, hider:GetNWString("has_hidercolor", "Default")), true, 8, 0, 1.75, 0.01, "trails/laser.vmt")
 				end
 			else
 				self.PlayedLastHiderSound = false
@@ -143,11 +140,6 @@ if SERVER then
 			self:BroadcastChat(COLOR_WHITE, "[", COLOR_HNS_TAG, "HNS", COLOR_WHITE, "] There's not enough players to start the round...")
 			print("[LHNS] There's not enough players to begin round " .. self.RoundCount .. "!")
 		end
-
-		-- Refill stamina
-		net.Start("HNS.StaminaChange")
-			net.WriteInt(100, 8)
-		net.Broadcast()
 
 		hook.Run("HASRoundStarted")
 	end

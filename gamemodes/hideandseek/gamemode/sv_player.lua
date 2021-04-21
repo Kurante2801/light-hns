@@ -157,7 +157,6 @@ end
 
 function GM:GetFallDamage(ply, speed)
 	if self.RoundState != ROUND_ACTIVE then return end
-
 	local time = math.Round(speed / 666, 1)
 
 	if speed >= 600 then
@@ -174,16 +173,18 @@ function GM:GetFallDamage(ply, speed)
 			end
 		end)
 
+		-- Stop refilling stamina
+		if speed < 650 then
+			ply:SetStamina(ply:GetStamina())
+		end
+
 		hook.Run ("HASPlayerFallDamage", ply)
 	end
 
-	if speed >= 760 then
+	if speed >= 650 then
 		ply:EmitSound("physics/cardboard/cardboard_box_strain1.wav")
 		-- Lower stamina
-		net.Start("HNS.StaminaChange")
-			net.WriteInt(time * -10, 8)
-		net.Send(ply)
-		ply.Stamina = ply.Stamina - time * 10
+		ply:SetStamina(ply:GetStamina() - time * 20)
 
 		-- Moan
 		timer.Simple(math.random(2, 4), function()
@@ -267,7 +268,9 @@ hook.Add("Move", "HNS.SprintPrevention", function(ply, data)
 	end
 end)
 
-FindMetaTable("Player").Caught = function(self, ply)
+local PLAYER = FindMetaTable("Player")
+
+function PLAYER:Caught(ply)
 	-- Change team
 	self:SetTeam(TEAM_SEEK)
 	-- Parameters
@@ -275,7 +278,7 @@ FindMetaTable("Player").Caught = function(self, ply)
 	self:SetRunSpeed(GAMEMODE.CVars.SeekerRunSpeed:GetInt())
 	self:SetWalkSpeed(GAMEMODE.CVars.SeekerWalkSpeed:GetInt())
 	-- Change color
-	self:SetPlayerColor(GAMEMODE:GetTeamShade(TEAM_SEEK, self:GetInfo("has_seekercolor", "Default")):ToVector())
+	self:SetPlayerColor(GAMEMODE:GetTeamShade(TEAM_SEEK, self:GetNWString("has_seekercolor", "Default")):ToVector())
 	-- Removing last hider trail
 	if IsValid(self.HiderTrail) then
 		self.HiderTrail:Fire("Kill", 0, 0) -- Make the engine kill it
