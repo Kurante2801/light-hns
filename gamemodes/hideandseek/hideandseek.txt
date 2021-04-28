@@ -4,7 +4,7 @@
 	"title"			"Light Hide and Seek"
 	"maps"			"^hns_"
 	"menusystem"	"1"
-	"workshopid"	"443458575"
+	"workshopid"	"1852720956"
 	"category"	"pvp"
 	"settings"
 	{
