@@ -51,8 +51,10 @@ function SWEP:PrimaryAttack()
 		self.Owner:EmitSound("misc/happy_birthday_tf_" .. math.random(10, 29) .. ".wav")
 	end
 
-	-- Don"t check if we can tag a hider if round isn"t active or we aren"t seeking
+	-- Don't check if we can tag a hider if round isn't active or we aren't seeking
 	if GAMEMODE.RoundState != ROUND_ACTIVE || self.Owner:Team() != TEAM_SEEK then return end
+
+	if !hook.Run("CanPlayerTag", self.Owner) then return end
 
 	if ent:IsPlayer() && ent:Team() == TEAM_HIDE && dist <= GAMEMODE.CVars.ClickRange:GetInt() * GAMEMODE.CVars.ClickRange:GetInt() then
 		ent:ViewPunch(Angle(8, math.random(-16, 16), 0))
@@ -77,8 +79,9 @@ if SERVER then
 	end
 
 	function SWEP:Think()
-		-- Do nothing if round is nothing active or we aren"t seeking
+		-- Do nothing if round is nothing active or we aren't seeking
 		if GAMEMODE.RoundState != ROUND_ACTIVE || GAMEMODE.SeekerBlinded || self.Owner:Team() != TEAM_SEEK then return end
+		if !hook.Run("CanPlayerTag", self.Owner) then return end
 		-- When this is true, we will calculate for hiders
 		self.ShouldCalculate = false
 		for _, ply in ipairs(team.GetPlayers(TEAM_HIDE)) do
