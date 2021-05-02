@@ -36,8 +36,10 @@ include("sh_achievements_table.lua")
 
 -- Receive a chat message from gamemode
 net.Receive("HNS.Say", function()
-	local sayTable = net.ReadTable()
-	chat.AddText(unpack(sayTable))
+	local say = util.JSONToTable(net.ReadString())
+	if !say then return end
+
+	chat.AddText(unpack(say))
 end)
 -- Play sounds
 net.Receive("HNS.PlaySound", function()
@@ -218,7 +220,7 @@ end)
 
 -- Receive achievements progress
 net.Receive("HNS.AchievementsProgress", function()
-	GAMEMODE.AchievementsProgress = net.ReadTable()
+	GAMEMODE.AchievementsProgress = util.JSONToTable(net.ReadString())
 	-- Clamp progress
 	for id, progress in pairs(GAMEMODE.AchievementsProgress) do
 		if isnumber(progress) then

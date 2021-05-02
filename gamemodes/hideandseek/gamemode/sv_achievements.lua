@@ -54,7 +54,7 @@ function PLAYER:ProcessAchievements()
 
 	-- Send achievements progress
 	net.Start("HNS.AchievementsProgress")
-		net.WriteTable(self.Achs)
+		net.WriteString(util.TableToJSON(self.Achs))
 	net.Send(self)
 end
 

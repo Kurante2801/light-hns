@@ -30,13 +30,13 @@ util.AddNetworkString("HNS.PlayerNetReady")
 -- Sends a table to be unpacked on chat.AddText
 function GM:SendChat(ply, ...)
 	net.Start("HNS.Say")
-		net.WriteTable({ ... })
+		net.WriteString(util.TableToJSON({ ... }))
 	net.Send(ply)
 end
 -- Same but to everyone
 function GM:BroadcastChat(...)
 	net.Start("HNS.Say")
-		net.WriteTable({ ... })
+		net.WriteString(util.TableToJSON({ ... }))
 	net.Broadcast()
 end
 -- Plays a sound on the client
