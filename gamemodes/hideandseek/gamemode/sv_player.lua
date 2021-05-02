@@ -312,7 +312,7 @@ end)
 net.Receive("HNS.JoinSpectating", function(_, ply)
 	-- Ignore specs
 	if ply:Team() == TEAM_SPECTATOR then return end
-	-- If player is only seeker, forbit
+	-- If player is only seeker, forbid
 	if GAMEMODE.RoundState == ROUND_ACTIVE && ply:Team() == TEAM_SEEK && team.NumPlayers(TEAM_SEEK) <= 1 then
 		GAMEMODE:SendChat(ply, COLOR_WHITE, "[", Color(220, 20, 60), "HNS", COLOR_WHITE, "] You are the only seeker. Tag someone else first!")
 		return
@@ -320,6 +320,26 @@ net.Receive("HNS.JoinSpectating", function(_, ply)
 	-- Log & advert
 	GAMEMODE:BroadcastEvent(ply, PLYEVENT_SPEC)
 	print(string.format("[LHNS] %s (%s) joins the spectators.", ply:Name(), ply:SteamID()))
+	-- If players are avoiding getting tagged
+	-- Run caught hook on nearest seeker
+	if ply:Team() == TEAM_HIDE && !GAMEMODE.SeekerBlinded then
+		local lowest, ent = 105626, nil
+		for _, seeker in ipairs(team.GetPlayers(TEAM_SEEK)) do
+			local dist = seeker:GetPos():DistToSqr(ply:GetPos())
+			if dist <= 105625 && dist < lowest then
+				lowest = dist
+				ent = seeker
+			end
+		end
+
+		if IsValid(ent) then
+			if GAMEMODE.RoundCount > 0 then
+				ent:AddFrags(GAMEMODE.CVars.SeekerReward:GetInt())
+			end
+
+			ply:Caught(ent)
+		end
+	end
 	-- Set team and spawn
 	ply:SetTeam(TEAM_SPECTATOR)
 	ply:Spawn()
