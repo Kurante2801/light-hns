@@ -410,7 +410,7 @@ end)
 hook.Add("Tick", "HNS.PlayerStuckPrevention", function()
 		-- Stuck prevention
 	for _, ply in ipairs(GAMEMODE.PlayersCache) do
-		if !IsValid(ply) || ply:Team() == TEAM_SPECTATOR then continue end
+		if !IsValid(ply) || ply:Team() == TEAM_SPECTATOR || ply:GetObserverMode() != OBS_MODE_NONE then continue end
 
 		roof = (ply:Crouching() || ply:KeyDown(IN_DUCK)) && 58 || 70
 
@@ -419,8 +419,6 @@ hook.Add("Tick", "HNS.PlayerStuckPrevention", function()
 		-- Check for near players
 		for _, ply2 in ipairs(GAMEMODE.PlayersCache) do
 			if !IsValid(ply2) || ply2:Team() == TEAM_SPECTATOR || ply == ply2 || ply2:GetObserverMode() != OBS_MODE_NONE then continue end
-
-			shouldCalculate = false
 
 			if (ply:GetPos() + Vector(0, 0, 30)):DistToSqr(ply2:GetPos() + Vector(0, 0, 30)) <= 6400 then
 				shouldCalculate = true
