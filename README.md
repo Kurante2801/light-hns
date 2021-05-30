@@ -58,6 +58,13 @@ This gamemode WILL CONFLICT with [classic Hide and Seek](https://steamcommunity.
 
 `has_firstcaughtseeks` *Boolean (0 or 1)* = First player caught will seek next round.
 
+`has_maxstamina` *Number* = Maximum ammount of stamina players can refill.
+
+`has_staminarefill` *Number* = Rate at which stamina is filled.
+
+`has_staminadeplete` *Number* = Rate at which stamina is depleted.
+
+`has_staminawait` *Number* = How many seconds to wait before filling stamina.
 ## Additional info
 
 This gamemode was created to be exclusive to the GFL community, but now is free for everyone to use, that's why you may see server references, bad commit names or me just being a dick on the comments on older commits.
