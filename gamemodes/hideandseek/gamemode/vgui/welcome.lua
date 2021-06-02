@@ -143,9 +143,9 @@ local dark = {
 
 function PANEL:GetTheme(i)
 	if GAMEMODE.CVars.DarkTheme:GetBool() then
-		return dark[i] || Color(0, 0, 0)
+		return dark[i] or Color(0, 0, 0)
 	else
-		return light[i] || Color(255, 255, 255)
+		return light[i] or Color(255, 255, 255)
 	end
 end
 
