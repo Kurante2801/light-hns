@@ -24,10 +24,12 @@ end
 function SWEP:PrimaryAttack()
     self:SetNextPrimaryFire(CurTime() + 0.25)
     self:SetNextSecondaryFire(CurTime() + 0.25)
+
+    local owner = self:GetOwner()
     -- Stop if this is run on the client, or seeker is blinded and owner is seeking
-    if CLIENT or (GAMEMODE.SeekerBlinded and self.Owner:Team() == TEAM_SEEK) then return end
-    self.Owner:ViewPunch(Angle(-1, 0, 0))
-    local ent = self.Owner:GetEyeTrace()
+    if CLIENT or (GAMEMODE.SeekerBlinded and owner:Team() == TEAM_SEEK) then return end
+    owner:ViewPunch(Angle(-1, 0, 0))
+    local ent = owner:GetEyeTrace()
     local dist = ent.StartPos:DistToSqr(ent.HitPos)
     ent = ent.Entity
 
@@ -36,25 +38,25 @@ function SWEP:PrimaryAttack()
         ent:EmitSound("physics/body/body_medium_impact_hard")
         ent:Fire("RemoveHealth", 25)
         -- Call hook
-        hook.Run("HASHitBreakable", self.Owner, ent)
+        hook.Run("HASHitBreakable", owner, ent)
     end
 
     -- Run a sound after round
     if GAMEMODE.RoundState == ROUND_POST then
-        self.Owner:EmitSound("misc/happy_birthday_tf_" .. math.random(10, 29) .. ".wav")
+        owner:EmitSound("misc/happy_birthday_tf_" .. math.random(10, 29) .. ".wav")
     end
 
     -- Don't check if we can tag a hider if round isn't active or we aren't seeking
-    if GAMEMODE.RoundState ~= ROUND_ACTIVE or self.Owner:Team() ~= TEAM_SEEK then return end
-    if not hook.Run("CanPlayerTag", self.Owner) then return end
+    if GAMEMODE.RoundState ~= ROUND_ACTIVE or owner:Team() ~= TEAM_SEEK then return end
+    if not hook.Run("CanPlayerTag", owner) then return end
 
     if ent:IsPlayer() and ent:Team() == TEAM_HIDE and dist <= GAMEMODE.CVars.ClickRange:GetInt() * GAMEMODE.CVars.ClickRange:GetInt() then
         ent:ViewPunch(Angle(8, math.random(-16, 16), 0))
-        ent:Caught(self.Owner)
+        ent:Caught(owner)
 
         -- Award frag
         if GAMEMODE.RoundCount > 0 then
-            self.Owner:AddFrags(GAMEMODE.CVars.SeekerReward:GetInt())
+            owner:AddFrags(GAMEMODE.CVars.SeekerReward:GetInt())
         end
     end
 end
@@ -66,20 +68,22 @@ if SERVER then
 
     -- Hide hands and reset a delay for taunts
     function SWEP:Deploy()
-        self.Owner:DrawViewModel(false)
-        self.Owner:DrawWorldModel(false)
+        local owner = self:GetOwner()
+        owner:DrawViewModel(false)
+        owner:DrawWorldModel(false)
         self.TauntDelay = 0
     end
 
     function SWEP:Think()
+        local owner = self:GetOwner()
         -- Do nothing if round is nothing active or we aren't seeking
-        if GAMEMODE.RoundState ~= ROUND_ACTIVE or GAMEMODE.SeekerBlinded or self.Owner:Team() ~= TEAM_SEEK then return end
-        if not hook.Run("CanPlayerTag", self.Owner) then return end
+        if GAMEMODE.RoundState ~= ROUND_ACTIVE or GAMEMODE.SeekerBlinded or owner:Team() ~= TEAM_SEEK then return end
+        if not hook.Run("CanPlayerTag", owner) then return end
         -- When this is true, we will calculate for hiders
         self.ShouldCalculate = false
 
         for _, ply in ipairs(team.GetPlayers(TEAM_HIDE)) do
-            if (self.Owner:GetPos() + Vector(0, 0, 30)):DistToSqr(ply:GetPos() + Vector(0, 0, 30)) <= 6084 then
+            if (owner:GetPos() + Vector(0, 0, 30)):DistToSqr(ply:GetPos() + Vector(0, 0, 30)) <= 6084 then
                 self.ShouldCalculate = true
                 break
             end
@@ -87,12 +91,12 @@ if SERVER then
 
         -- If a hider is close enough, check for collition(Copied from old recoding)
         if self.ShouldCalculate then
-            local range = 34 + self.Owner:Ping() / 24
-            local roof = self.Owner:Crouching() and 64 or 76
-            local floor = self.Owner:GetGroundEntity() and -9 or -3
-            local playerHeight = self.Owner:Crouching() and 32 or 52
-            local traceHeight = self.Owner:Crouching() and 2.75 or 12
-            local start = self.Owner:GetPos() + Vector(0, 0, playerHeight)
+            local range = 34 + owner:Ping() / 24
+            local roof = owner:Crouching() and 64 or 76
+            local floor = owner:GetGroundEntity() and -9 or -3
+            local playerHeight = owner:Crouching() and 32 or 52
+            local traceHeight = owner:Crouching() and 2.75 or 12
+            local start = owner:GetPos() + Vector(0, 0, playerHeight)
             local traces = {}
 
             for i = 1, 5 do
@@ -106,7 +110,7 @@ if SERVER then
             end
 
             -- For each entity inside the box
-            for _, ply in ipairs(ents.FindInBox(self.Owner:GetPos() + Vector(math.max(traces[1].Fraction * range, 16.25), math.max(traces[3].Fraction * range, 16.25), floor), self.Owner:GetPos() + Vector(math.min(-(traces[2].Fraction * range), -16.25), math.min(-(traces[4].Fraction * range), -16.25), playerHeight + traces[5].Fraction * (roof - playerHeight)))) do
+            for _, ply in ipairs(ents.FindInBox(owner:GetPos() + Vector(math.max(traces[1].Fraction * range, 16.25), math.max(traces[3].Fraction * range, 16.25), floor), owner:GetPos() + Vector(math.min(-(traces[2].Fraction * range), -16.25), math.min(-(traces[4].Fraction * range), -16.25), playerHeight + traces[5].Fraction * (roof - playerHeight)))) do
                 -- Stop if not a hider or spectating through ulx
                 if not IsValid(ply) or not ply:IsPlayer() or ply:Team() ~= TEAM_HIDE or ply:GetObserverMode() ~= OBS_MODE_NONE then continue end
                 local plyHeight = ply:Crouching() and 32 or 52
@@ -121,17 +125,17 @@ if SERVER then
                 -- Tag
                 if trace.Fraction == 1 then
                     ply:ViewPunch(Angle(8, math.random(-16, 16), 0))
-                    self.Owner:ViewPunch(Angle(-1, 0, 0))
+                    owner:ViewPunch(Angle(-1, 0, 0))
                     -- Tag
-                    ply:Caught(self.Owner)
+                    ply:Caught(owner)
 
                     -- Award Frag
                     if GAMEMODE.RoundCount > 0 then
-                        self.Owner:AddFrags(1)
+                        owner:AddFrags(1)
                     end
 
                     -- Call hook
-                    hook.Run("HASPlayerCaughtArea", self.Owner, ply)
+                    hook.Run("HASPlayerCaughtArea", owner, ply)
                 end
             end
         end
@@ -140,14 +144,16 @@ if SERVER then
     function SWEP:Reload()
         if self.TauntDelay > CurTime() then return end
         self.TauntDelay = CurTime() + 2.5
+
+        local owner = self:GetOwner()
         local taunts = {}
-        local gender = self.Owner.Gender and "female01" or "male01"
+        local gender = owner.Gender and "female01" or "male01"
 
         if GAMEMODE.RoundState == ROUND_ACTIVE then
-            if self.Owner:Team() == TEAM_HIDE then
+            if owner:Team() == TEAM_HIDE then
                 taunts = {"vo/npc/" .. gender .. "/answer20.wav", "vo/npc/" .. gender .. "/gordead_ans05.wav", "vo/npc/" .. gender .. "/gordead_ans06.wav", "vo/npc/" .. gender .. "/behindyou01.wav", "vo/npc/" .. gender .. "/hi01.wav", "vo/npc/" .. gender .. "/hi02.wav", "vo/npc/" .. gender .. "/illstayhere01.wav", "vo/npc/" .. gender .. "/littlecorner01.wav", "vo/npc/" .. gender .. "/runforyourlife01.wav", "vo/npc/" .. gender .. "/question30.wav", "vo/npc/" .. gender .. "/waitingsomebody.wav", "vo/npc/" .. gender .. "/uhoh.wav", "vo/npc/" .. gender .. "/incoming02.wav", "vo/npc/" .. gender .. "/yougotit02.wav", "vo/npc/" .. gender .. "/gethellout.wav", "vo/npc/" .. gender .. "/strider_run.wav", "vo/npc/" .. gender .. "/overhere01.wav", "vo/npc/" .. gender .. "/question06.wav", "vo/canals/" .. gender .. "/stn6_go_nag02.wav", "vo/trainyard/" .. gender .. "/cit_window_use01.wav", "vo/trainyard/" .. gender .. "/cit_window_use02.wav", "vo/trainyard/" .. gender .. "/cit_window_use03.wav", "vo/coast/barn/" .. gender .. "/youmadeit.wav", "vo/canals/" .. gender .. "/stn6_incoming.wav",}
 
-                if self.Owner.Gender then
+                if owner.Gender then
                     table.insert(taunts, "vo/canals/airboat_go_nag01.wav")
                     table.insert(taunts, "vo/canals/airboat_go_nag03.wav")
                     table.insert(taunts, "vo/canals/arrest_getgoing.wav")
@@ -170,7 +176,7 @@ if SERVER then
             else
                 taunts = {"vo/npc/" .. gender .. "/readywhenyouare01.wav", "vo/npc/" .. gender .. "/readywhenyouare02.wav", "vo/npc/" .. gender .. "/squad_approach02.wav", "vo/npc/" .. gender .. "/squad_away01.wav", "vo/npc/" .. gender .. "/squad_away02.wav", "vo/npc/" .. gender .. "/upthere01.wav", "vo/npc/" .. gender .. "/upthere02.wav", "vo/npc/" .. gender .. "/gotone01.wav", "vo/npc/" .. gender .. "/gotone02.wav", "vo/npc/" .. gender .. "/overthere01.wav", "vo/npc/" .. gender .. "/overthere02.wav", "vo/npc/" .. gender .. "/hi01.wav", "vo/npc/" .. gender .. "/hi02.wav", "vo/coast/odessa/" .. gender .. "/stairman_follow01.wav",}
 
-                if self.Owner.Gender then
+                if owner.Gender then
                     table.insert(taunts, "vo/trainyard/female01/cit_hit05.wav")
                 else
                     table.insert(taunts, "vo/coast/bugbait/sandy_youthere.wav")
@@ -181,8 +187,8 @@ if SERVER then
             taunts = {"vo/npc/" .. gender .. "/yeah02.wav", "vo/coast/odessa/" .. gender .. "/nlo_cheer01.wav", "vo/coast/odessa/" .. gender .. "/nlo_cheer02.wav", "vo/coast/odessa/" .. gender .. "/nlo_cheer03.wav"}
         end
 
-        self.Owner:EmitSound(taunts[math.random(#taunts)], 89)
-        hook.Run("HASPlayerTaunted", self.Owner)
+        owner:EmitSound(taunts[math.random(#taunts)], 89)
+        hook.Run("HASPlayerTaunted", owner)
     end
 elseif CLIENT then
     SWEP.FrameVisible = false
