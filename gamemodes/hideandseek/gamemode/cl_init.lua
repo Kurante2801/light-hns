@@ -165,9 +165,42 @@ function GM:HASAchievementsMenu()
 end
 
 function GM:HASScoreboardMenu(menu, ply)
-    menu:AddOption(ply:IsMuted() and "Unmute" or "Mute", function()
+    local pnl = menu:AddOption("", function()
         ply:SetMuted(not ply:IsMuted())
-    end):SetIcon(ply:IsMuted() and "icon16/sound.png" or "icon16/sound_mute.png")
+    end)
+
+    pnl:SetIcon(ply:IsMuted() and "icon16/sound_mute.png" or "icon16/sound.png")
+    pnl:DockPadding(0, 0, 0, 20)
+    pnl.Paint = function(this, w, h)
+        derma.SkinHook("Paint", "MenuOption", this, h + 6, h)
+    end
+
+    pnl.Container = pnl:Add("DPanel")
+    pnl.Container:SetPos(27, 0)
+    pnl.Container:SetSize(140, 24)
+    pnl.Container.Paint = function() end
+
+    pnl.Volume = pnl.Container:Add("DNumSlider")
+    pnl.Volume:Dock(FILL)
+    pnl.Volume:SetMinMax(0, 100)
+    pnl.Volume:SetValue(math.floor(ply:GetVoiceVolumeScale() * 100))
+    pnl.Volume:SetDecimals(0)
+    pnl.Volume:SetDark(true)
+    pnl.Volume.Label:Hide()
+    pnl.Volume.TextArea:SetWide(24)
+    pnl.Volume.OnValueChanged = function(this, value)
+        value = math.floor(value) / 100
+        ply:SetVoiceVolumeScale(value)
+
+        if value > 0 then
+            pnl:SetIcon("icon16/sound.png")
+            ply:SetMuted(false)
+        else
+            pnl:SetIcon("icon16/sound_mute.png")
+        end
+    end
+
+    menu:AddPanel(pnl)
 
     menu:AddOption("Open Profile", function()
         ply:ShowProfile()

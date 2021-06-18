@@ -454,6 +454,11 @@ function PANEL:GetTeamName()
 
     if self.Player:IsMuted() then
         text = text .. " (Muted)"
+    else
+        local volume = self.Player:GetVoiceVolumeScale()
+        if volume < 1 then
+            text = string.format("%s (Volume: %s)", text, math.floor(volume * 100))
+        end
     end
 
     return text
