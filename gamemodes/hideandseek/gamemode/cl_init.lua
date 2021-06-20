@@ -211,6 +211,7 @@ function GM:OnPlayerChat(ply, text, teamChat, dead)
     -- CONSOLE: on invalid/unloaded
     if not IsValid(ply) then
         chat.AddText(Color(125, 125, 125), "CONSOLE: ", Color(255, 255, 255), text)
+        return true
     end
 
     local line = {}
