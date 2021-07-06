@@ -34,6 +34,15 @@ include("vgui/teamselection.lua")
 include("vgui/achievements.lua")
 include("sh_achievements_table.lua")
 
+-- Clean avatar frame cache
+function GM:ShutDown()
+    if not file.Exists("hns_avatarframes_cache", "DATA") then return end
+
+    for _, filename in ipairs(file.Find("hns_avatarframes_cache/*", "DATA")) do
+        file.Delete("hns_avatarframes_cache/" .. filename)
+    end
+end
+
 -- Receive a chat message from gamemode
 net.Receive("HNS.Say", function()
     local say = util.JSONToTable(net.ReadString())
