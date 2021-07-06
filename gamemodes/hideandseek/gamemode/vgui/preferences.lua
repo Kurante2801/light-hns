@@ -251,6 +251,9 @@ function PANEL:Init()
         self.Speed.SpeedC:SetEnabled(value)
     end
 
+    -- Steam pointshop frames
+    self:AddCheckbox("ENABLE STEAM AVATAR FRAMES", "has_avatarframes", 124)
+
     -- Add your own settings in this hook
     hook.Run("HASPreferencesMenu", self)
 end
