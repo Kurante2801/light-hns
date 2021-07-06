@@ -53,10 +53,9 @@ GM.HUDs[2] = {
         surface.SetTextColor(0, 0, 0)
         surface.SetTextPos(42 * scale + 1, (ScrH() - 35 * scale - this.TextTall / 2) + 1)
         surface.DrawText(ply:Name())
-        -- Avatar image
+        -- Avatar border
         draw.RoundedBox(0, 8 * scale - 1, ScrH() - 40 * scale - 1, 32 * scale + 2, 32 * scale + 2, tint)
         draw.RoundedBox(0, 8 * scale, ScrH() - 40 * scale, 32 * scale, 32 * scale, Color(0, 0, 0))
-        this.Avatar:PaintManual()
         -- Player name
         draw.RoundedBox(0, 40 * scale + 1, ScrH() - 40 * scale - 1, this.BarWide, 12 * scale, Color(0, 0, 0, 125))
         draw.SimpleText(ply:Name(), "HNSHUD.VerdanaMedium", 42 * scale, ScrH() - 35 * scale, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
@@ -82,9 +81,12 @@ GM.HUDs[2] = {
             draw.RoundedBox(0, 40 * scale + 1, ScrH() - 20 * scale + 1, this.BarWide, 12 * scale, Color(0, 0, 0, 175))
             draw.RoundedBox(0, 41 * scale + 1, ScrH() - 19 * scale + 1, (this.BarWide - 2 * scale) * stamina / GAMEMODE.CVars.MaxStamina:GetInt(), 10 * scale, ColorAlpha(tint, math.sin(CurTime() * 4) * 60 + 120))
         end
+
+        -- Avatar (drawn last to support steam frames)
+        this.Avatar:PaintManual()
     end,
     AvatarFunc = function(this, scale, ply)
-        this.Avatar = vgui.Create("AvatarImage")
+        this.Avatar = vgui.Create("HNS.Avatar")
         this.Avatar:SetPos(8 * scale, ScrH() - 40 * scale)
         this.Avatar:SetSize(32 * scale, 32 * scale)
         this.Avatar.Player = ply or LocalPlayer()

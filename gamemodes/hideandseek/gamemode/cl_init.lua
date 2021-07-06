@@ -21,6 +21,7 @@ GM.CVars.CrosshairThick = CreateClientConVar("has_crosshair_thick", 4, true, fal
 GM.CVars.HUDScale = CreateClientConVar("has_hud_scale", 2, true, false)
 GM.CVars.SortReversed = CreateClientConVar("has_scob_sort_reversed", 0, true, false)
 GM.CVars.DarkTheme = CreateClientConVar("has_darktheme", 1, true, false)
+GM.CVars.AvatarFrames = CreateClientConVar("has_avatarframes", 1, true, false)
 -- Includes
 include("sh_init.lua")
 include("cl_fonts.lua")

@@ -357,7 +357,7 @@ PANEL = {}
 function PANEL:Init()
     self:Dock(TOP)
     self:SetText("")
-    self.Avatar = self:Add("AvatarImage")
+    self.Avatar = self:Add("HNS.Avatar")
     self.Avatar:SetMouseInputEnabled(false)
     self.Scale = 2
 end
