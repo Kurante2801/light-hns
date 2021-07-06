@@ -93,9 +93,19 @@ function PANEL:HandleFrame()
     if ply:IsBot() then return end
 
     -- Already cached
+    if GAMEMODE.AvatarFrames[ply:SteamID64()] then
+        self.Material = GAMEMODE.AvatarFrames[ply:SteamID64()]
+        self:HandleDimensions()
+        return
+    elseif GAMEMODE.AvatarFrames[ply:SteamID64()] == false then
+        return
+    end
+
+    -- Already saved
     local path = string.format("hns_avatarframes_cache/%s.png", ply:SteamID64())
     if file.Exists("hns_avatarframes_cache", "DATA") and file.Exists(path, "DATA") then
-        self.Material = Material("data/" .. path)
+        GAMEMODE.AvatarFrames[ply:SteamID64()] = Material("data/" .. path)
+        self.Material = GAMEMODE.AvatarFrames[ply:SteamID64()]
         self:HandleDimensions()
         return
     end
@@ -105,7 +115,11 @@ function PANEL:HandleFrame()
     http.Fetch("https://steamcommunity.com/profiles/" .. ply:SteamID64(), function(body)
         if not IsValid(self) or not IsValid(ply) then return end
         local _, _, url = string.find(body, [[<div class="profile_avatar_frame">%s*<img src="(.-)">]])
-        if not url then return end
+
+        if not url then
+            GAMEMODE.AvatarFrames[ply:SteamID64()] = false
+            return
+        end
 
         http.Fetch(url, function(src)
             if not IsValid(self) or not IsValid(ply) then return end
@@ -115,7 +129,9 @@ function PANEL:HandleFrame()
             end
 
             file.Write(path, src)
-            self.Material = Material("data/" .. path)
+
+            GAMEMODE.AvatarFrames[ply:SteamID64()] = Material("data/" .. path)
+            self.Material = GAMEMODE.AvatarFrames[ply:SteamID64()]
             self:HandleDimensions()
         end)
     end)

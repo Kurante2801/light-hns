@@ -43,6 +43,8 @@ function GM:ShutDown()
     end
 end
 
+GM.AvatarFrames = GM.AvatarFrames or {}
+
 -- Receive a chat message from gamemode
 net.Receive("HNS.Say", function()
     local say = util.JSONToTable(net.ReadString())
