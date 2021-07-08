@@ -117,8 +117,12 @@ function PANEL:Paint(w, h)
     surface.SetDrawColor(0, 0, 0, 255)
     surface.DrawRect(4 * scale, 4 * scale, 16 * scale, 16 * scale)
 
-    self:ShadowedText(self.Player:Name(), "HNSHUD.RobotoThin", 23 * scale, h / 2 - 3 * scale, COLOR_WHITE, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-    self:ShadowedText(self.Player:SteamID(), "HNSHUD.TahomaThin", 23 * scale + 1, h / 2 + 4 * scale, COLOR_GRAY, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+    if GAMEMODE.CVars.ShowID:GetBool() then
+        self:ShadowedText(self.Player:Name(), "HNSHUD.RobotoThin", 23 * scale, h / 2 - 3 * scale, COLOR_WHITE, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+        self:ShadowedText(self.Player:SteamID(), "HNSHUD.TahomaThin", 23 * scale + 1, h / 2 + 4 * scale, COLOR_GRAY, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+    else
+        self:ShadowedText(self.Player:Name(), "HNSHUD.RobotoThin", 23 * scale, h / 2, COLOR_WHITE, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+    end
 end
 
 function PANEL:BarGraph(w, h, scale)
