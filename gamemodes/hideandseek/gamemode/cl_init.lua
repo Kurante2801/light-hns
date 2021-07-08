@@ -36,26 +36,27 @@ include("vgui/voice.lua")
 include("sh_achievements_table.lua")
 
 function GM:PlayerStartVoice(ply)
-    self.BaseClass.PlayerStartVoice(self, ply)
+    --self.BaseClass.PlayerStartVoice(self, ply)
 
-    if IsValid(self.VoiceContainer[ply:SteamID64()]) then
+    local panel = self.VoiceContainer.Players[ply:SteamID64()]
+    if IsValid(panel) then
+        panel.LastSpoke = nil
         return
     end
 
-    local panel = self.VoiceContainer:Add("HNS.VoicePlayer")
-    self.VoiceContainer[ply:SteamID64()] = panel
-
+    panel = self.VoiceContainer:Add("HNS.VoicePlayer")
     panel:SetPlayer(ply)
+
+    self.VoiceContainer.Players[ply:SteamID64()] = panel
 end
 
 function GM:PlayerEndVoice(ply)
-    self.BaseClass.PlayerEndVoice(self, ply)
+    --self.BaseClass.PlayerEndVoice(self, ply)
 
-    local panel = self.VoiceContainer[ply:SteamID64()]
-    if not IsValid(panel) then return end
-
-    panel:Remove()
-    self.VoiceContainer[ply:SteamID64()] = nil
+    local panel = self.VoiceContainer.Players[ply:SteamID64()]
+    if IsValid(panel) then
+        panel.LastSpoke = CurTime()
+    end
 end
 
 -- Clean avatar frame cache

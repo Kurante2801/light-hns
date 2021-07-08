@@ -4,22 +4,23 @@ local COLOR_WHITE = Color(255, 255, 255)
 local COLOR_GRAY = Color(255, 255, 255)
 
 function PANEL:Init()
-    local scale = GAMEMODE.CVars.HUDScale:GetInt()
-    self.Scale = scale
-
-    self:SetSize(125 * scale, 300 * scale)
-    self:SetPos(ScrW() - 133 * scale, ScrH() - 300 * scale)
-
+    self:SetScale(GAMEMODE.CVars.HUDScale:GetInt())
     self.Players = {}
 end
 
 function PANEL:Think()
     local scale = GAMEMODE.CVars.HUDScale:GetInt()
     if self.Scale ~= scale then
-        self:SetSize(125 * scale, 300 * scale)
-        self:SetPos(ScrW() - 133 * scale, ScrH() - 360 * scale)
-        self.Scale = scale
+        self:SetScale(scale)
     end
+end
+
+function PANEL:SetScale(scale)
+    self.Scale = scale
+    self:Dock(RIGHT)
+    self:DockMargin(0, 0, 8 * scale, 0)
+    self:DockPadding(0, 0, 0, 50 * scale)
+    self:SetWide(125 * scale)
 end
 
 function PANEL:Paint(w, h)
@@ -37,10 +38,19 @@ function PANEL:Init()
 end
 
 function PANEL:Think()
+    if not IsValid(self.Player) then
+        self:Remove()
+        return
+    end
+
     local scale = GAMEMODE.CVars.HUDScale:GetInt()
 
     if scale ~= self.Scale then
         self:SetScale(scale)
+    end
+
+    if self.LastSpoke and CurTime() - self.LastSpoke > 3 then
+        self:Remove()
     end
 end
 
@@ -59,10 +69,8 @@ function PANEL:SetScale(scale)
 end
 
 function PANEL:Paint(w, h)
-    if not IsValid(self.Player) then
-        self:Remove()
-        return
-    end
+    if not IsValid(self.Player) then return end
+
     local scale = GAMEMODE.CVars.HUDScale:GetInt()
 
     local blurx, blury = self:LocalToScreen(0, 0)
@@ -82,7 +90,7 @@ function PANEL:Paint(w, h)
     surface.DrawRect(4 * scale, 4 * scale, 16 * scale, 16 * scale)
 
     self:ShadowedText(self.Player:Name(), "HNSHUD.RobotoThin", 23 * scale, h / 2 - 3 * scale, COLOR_WHITE, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-    self:ShadowedText(self.Player:SteamID(), "HNSHUD.TahomaThin", 23 * scale, h / 2 + 4 * scale, COLOR_GRAY, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+    self:ShadowedText(self.Player:SteamID(), "HNSHUD.TahomaThin", 23 * scale + 1, h / 2 + 4 * scale, COLOR_GRAY, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 end
 
 function PANEL:ShadowedText(text, font, x, y, color, alignx, aligny)
