@@ -17,10 +17,9 @@ end
 
 function PANEL:SetScale(scale)
     self.Scale = scale
-    self:Dock(RIGHT)
-    self:DockMargin(0, 0, 8 * scale, 0)
-    self:DockPadding(0, 0, 0, 50 * scale)
-    self:SetWide(125 * scale)
+
+    self:SetSize(125 * scale, ScrH() - 50 * scale)
+    self:SetPos(ScrW() - 133 * scale, 0)
 end
 
 function PANEL:Paint(w, h)
