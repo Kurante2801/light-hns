@@ -4,7 +4,7 @@ local sorts = {"Entity ID", "Points", "Name"}
 local PANEL = {}
 
 function PANEL:Init()
-    self.Blur = Material("pp/blurscreen")
+    self.Blur = GAMEMODE.BlurMaterial
     self.Star = Material("icon16/star.png")
     self:SetTitle("")
     self:ShowCloseButton(false)
@@ -138,13 +138,6 @@ end
 function PANEL:Paint(w, h)
     local scale = GAMEMODE.CVars.HUDScale:GetInt()
     local blurx, blury = self:LocalToScreen(0, 0)
-
-    -- Cache blur
-    for i = 1, 2 do
-        self.Blur:SetFloat("$blur", (i / 4) * 4)
-        self.Blur:Recompute()
-        render.UpdateScreenEffectTexture()
-    end
 
     -- Top blur
     render.SetScissorRect(blurx, blury, blurx + w, blury + 32 * scale, true)

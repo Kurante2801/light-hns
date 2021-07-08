@@ -52,6 +52,8 @@ function PANEL:Paint(w, h)
 end
 
 function PANEL:Think()
+    if not IsValid(self.Ply) then return end
+
     if GAMEMODE.CVars.AvatarFrames:GetBool() then
         if not self.Material and not self.AttemptedFrame then
             self:HandleFrame()

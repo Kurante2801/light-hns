@@ -32,7 +32,31 @@ include("vgui/preferences.lua")
 include("vgui/welcome.lua")
 include("vgui/teamselection.lua")
 include("vgui/achievements.lua")
+include("vgui/voice.lua")
 include("sh_achievements_table.lua")
+
+function GM:PlayerStartVoice(ply)
+    self.BaseClass.PlayerStartVoice(self, ply)
+
+    if IsValid(self.VoiceContainer[ply:SteamID64()]) then
+        return
+    end
+
+    local panel = self.VoiceContainer:Add("HNS.VoicePlayer")
+    self.VoiceContainer[ply:SteamID64()] = panel
+
+    panel:SetPlayer(ply)
+end
+
+function GM:PlayerEndVoice(ply)
+    self.BaseClass.PlayerEndVoice(self, ply)
+
+    local panel = self.VoiceContainer[ply:SteamID64()]
+    if not IsValid(panel) then return end
+
+    panel:Remove()
+    self.VoiceContainer[ply:SteamID64()] = nil
+end
 
 -- Clean avatar frame cache
 function GM:ShutDown()
@@ -87,6 +111,10 @@ function GM:InitPostEntity()
     -- Create welcome screen
     vgui.Create("HNS.Welcome")
     LocalPlayer().Stamina = 100
+    -- Voice derma
+    self.VoiceContainer = vgui.Create("HNS.VoiceContainer")
+
+    self.BlurMaterial = Material("pp/blurscreen")
 end
 
 function GM:Tick()

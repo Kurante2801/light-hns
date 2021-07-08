@@ -252,6 +252,13 @@ function GM:HUDPaint()
             draw.SimpleTextOutlined("v", "HNSHUD.RobotoLarge", pos.x, pos.y, ColorAlpha(mate:GetPlayerColor():ToColor(), alpha), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, alpha * 0.35))
         end
     end
+
+    -- Cache blur
+    for i = 1, 2 do
+        self.BlurMaterial:SetFloat("$blur", (i / 4) * 4)
+        self.BlurMaterial:Recompute()
+        render.UpdateScreenEffectTexture()
+    end
 end
 
 -- Using hook to allow other HUD elements from other addons to be seen
