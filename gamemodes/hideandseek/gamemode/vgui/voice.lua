@@ -72,6 +72,18 @@ function PANEL:Think()
         table.insert(self.Segments, { t = time, v = self.Player:VoiceVolume() })
         self.LastSegment = time
     end
+
+    -- Remove segments here, otherwise we get many errors in the draw hook
+    -- We remove segments when they're off the panel and are not drawn
+    for i = 1, #self.Segments do
+        local seg = self.Segments[i]
+        if not seg then continue end
+
+        if (CurTime() - seg.t) * 125 / 3 * scale > 130 * scale then
+            table.remove(self.Segments, i)
+            i = i - 1
+        end
+    end
 end
 
 function PANEL:SetPlayer(ply)
@@ -106,7 +118,8 @@ function PANEL:Paint(w, h)
     surface.SetDrawColor(0, 0, 0, 125)
     surface.DrawRect(0, 0, w, h)
 
-    self:BarGraph(w, h, scale)
+    --self:BarGraph(w, h, scale)
+    self:LineGraph(w, h, scale)
 
     surface.SetDrawColor(150, 150, 150, 255)
     surface.DrawOutlinedRect(0, 0, w, h)
@@ -138,9 +151,37 @@ function PANEL:BarGraph(w, h, scale)
         else
             local tint = GAMEMODE:GetPlayerTeamColor(self.Player) or team.GetColor(self.Player:Team())
             local tall = seg.v * 50 * scale
-            surface.SetDrawColor(tint:Unpack())
+
+            surface.SetDrawColor(tint.r, tint.g, tint.b, 255)
             surface.DrawRect(w - x, h - tall, 1 * scale, tall)
         end
+    end
+end
+
+function PANEL:LineGraph(w, h, scale)
+    for i, seg in ipairs(self.Segments) do
+        if i < 2 or i >= #self.Segments then continue end
+        local segLast = self.Segments[i - 1]
+        if not segLast then continue end
+
+        local x1 = w - (CurTime() - seg.t - 0.1) * 125 / 3 * scale
+        local x2 = w - (CurTime() - segLast.t - 0.1) * 125 / 3 * scale
+        local tall1 = h - segLast.v * 50 * scale
+        local tall2 = h - seg.v * 50 * scale
+        local tint = GAMEMODE:GetPlayerTeamColor(self.Player) or team.GetColor(self.Player:Team())
+
+        -- Background
+        draw.NoTexture()
+        surface.SetDrawColor(tint.r, tint.g, tint.b, 125)
+        surface.DrawPoly({
+            { x = x2, y = h },
+            { x = x2, y = tall1 },
+            { x = x1, y = tall2 },
+            { x = x1, y = h },
+        })
+
+        surface.SetDrawColor(tint.r, tint.g, tint.b, 255)
+        surface.DrawLine(x2, tall1, x1, tall2)
     end
 end
 
