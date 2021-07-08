@@ -22,6 +22,9 @@ GM.CVars.HUDScale = CreateClientConVar("has_hud_scale", 2, true, false)
 GM.CVars.SortReversed = CreateClientConVar("has_scob_sort_reversed", 0, true, false)
 GM.CVars.DarkTheme = CreateClientConVar("has_darktheme", 1, true, false)
 GM.CVars.AvatarFrames = CreateClientConVar("has_avatarframes", 1, true, false)
+
+-- For voice derma
+GM.CVars.VoiceLoopback = GetConVar("voice_loopback")
 -- Includes
 include("sh_init.lua")
 include("cl_fonts.lua")
@@ -36,8 +39,6 @@ include("vgui/voice.lua")
 include("sh_achievements_table.lua")
 
 function GM:PlayerStartVoice(ply)
-    --self.BaseClass.PlayerStartVoice(self, ply)
-
     local panel = self.VoiceContainer.Players[ply:SteamID64()]
     if IsValid(panel) then
         panel.LastSpoke = nil
@@ -51,8 +52,6 @@ function GM:PlayerStartVoice(ply)
 end
 
 function GM:PlayerEndVoice(ply)
-    --self.BaseClass.PlayerEndVoice(self, ply)
-
     local panel = self.VoiceContainer.Players[ply:SteamID64()]
     if IsValid(panel) then
         panel.LastSpoke = CurTime()

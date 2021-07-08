@@ -1,10 +1,11 @@
 local PANEL = {}
 
 local COLOR_WHITE = Color(255, 255, 255)
-local COLOR_GRAY = Color(255, 255, 255)
+local COLOR_GRAY = Color(215, 215, 215)
 
 function PANEL:Init()
     self:SetScale(GAMEMODE.CVars.HUDScale:GetInt())
+    self:DockPadding(0, 0, 0, 0)
     self.Players = {}
 end
 
@@ -33,7 +34,9 @@ function PANEL:Init()
     self:Dock(BOTTOM)
     self.Blur = GAMEMODE.BlurMaterial
 
+    self.LastSegment = CurTime()
     self.Avatar = self:Add("HNS.Avatar")
+    self.Segments = {}
 end
 
 function PANEL:Think()
@@ -44,12 +47,16 @@ function PANEL:Think()
 
     local scale = GAMEMODE.CVars.HUDScale:GetInt()
 
+    -- Resize when scale changes
     if scale ~= self.Scale then
         self:SetScale(scale)
     end
 
+    local time = CurTime()
+
+    -- Fade out and remove when not spoken for > 3 secs
     if self.LastSpoke then
-        local left = CurTime() - self.LastSpoke
+        local left = time - self.LastSpoke
 
         self:SetAlpha(255 - left / 3 * 255)
 
@@ -59,12 +66,20 @@ function PANEL:Think()
     else
         self:SetAlpha(255)
     end
+
+    -- Segments
+    if self.CanGraph and time - self.LastSegment  > 0.10 / scale then
+        table.insert(self.Segments, { t = time, v = self.Player:VoiceVolume() })
+        self.LastSegment = time
+    end
 end
 
 function PANEL:SetPlayer(ply)
     self.Player = ply
     self.Avatar:SetPlayer(ply, 32)
     self:SetScale(GAMEMODE.CVars.HUDScale:GetInt())
+
+    self.CanGraph = ply ~= LocalPlayer() or GAMEMODE.CVars.VoiceLoopback:GetBool()
 end
 
 function PANEL:SetScale(scale)
@@ -90,8 +105,13 @@ function PANEL:Paint(w, h)
     -- Fill and outline
     surface.SetDrawColor(0, 0, 0, 125)
     surface.DrawRect(0, 0, w, h)
+
+    self:BarGraph(w, h, scale)
+
     surface.SetDrawColor(150, 150, 150, 255)
     surface.DrawOutlinedRect(0, 0, w, h)
+
+
     -- PFP fill and outline
     surface.DrawOutlinedRect(4 * scale - 1, 4 * scale - 1, 16 * scale + 2, 16 * scale + 2)
     surface.SetDrawColor(0, 0, 0, 255)
@@ -99,6 +119,25 @@ function PANEL:Paint(w, h)
 
     self:ShadowedText(self.Player:Name(), "HNSHUD.RobotoThin", 23 * scale, h / 2 - 3 * scale, COLOR_WHITE, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
     self:ShadowedText(self.Player:SteamID(), "HNSHUD.TahomaThin", 23 * scale + 1, h / 2 + 4 * scale, COLOR_GRAY, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+end
+
+function PANEL:BarGraph(w, h, scale)
+    for i = 1, #self.Segments do
+        local seg = self.Segments[i]
+        if not seg then continue end
+
+        local x = (CurTime() - seg.t) * 125 / 3 * scale
+
+        if x > 125 * scale then
+            table.remove(self.Segments, i)
+            i = i - 1
+        else
+            local tint = GAMEMODE:GetPlayerTeamColor(self.Player) or team.GetColor(self.Player:Team())
+            local tall = seg.v * 50 * scale
+            surface.SetDrawColor(tint:Unpack())
+            surface.DrawRect(w - x, h - tall, 1 * scale, tall)
+        end
+    end
 end
 
 function PANEL:ShadowedText(text, font, x, y, color, alignx, aligny)
