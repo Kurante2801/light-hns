@@ -48,8 +48,16 @@ function PANEL:Think()
         self:SetScale(scale)
     end
 
-    if self.LastSpoke and CurTime() - self.LastSpoke > 3 then
-        self:Remove()
+    if self.LastSpoke then
+        local left = CurTime() - self.LastSpoke
+
+        self:SetAlpha(255 - left / 3 * 255)
+
+        if left > 3 then
+            self:Remove()
+        end
+    else
+        self:SetAlpha(255)
     end
 end
 
@@ -62,6 +70,7 @@ end
 function PANEL:SetScale(scale)
     self.Scale = scale
     self:SetTall(24 * scale)
+    self:DockMargin(0, 2 * scale, 0, 0)
     self.Avatar:SetPos(4 * scale, 4 * scale)
     self.Avatar:SetSize(16 * scale, 16 * scale)
     self.Avatar:SetPlayer(self.Player, 16 * scale)
