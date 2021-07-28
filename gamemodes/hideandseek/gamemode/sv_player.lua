@@ -94,6 +94,8 @@ function GM:PlayerSpawn(ply)
     ply:SetCrouchedWalkSpeed(0.4)
     ply:GodEnable()
 
+    ply:SetCustomCollisionCheck(true)
+
     -- We give hands again just in case PlayerLoadout doesn't fucking work
     timer.Simple(0.1, function()
         ply:Give("has_hands")
@@ -428,6 +430,7 @@ cvars.AddChangeCallback("has_lasthidertrail", function(_, _, new)
 end)
 
 hook.Add("Tick", "HNS.PlayerStuckPrevention", function()
+    do return end
     -- Stuck prevention
     for _, ply in ipairs(GAMEMODE.PlayersCache) do
         if not IsValid(ply) or ply:Team() == TEAM_SPECTATOR or ply:GetObserverMode() ~= OBS_MODE_NONE then continue end

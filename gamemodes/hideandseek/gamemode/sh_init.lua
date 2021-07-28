@@ -44,6 +44,37 @@ function GM:CreateTeams()
     team.SetUp(TEAM_SPECTATOR, "Spectating", Color(0, 175, 100))
 end
 
+function GM:HASCollisionCheck(ent1, ent2)
+    -- Where ent1 is on top and ent2 is bottom
+    local mins1, maxs1 = ent1:OBBMins(), ent1:OBBMaxs()
+    local maxs2 = ent2:OBBMaxs()
+
+    local tr = util.TraceHull({
+        start = ent1:GetPos(),
+        endpos = ent1:GetPos() - Vector(0, 0, 4),
+        filter = ent1,
+        mins = Vector(mins1.x, mins1.y, 0),
+        maxs = Vector(maxs1.x, maxs1.y, -4)
+    })
+
+    if not tr.Hit or tr.Entity ~= ent2 then return false end
+
+    -- Compare height (so players don't get stuck inside each other)
+    return ent2:GetPos().z + maxs2.z - tr.HitPos.z <= 0
+end
+
+function GM:ShouldCollide(ent1, ent2)
+    if not IsValid(ent1) or not ent1:IsPlayer() or not IsValid(ent2) or not ent2:IsPlayer() then return end
+
+    local should = self:HASCollisionCheck(ent1, ent2)
+
+    if not should then
+        should = self:HASCollisionCheck(ent2, ent1)
+    end
+
+    return should
+end
+
 -- Sound when seekers are unblinded
 GM.PlayedStartSound = true
 
