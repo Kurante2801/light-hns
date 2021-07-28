@@ -64,7 +64,9 @@ function GM:HASCollisionCheck(ent1, ent2)
 end
 
 function GM:ShouldCollide(ent1, ent2)
-    if not IsValid(ent1) or not ent1:IsPlayer() or not IsValid(ent2) or not ent2:IsPlayer() then return end
+    if not IsValid(ent1) or not ent1:IsPlayer() or not IsValid(ent2) or not ent2:IsPlayer() then
+        return self.BaseClass.ShouldCollide(self, ent1, ent2)
+    end
 
     local should = self:HASCollisionCheck(ent1, ent2)
 
