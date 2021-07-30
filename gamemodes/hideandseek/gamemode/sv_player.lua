@@ -105,9 +105,9 @@ function GM:PlayerSpawn(ply)
     if not IsValid(ply.HASCollisionBrush) then
         ply.HASCollisionBrush = ents.Create("has_collisionbrush")
         ply.HASCollisionBrush:Spawn()
-        ply.HASCollisionBrush:SetPlayer(ply)
         table.insert(self.PlayersCache, ply.HASCollisionBrush)
     end
+    ply.HASCollisionBrush:SetPlayer(ply)
 
     -- We give hands again just in case PlayerLoadout doesn't fucking work
     timer.Simple(0.1, function()

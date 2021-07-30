@@ -33,19 +33,23 @@ function ENT:SetPlayer(ply)
     self:SetOwner(ply)
     self:SetOwnerModel(ply:GetModel())
 
-    if CLIENT then
-        self.PlayerSetCL = true
-        self:DestroyShadow()
-    end
-
     local mins, maxs = ply:OBBMins(), ply:OBBMaxs()
     self:PhysicsInitBox(Vector(mins.x, mins.y, -1), Vector(maxs.x, maxs.y, 0))
     self:SetMoveType(MOVETYPE_NONE)
 
-    self:SetOwnerHeight(maxs.z)
+    local _, hull = ply:GetHull()
+    self:SetOwnerHeight(hull.z )
 
-    local _, hull = ply:GetHullDuck()
+    _, hull = ply:GetHullDuck()
     self:SetOwnerHeightCrouched(hull.z)
+
+    if CLIENT then
+        self.PlayerSetCL = true
+        self:DestroyShadow()
+    end
+end
+
+function ENT:Draw()
 end
 
 function ENT:Think()
@@ -59,9 +63,9 @@ function ENT:Think()
     local pos = owner:GetPos()
 
     if owner:Crouching() then
-        pos.z = pos.z + self:GetOwnerHeightCrouched()
+        pos.z = pos.z + (self:GetOwnerHeightCrouched() * owner:GetModelScale())
     else
-        pos.z = pos.z + self:GetOwnerHeight()
+        pos.z = pos.z + (self:GetOwnerHeight() * owner:GetModelScale())
     end
 
     self:SetPos(pos)
