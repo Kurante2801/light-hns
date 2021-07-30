@@ -2,9 +2,6 @@
 GM.PlayersCache = GAMEMODE and table.Copy(player.GetAll()) or {}
 
 function GM:PlayerInitialSpawn(ply)
-    -- Refresh cache
-    self.PlayersCache = player.GetAll()
-
     -- Don't set bots as spectators
     if ply:IsBot() then
         ply:SetTeam(TEAM_SEEK)
@@ -39,6 +36,15 @@ function GM:HASPlayerNetReady(ply)
 end
 
 function GM:PlayerSpawn(ply)
+    -- Refresh cache
+    self.PlayersCache = {}
+    for _, other in ipairs(player.GetAll()) do
+        table.insert(self.PlayersCache, other)
+        if IsValid(other.HASCollisionBrush) then
+            table.insert(self.PlayersCache, other.HASCollisionBrush)
+        end
+    end
+
     -- Removing last hider trail
     if IsValid(ply.HiderTrail) then
         ply.HiderTrail:Fire("Kill", 0, 0) -- Make the engine kill it
@@ -95,6 +101,13 @@ function GM:PlayerSpawn(ply)
     ply:GodEnable()
 
     ply:SetCustomCollisionCheck(true)
+
+    if not IsValid(ply.HASCollisionBrush) then
+        ply.HASCollisionBrush = ents.Create("has_collisionbrush")
+        ply.HASCollisionBrush:Spawn()
+        ply.HASCollisionBrush:SetPlayer(ply)
+        table.insert(self.PlayersCache, ply.HASCollisionBrush)
+    end
 
     -- We give hands again just in case PlayerLoadout doesn't fucking work
     timer.Simple(0.1, function()
@@ -430,7 +443,9 @@ cvars.AddChangeCallback("has_lasthidertrail", function(_, _, new)
 end)
 
 hook.Add("Tick", "HNS.PlayerStuckPrevention", function()
-    do return end
+    if GAMEMODE.CVars.NewCollision:GetBool() then
+        return
+    end
     -- Stuck prevention
     for _, ply in ipairs(GAMEMODE.PlayersCache) do
         if not IsValid(ply) or ply:Team() == TEAM_SPECTATOR or ply:GetObserverMode() ~= OBS_MODE_NONE then continue end

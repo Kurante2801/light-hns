@@ -34,6 +34,7 @@ GM.CVars.MaxStamina = CreateConVar("has_maxstamina", 100, {FCVAR_ARCHIVE, FCVAR_
 GM.CVars.StaminaRefill = CreateConVar("has_staminarefill", 6.6, {FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE}, "Rate at which stamina is filled.")
 GM.CVars.StaminaDeplete = CreateConVar("has_staminadeplete", 13.3, {FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE}, "Rate at which stamina is depleted.")
 GM.CVars.StaminaWait = CreateConVar("has_staminawait", 2, {FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE}, "How many seconds to wait before filling stamina.")
+GM.CVars.NewCollision = CreateConVar("has_newcollision", 0, {FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE}, "Use new collision system (only collide when on top of players).")
 
 function GM:CreateTeams()
     TEAM_HIDE = 1
@@ -44,37 +45,26 @@ function GM:CreateTeams()
     team.SetUp(TEAM_SPECTATOR, "Spectating", Color(0, 175, 100))
 end
 
-function GM:HASCollisionCheck(ent1, ent2)
-    -- Where ent1 is on top and ent2 is bottom
-    local mins1, maxs1 = ent1:OBBMins(), ent1:OBBMaxs()
-    local maxs2 = ent2:OBBMaxs()
-
-    local tr = util.TraceHull({
-        start = ent1:GetPos(),
-        endpos = ent1:GetPos() - Vector(0, 0, 4),
-        filter = ent1,
-        mins = Vector(mins1.x, mins1.y, 0),
-        maxs = Vector(maxs1.x, maxs1.y, -4)
-    })
-
-    if not tr.Hit or tr.Entity ~= ent2 then return false end
-
-    -- Compare height (so players don't get stuck inside each other)
-    return ent2:GetPos().z + maxs2.z - tr.HitPos.z <= 0
+function GM:HASCollisionCheck(ply, ent)
+    return self.CVars.NewCollision:GetBool() and ply:GetPos().z > ent:GetPos().z
 end
 
 function GM:ShouldCollide(ent1, ent2)
-    if not IsValid(ent1) or not ent1:IsPlayer() or not IsValid(ent2) or not ent2:IsPlayer() then
+    if not IsValid(ent1) or not IsValid(ent2) then return end
+
+    local ply, ent
+
+    if ent1:IsPlayer() and ent2:IsPlayer() then
+        return not self.CVars.NewCollision:GetBool()
+    elseif ent1:IsPlayer() and ent2:GetClass() == "has_collisionbrush" then
+        ply, ent = ent1, ent2
+    elseif ent2:IsPlayer() and ent1:GetClass() == "has_collisionbrush" then
+        ply, ent = ent2, ent1
+    else
         return self.BaseClass.ShouldCollide(self, ent1, ent2)
     end
 
-    local should = self:HASCollisionCheck(ent1, ent2)
-
-    if not should then
-        should = self:HASCollisionCheck(ent2, ent1)
-    end
-
-    return should
+    return self:HASCollisionCheck(ply, ent)
 end
 
 -- Sound when seekers are unblinded
