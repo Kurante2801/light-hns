@@ -39,6 +39,8 @@ include("vgui/voice.lua")
 include("sh_achievements_table.lua")
 
 function GM:PlayerStartVoice(ply)
+    if not IsValid(ply) then return end
+
     local panel = self.VoiceContainer.Players[ply:SteamID64()]
     if IsValid(panel) then
         panel.LastSpoke = nil
