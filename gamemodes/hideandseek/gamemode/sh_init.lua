@@ -169,10 +169,6 @@ function GM:StaminaPrediction(ply, sprinting)
     ply.Stamina = math.Clamp(ply.Stamina, 0, max)
 end
 
-function GM:PlayerTick(ply, data)
-    self:StaminaPrediction(ply, data:KeyDown(IN_SPEED))
-end
-
 hook.Add("KeyPress", "HNS.StaminaStart", function(ply, key)
     if IsFirstTimePredicted() and key == IN_SPEED then
         ply:SetNWFloat("has_staminalastsprinted", CurTime())

@@ -272,6 +272,10 @@ function GM:KeyPress(ply, key)
     end
 end
 
+function GM:PlayerTick(ply, data)
+    self:StaminaPrediction(ply, data:KeyDown(IN_SPEED))
+end
+
 function GM:HASPlayerCaught(seeker, ply)
     if self.RoundCount < 1 or not self.CVars.FirstSeeks:GetBool() then return end
     if IsValid(self.FirstCaught) and self.FirstCaught:Team() ~= TEAM_SPECTATOR then return end

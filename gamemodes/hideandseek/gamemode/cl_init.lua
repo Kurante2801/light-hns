@@ -120,11 +120,14 @@ function GM:InitPostEntity()
 end
 
 function GM:Tick()
+    local ply = LocalPlayer()
     -- Turn off flashlight clientside
-    if self.FlashlightIsOn and (LocalPlayer():Team() ~= TEAM_HIDE or not self.CVars.HiderFlash:GetBool()) then
-        LocalPlayer():RemoveEffects(EF_DIMLIGHT)
+    if self.FlashlightIsOn and (ply:Team() ~= TEAM_HIDE or not self.CVars.HiderFlash:GetBool()) then
+        ply:RemoveEffects(EF_DIMLIGHT)
         self.FlashlightIsOn = nil
     end
+
+    self:StaminaPrediction(ply, ply:KeyDown(IN_SPEED))
 end
 
 function GM:PostDrawOpaqueRenderables()
