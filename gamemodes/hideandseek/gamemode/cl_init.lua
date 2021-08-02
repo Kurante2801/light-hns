@@ -121,6 +121,8 @@ end
 
 function GM:Tick()
     local ply = LocalPlayer()
+    if not IsValid(ply) or not ply.KeyDown then return end
+
     -- Turn off flashlight clientside
     if self.FlashlightIsOn and (ply:Team() ~= TEAM_HIDE or not self.CVars.HiderFlash:GetBool()) then
         ply:RemoveEffects(EF_DIMLIGHT)
