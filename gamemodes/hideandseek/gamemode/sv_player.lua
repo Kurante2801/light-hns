@@ -449,28 +449,6 @@ cvars.AddChangeCallback("has_lasthidertrail", function(_, _, new)
     end
 end)
 
--- Spawn/Despawn collision brush
-cvars.AddChangeCallback("has_newcollision", function(_, _, value)
-    value = tonumber(value)
-
-    for _, ply in ipairs(player.GetAll()) do
-        if value == 1 then
-            if not IsValid(ply.HASCollisionBrush) then
-                ply.HASCollisionBrush = ents.Create("has_collisionbrush")
-                ply.HASCollisionBrush:Spawn()
-                ply.HASCollisionBrush:SetPlayer(ply)
-            end
-        else
-            if IsValid(ply.HASCollisionBrush) then
-                ply.HASCollisionBrush:Remove()
-                ply.HASCollisionBrush = nil
-            end
-        end
-
-        ply:CollisionRulesChanged()
-    end
-end)
-
 hook.Add("Tick", "HNS.PlayerStuckPrevention", function()
     if GAMEMODE.CVars.NewCollision:GetBool() then
         return

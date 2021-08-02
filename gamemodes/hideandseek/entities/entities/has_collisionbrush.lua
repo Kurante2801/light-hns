@@ -82,7 +82,7 @@ function ENT:Think()
     for _, ply in ipairs(player.GetAll()) do
         if not IsValid(ply) then continue end
 
-        local should = ply:Team() ~= TEAM_SPECTATOR and ply:GetPos().z > pos.z
+        local should = GAMEMODE.CVars.NewCollision:GetBool() and ply:Team() ~= TEAM_SPECTATOR and ply:GetPos().z > pos.z
 
         if self.Collisions[ply:EntIndex()] ~= should then
             self:CollisionRulesChanged()
