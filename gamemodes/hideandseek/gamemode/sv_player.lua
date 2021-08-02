@@ -100,14 +100,17 @@ function GM:PlayerSpawn(ply)
     ply:SetCrouchedWalkSpeed(0.4)
     ply:GodEnable()
 
-    ply:SetCustomCollisionCheck(true)
+    if GAMEMODE.CVars.NewCollision:GetBool() then
+        ply:SetCustomCollisionCheck(true)
+        ply:CollisionRulesChanged()
 
-    if not IsValid(ply.HASCollisionBrush) then
-        ply.HASCollisionBrush = ents.Create("has_collisionbrush")
-        ply.HASCollisionBrush:Spawn()
-        table.insert(self.PlayersCache, ply.HASCollisionBrush)
+        if not IsValid(ply.HASCollisionBrush) then
+            ply.HASCollisionBrush = ents.Create("has_collisionbrush")
+            ply.HASCollisionBrush:Spawn()
+            table.insert(self.PlayersCache, ply.HASCollisionBrush)
+        end
+        ply.HASCollisionBrush:SetPlayer(ply)
     end
-    ply.HASCollisionBrush:SetPlayer(ply)
 
     -- We give hands again just in case PlayerLoadout doesn't fucking work
     timer.Simple(0.1, function()
@@ -443,6 +446,28 @@ cvars.AddChangeCallback("has_lasthidertrail", function(_, _, new)
                 ply.HiderTrail = nil
             end
         end
+    end
+end)
+
+-- Spawn/Despawn collision brush
+cvars.AddChangeCallback("has_newcollision", function(_, _, value)
+    value = tonumber(value)
+
+    for _, ply in ipairs(player.GetAll()) do
+        if value == 1 then
+            if not IsValid(ply.HASCollisionBrush) then
+                ply.HASCollisionBrush = ents.Create("has_collisionbrush")
+                ply.HASCollisionBrush:Spawn()
+                ply.HASCollisionBrush:SetPlayer(ply)
+            end
+        else
+            if IsValid(ply.HASCollisionBrush) then
+                ply.HASCollisionBrush:Remove()
+                ply.HASCollisionBrush = nil
+            end
+        end
+
+        ply:CollisionRulesChanged()
     end
 end)
 

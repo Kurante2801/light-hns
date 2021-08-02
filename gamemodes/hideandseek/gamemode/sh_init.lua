@@ -45,26 +45,19 @@ function GM:CreateTeams()
     team.SetUp(TEAM_SPECTATOR, "Spectating", Color(0, 175, 100))
 end
 
-function GM:HASCollisionCheck(ply, ent)
-    return self.CVars.NewCollision:GetBool() and ply:GetPos().z > ent:GetPos().z
-end
 
 function GM:ShouldCollide(ent1, ent2)
-    if not IsValid(ent1) or not IsValid(ent2) then return end
-
-    local ply, ent
+    if not IsValid(ent1) or not IsValid(ent2) then return false end
 
     if ent1:IsPlayer() and ent2:IsPlayer() then
         return not self.CVars.NewCollision:GetBool()
-    elseif ent1:IsPlayer() and ent2:GetClass() == "has_collisionbrush" then
-        ply, ent = ent1, ent2
-    elseif ent2:IsPlayer() and ent1:GetClass() == "has_collisionbrush" then
-        ply, ent = ent2, ent1
+    elseif ent2:GetClass() == "has_collisionbrush" then
+        return ent2:ShouldCollide(ent1)
+    elseif ent1:GetClass() == "has_collisionbrush" then
+        return ent1:ShouldCollide(ent2)
     else
         return self.BaseClass.ShouldCollide(self, ent1, ent2)
     end
-
-    return self:HASCollisionCheck(ply, ent)
 end
 
 -- Sound when seekers are unblinded

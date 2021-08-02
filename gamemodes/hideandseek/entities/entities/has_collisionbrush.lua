@@ -17,6 +17,7 @@ function ENT:Initialize()
 
     self:SetOwnerHeight(0)
     self:SetOwnerHeightCrouched(0)
+    self.Collisions = {}
 end
 
 function ENT:UpdateTransmitState()
@@ -30,6 +31,7 @@ function ENT:SetupDataTables()
 end
 
 function ENT:SetPlayer(ply)
+    self:CollisionRulesChanged()
     self:SetOwner(ply)
     self:SetOwnerModel(ply:GetModel())
 
@@ -54,7 +56,8 @@ end
 
 function ENT:Think()
     local owner = self:GetOwner()
-    if not IsValid(owner) then
+    if not IsValid(owner) or owner:Team() == TEAM_SPECTATOR then
+        if SERVER then self:Remove() end
         return
     elseif CLIENT and not self.PlayerSetCL then
         self:SetPlayer(owner)
@@ -74,4 +77,24 @@ function ENT:Think()
     if owner:GetModel() ~= self:GetOwnerModel() then
         self:SetPlayer(owner)
     end
+
+    -- Refresh collisions cache
+    for _, ply in ipairs(player.GetAll()) do
+        if not IsValid(ply) then continue end
+
+        local should = ply:Team() ~= TEAM_SPECTATOR and ply:GetPos().z > pos.z
+
+        if self.Collisions[ply:EntIndex()] ~= should then
+            self:CollisionRulesChanged()
+            self.Collisions[ply:EntIndex()] = should
+        end
+    end
+end
+
+function ENT:ShouldCollide(ent)
+    if not IsValid(ent) or not ent:IsPlayer() then
+        return false
+    end
+
+    return self.Collisions[ent:EntIndex()] or false
 end
