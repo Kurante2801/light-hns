@@ -79,6 +79,7 @@ function ENT:Think()
         self:SetPlayer(owner)
     end
 
+    if SERVER then return end
     -- Refresh collisions cache
     for _, ply in ipairs(player.GetAll()) do
         if not IsValid(ply) then continue end
