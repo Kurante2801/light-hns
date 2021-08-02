@@ -282,6 +282,21 @@ function GM:OnPlayerChat(ply, text, teamChat, dead)
     return true
 end
 
+-- This is different from server
+function GM:ShouldCollide(ent1, ent2)
+    if not IsValid(ent1) or not IsValid(ent2) then return false end
+
+    if ent1:IsPlayer() and ent2:IsPlayer() then
+        return not self.CVars.NewCollision:GetBool()
+    elseif ent2:GetClass() == "has_collisionbrush" then
+        return ent2:ShouldCollide(ent1)
+    elseif ent1:GetClass() == "has_collisionbrush" then
+        return ent1:ShouldCollide(ent2)
+    else
+        return self.BaseClass.ShouldCollide(self, ent1, ent2)
+    end
+end
+
 -- Update playercolor
 local function PlayerColorUpdate()
     net.Start("HNS.PlayerColorUpdate")

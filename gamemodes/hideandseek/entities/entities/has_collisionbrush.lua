@@ -1,5 +1,6 @@
--- Can't use util.TraceHull on ShouldCollide
--- Because it fucks up clientside when high ping
+-- This entity doesn't affect serverside collisions
+-- But it stops players from stuttering A LOT whith mild ping
+-- Basically this ent is for prediction
 AddCSLuaFile()
 
 ENT.Type = "anim"

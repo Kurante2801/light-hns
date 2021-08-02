@@ -2,6 +2,7 @@
 GM.PlayersCache = GAMEMODE and table.Copy(player.GetAll()) or {}
 
 function GM:PlayerInitialSpawn(ply)
+    ply.HASCollisions = {}
     -- Don't set bots as spectators
     if ply:IsBot() then
         ply:SetTeam(TEAM_SEEK)
@@ -275,8 +276,51 @@ function GM:KeyPress(ply, key)
     end
 end
 
+-- This is different from client
+function GM:ShouldCollide(ent1, ent2)
+    if not IsValid(ent1) or not IsValid(ent2) then return false end
+
+    if ent1:IsPlayer() and ent2:IsPlayer() then
+        if self.CVars.NewCollision:GetBool() then
+            return ent1.HASCollisions[ent2:EntIndex()] or ent2.HASCollisions[ent1:EntIndex()]
+        else
+            return true
+        end
+    elseif ent1:GetClass() == "has_collisionbrush" or ent2:GetClass() == "has_collisionbrush" then
+        -- The collision brushes only affect clients
+        -- This is because the player's camera will stutter a lot
+        -- if they have ping and are on top of another player
+        return false
+    else
+        return self.BaseClass.ShouldCollide(self, ent1, ent2)
+    end
+end
+
 function GM:PlayerTick(ply, data)
     self:StaminaPrediction(ply, data:KeyDown(IN_SPEED))
+
+    if not GAMEMODE.CVars.NewCollision:GetBool() then return end
+
+    local pos = ply:GetPos()
+    -- Refresh collisions cache
+    for _, ent in ipairs(player.GetAll()) do
+        if not IsValid(ent) then continue end
+
+        local _, hull
+
+        if ent:Crouching() then
+            _, hull = ent:GetHullDuck()
+        else
+            _, hull = ent:GetHull()
+        end
+
+        local should = ent:Team() ~= TEAM_SPECTATOR and ply:Team() ~= TEAM_SPECTATOR and ent:GetPos().z + hull.z <= pos.z
+
+        if ply.HASCollisions[ent:EntIndex()] ~= should then
+            ply:CollisionRulesChanged()
+            ply.HASCollisions[ent:EntIndex()] = should
+        end
+    end
 end
 
 function GM:HASPlayerCaught(seeker, ply)
