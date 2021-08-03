@@ -34,7 +34,6 @@ GM.CVars.MaxStamina = CreateConVar("has_maxstamina", 100, {FCVAR_ARCHIVE, FCVAR_
 GM.CVars.StaminaRefill = CreateConVar("has_staminarefill", 6.6, {FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE}, "Rate at which stamina is filled.")
 GM.CVars.StaminaDeplete = CreateConVar("has_staminadeplete", 13.3, {FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE}, "Rate at which stamina is depleted.")
 GM.CVars.StaminaWait = CreateConVar("has_staminawait", 2, {FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE}, "How many seconds to wait before filling stamina.")
-GM.CVars.NewCollision = CreateConVar("has_newcollision", 0, {FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE}, "Use new collision system (only collide when on top of players).")
 
 function GM:CreateTeams()
     TEAM_HIDE = 1
