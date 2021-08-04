@@ -45,22 +45,24 @@ GM.HUDs[1] = {
 GM.HUDs[2] = {
     Name = "Fafy",
     Draw = function(this, ply, tint, stamina, timeLeft, roundText, blindTime, scale)
+        -- Avatar Frame offset
+        local namePos = this.Avatar.Material and 44 or 42
         -- Setting font with surface to get length
         surface.SetFont("HNSHUD.VerdanaMedium")
         this.BarWide, this.TextTall = surface.GetTextSize(ply:Name())
         this.BarWide = math.max(100 * scale, this.BarWide + 3 * scale)
         -- Drawing name shadow now that we used surface.SetFont
         surface.SetTextColor(0, 0, 0)
-        surface.SetTextPos(42 * scale + 1, (ScrH() - 35 * scale - this.TextTall / 2) + 1)
+        surface.SetTextPos(namePos * scale + 1, (ScrH() - 35 * scale - this.TextTall / 2) + 1)
         surface.DrawText(ply:Name())
         -- Avatar border
         draw.RoundedBox(0, 8 * scale - 1, ScrH() - 40 * scale - 1, 32 * scale + 2, 32 * scale + 2, tint)
         draw.RoundedBox(0, 8 * scale, ScrH() - 40 * scale, 32 * scale, 32 * scale, Color(0, 0, 0))
         -- Player name
         draw.RoundedBox(0, 40 * scale + 1, ScrH() - 40 * scale - 1, this.BarWide, 12 * scale, Color(0, 0, 0, 125))
-        draw.SimpleText(ply:Name(), "HNSHUD.VerdanaMedium", 42 * scale, ScrH() - 35 * scale, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+        draw.SimpleText(ply:Name(), "HNSHUD.VerdanaMedium", namePos * scale, ScrH() - 35 * scale, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
         -- Player team
-        this:ShadowedText(team.GetName(ply:Team()), "HNSHUD.TahomaSmall", 42 * scale + 1, ScrH() - 25 * scale + 1, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+        this:ShadowedText(team.GetName(ply:Team()), "HNSHUD.TahomaSmall", namePos * scale + 1, ScrH() - 25 * scale + 1, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
         -- Round and timer bars
         draw.RoundedBox(0, 8 * scale - 1, 8 * scale - 1, 70 * scale, 20 * scale, Color(0, 0, 0, 125))
         draw.RoundedBox(0, 8 * scale - 1, 30 * scale, 70 * scale, 10 * scale, Color(0, 0, 0, 125))
