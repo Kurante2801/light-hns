@@ -78,7 +78,7 @@ GM.HUDs[2] = {
 
         -- Stamina bar
         if ply:Team() == TEAM_SPECTATOR then
-            this:ShadowedText("Press F2 to join the game!", "HNSHUD.TahomaSmall", 42 * scale + 1, ScrH() - 17 * scale, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+            this:ShadowedText("Press F2 to join the game!", "HNSHUD.TahomaSmall", namePos * scale + 1, ScrH() - 17 * scale, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
         else
             draw.RoundedBox(0, 40 * scale + 1, ScrH() - 20 * scale + 1, this.BarWide, 12 * scale, Color(0, 0, 0, 175))
             draw.RoundedBox(0, 41 * scale + 1, ScrH() - 19 * scale + 1, (this.BarWide - 2 * scale) * stamina / GAMEMODE.CVars.MaxStamina:GetInt(), 10 * scale, ColorAlpha(tint, math.sin(CurTime() * 4) * 60 + 120))
