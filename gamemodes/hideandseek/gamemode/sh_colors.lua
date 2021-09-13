@@ -8,6 +8,7 @@ GM.HiderColors = {
     ["Dark Blue"] = Color(0, 0, 175),
     ["Cyan"] = Color(0, 255, 255),
     ["Light Blue"] = Color(20, 130, 200),
+    ["Purple"] = Color(100, 0, 255)
 }
 
 GM.SeekerColors = {
@@ -17,6 +18,7 @@ GM.SeekerColors = {
     ["Crimson"] = Color(220, 20, 60),
     ["Pink"] = Color(255, 105, 180),
     ["Rose"] = Color(255, 0, 130),
+    ["Orange"] = Color(255, 125, 0),
 }
 
 -- Get a valid color shade for a team
