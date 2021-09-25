@@ -76,6 +76,14 @@ GM.AvatarFrames = GM.AvatarFrames or {}
 net.Receive("HNS.Say", function()
     local say = util.JSONToTable(net.ReadString())
     if not say then return end
+
+    for i, arg in ipairs(say) do
+        -- Fix color
+        if istable(arg) and arg.r and arg.g and arg.b then
+            say[i] = Color(arg.r, arg.g, arg.b, arg.a)
+        end
+    end
+
     chat.AddText(unpack(say))
 end)
 
