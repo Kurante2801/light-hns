@@ -81,11 +81,6 @@ hook.Add("Tick", "HNS.SeekerBlinded", function()
     end
 end)
 
-function GM:Move(ply, data)
-    -- Prevent seekers from moving on blind time
-    return self.SeekerBlinded and ply:Team() == TEAM_SEEK
-end
-
 function GM:StaminaLinearFunction(x)
     --return x * 20 / 3
     return x * self.CVars.StaminaRefill:GetFloat()
@@ -153,8 +148,30 @@ hook.Add("KeyPress", "HNS.StaminaStart", function(ply, key)
     end
 end)
 
+local AllowCMD = {
+    IN_RELOAD, IN_ATTACK, IN_ATTACK2, IN_SCORE
+}
+
 function GM:StartCommand(ply, cmd)
     if ply:Team() == TEAM_SPECTATOR then return end
+
+    -- Prevent movement while blind
+    if self.SeekerBlinded and ply:Team() == TEAM_SEEK then
+        local buttons = cmd:GetButtons()
+        local new = 0
+
+        cmd:ClearMovement()
+        cmd:ClearButtons()
+
+        -- Allow certain actions
+        for _, button in ipairs(AllowCMD) do
+            if bit.band(buttons, button) ~= 0 then
+                new = bit.bxor(new, button)
+            end
+        end
+
+        cmd:SetButtons(new)
+    end
 
     -- Prevent running
     if cmd:KeyDown(IN_SPEED) then
@@ -168,6 +185,12 @@ function GM:StartCommand(ply, cmd)
         ply:SetNWBool("has_sprinting", false)
     end
 end
+
+hook.Add("Move", "HNS.SeekerMove", function(ply, data)
+    if GAMEMODE.SeekerBlinded and ply:Team() == TEAM_SEEK then
+        data:SetVelocity(Vector(0, 0, 0))
+    end
+end)
 
 local PLAYER = FindMetaTable("Player")
 
