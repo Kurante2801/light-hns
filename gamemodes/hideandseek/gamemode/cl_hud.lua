@@ -1,3 +1,6 @@
+local floor = math.floor
+local ceil = math.ceil
+
 function GM:StringToMinutesSeconds(time)
     local seconds = time % 60
 
@@ -50,38 +53,38 @@ GM.HUDs[2] = {
         -- Setting font with surface to get length
         surface.SetFont("HNSHUD.VerdanaMedium")
         this.BarWide, this.TextTall = surface.GetTextSize(ply:Name())
-        this.BarWide = math.max(100 * scale, this.BarWide + 3 * scale)
+        this.BarWide = ceil(math.max(100 * scale, this.BarWide + 3 * scale))
         -- Drawing name shadow now that we used surface.SetFont
         surface.SetTextColor(0, 0, 0)
-        surface.SetTextPos(namePos * scale + 1, (ScrH() - 35 * scale - this.TextTall / 2) + 1)
+        surface.SetTextPos(ceil(namePos * scale) + 1, ceil(ScrH() - 35 * scale - this.TextTall / 2) + 1)
         surface.DrawText(ply:Name())
         -- Avatar border
-        draw.RoundedBox(0, 8 * scale - 1, ScrH() - 40 * scale - 1, 32 * scale + 2, 32 * scale + 2, tint)
-        draw.RoundedBox(0, 8 * scale, ScrH() - 40 * scale, 32 * scale, 32 * scale, Color(0, 0, 0))
+        draw.RoundedBox(0, floor(8 * scale) - 1, floor(ScrH() - 40 * scale) - 1, ceil(32 * scale) + 2, ceil(32 * scale) + 2, tint)
+        draw.RoundedBox(0, ceil(8 * scale), ceil(ScrH() - 40 * scale), floor(32 * scale), floor(32 * scale), Color(0, 0, 0))
         -- Player name
-        draw.RoundedBox(0, 40 * scale + 1, ScrH() - 40 * scale - 1, this.BarWide, 12 * scale, Color(0, 0, 0, 125))
-        draw.SimpleText(ply:Name(), "HNSHUD.VerdanaMedium", namePos * scale, ScrH() - 35 * scale, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+        draw.RoundedBox(0, floor(40 * scale + 1), floor(ScrH() - 40 * scale) - 1, this.BarWide, floor(12 * scale), Color(0, 0, 0, 125))
+        draw.SimpleText(ply:Name(), "HNSHUD.VerdanaMedium", ceil(namePos * scale), ceil(ScrH() - 35 * scale), tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
         -- Player team
-        this:ShadowedText(team.GetName(ply:Team()), "HNSHUD.TahomaSmall", namePos * scale + 1, ScrH() - 25 * scale + 1, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+        this:ShadowedText(team.GetName(ply:Team()), "HNSHUD.TahomaSmall", ceil(namePos * scale) + 1, ceil(ScrH() - 25 * scale) + 1, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
         -- Round and timer bars
-        draw.RoundedBox(0, 8 * scale - 1, 8 * scale - 1, 70 * scale, 20 * scale, Color(0, 0, 0, 125))
-        draw.RoundedBox(0, 8 * scale - 1, 30 * scale, 70 * scale, 10 * scale, Color(0, 0, 0, 125))
+        draw.RoundedBox(0, floor(8 * scale) - 1, floor(8 * scale) - 1, ceil(70 * scale), ceil(20 * scale), Color(0, 0, 0, 125))
+        draw.RoundedBox(0, floor(8 * scale) - 1, floor(30 * scale), ceil(70 * scale), ceil(10 * scale), Color(0, 0, 0, 125))
         -- Round and timer texts
-        this:ShadowedText(timeLeft, "HNSHUD.VerdanaLarge", 43 * scale - 1, 17 * scale + 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-        this:ShadowedText(roundText, "HNSHUD.TahomaSmall", 43 * scale - 1, 35 * scale - 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+        this:ShadowedText(timeLeft, "HNSHUD.VerdanaLarge", floor(43 * scale) - 1, floor(17 * scale) + 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+        this:ShadowedText(roundText, "HNSHUD.TahomaSmall", floor(43 * scale) - 1, floor(35 * scale) - 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 
         if GAMEMODE.SeekerBlinded then
-            draw.RoundedBox(0, ScrW() / 2 - 60 * scale, 8 * scale - 1, 120 * scale, 24 * scale, Color(0, 0, 0, 125))
-            this:ShadowedText((ply:Team() == TEAM_SEEK and "You" or team.NumPlayers(2) == 1 and "The seeker" or "The seekers") .. " will be unblinded in...", "HNSHUD.TahomaSmall", ScrW() / 2, 13 * scale, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-            this:ShadowedText(blindTime, "HNSHUD.VerdanaLarge", ScrW() / 2, 24 * scale - 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+            draw.RoundedBox(0, floor(ScrW() / 2 - 60 * scale), floor(8 * scale) - 1, ceil(120 * scale), ceil(24 * scale), Color(0, 0, 0, 125))
+            this:ShadowedText((ply:Team() == TEAM_SEEK and "You" or team.NumPlayers(2) == 1 and "The seeker" or "The seekers") .. " will be unblinded in...", "HNSHUD.TahomaSmall", ScrW() / 2, ceil(13 * scale), COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+            this:ShadowedText(blindTime, "HNSHUD.VerdanaLarge", ScrW() / 2, ceil(24 * scale) - 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
         end
 
         -- Stamina bar
         if ply:Team() == TEAM_SPECTATOR then
-            this:ShadowedText("Press F2 to join the game!", "HNSHUD.TahomaSmall", namePos * scale + 1, ScrH() - 17 * scale, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+            this:ShadowedText("Press F2 to join the game!", "HNSHUD.TahomaSmall", ceil(namePos * scale) + 1, floor(ScrH() - 17 * scale), tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
         else
-            draw.RoundedBox(0, 40 * scale + 1, ScrH() - 20 * scale + 1, this.BarWide, 12 * scale, Color(0, 0, 0, 175))
-            draw.RoundedBox(0, 41 * scale + 1, ScrH() - 19 * scale + 1, (this.BarWide - 2 * scale) * stamina / GAMEMODE.CVars.MaxStamina:GetInt(), 10 * scale, ColorAlpha(tint, math.sin(CurTime() * 4) * 60 + 120))
+            draw.RoundedBox(0, floor(40 * scale) + 1, floor(ScrH() - 20 * scale) + 1, this.BarWide, ceil(12 * scale), Color(0, 0, 0, 175))
+            draw.RoundedBox(0, floor(41 * scale) + 1, floor(ScrH() - 19 * scale) + 1, floor((this.BarWide - 2 * scale) * stamina / GAMEMODE.CVars.MaxStamina:GetInt()), floor(10 * scale), ColorAlpha(tint, math.sin(CurTime() * 4) * 60 + 120))
         end
 
         -- Avatar (drawn last to support steam frames)
@@ -89,10 +92,10 @@ GM.HUDs[2] = {
     end,
     AvatarFunc = function(this, scale, ply)
         this.Avatar = vgui.Create("HNS.Avatar")
-        this.Avatar:SetPos(8 * scale, ScrH() - 40 * scale)
-        this.Avatar:SetSize(32 * scale, 32 * scale)
+        this.Avatar:SetPos(floor(8 * scale), floor(ScrH() - 40 * scale))
+        this.Avatar:SetSize(floor(32 * scale), floor(32 * scale))
         this.Avatar.Player = ply or LocalPlayer()
-        this.Avatar:SetPlayer(this.Avatar.Player, 32 * scale)
+        this.Avatar:SetPlayer(this.Avatar.Player, floor(32 * scale))
         this.Avatar:SetPaintedManually(true)
         this.Avatar:MoveToBack()
     end,
@@ -184,7 +187,7 @@ function GM:HUDPaint()
         ply = target
     end
 
-    scale = self.CVars.HUDScale:GetInt()
+    scale = self.CVars.HUDScale:GetFloat()
     self.SelectedHUD = self.HUDs[self.CVars.HUD:GetInt()] or self.HUDs[2]
 
     -- Create avatar

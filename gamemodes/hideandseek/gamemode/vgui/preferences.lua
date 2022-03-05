@@ -183,7 +183,7 @@ function PANEL:Init()
     self.Scale.Paint = function(this, w, h)
         -- Text
         self:ShadowedText("HUD SCALING", "HNS.RobotoSmall", 64, 0, self:GetTheme(3), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
-        local scale = GAMEMODE.CVars.HUDScale:GetInt()
+        local scale = math.Round(GAMEMODE.CVars.HUDScale:GetFloat(), 2)
 
         -- Scaling
         if scale == 2 then
@@ -195,14 +195,15 @@ function PANEL:Init()
 
     -- Values
     self.Scale.Slider:SetMinMax(1, 6)
-    self.Scale.Slider:SetValue(GAMEMODE.CVars.HUDScale:GetInt())
-    self.Scale.Slider:SetDecimals(0)
+    self.Scale.Slider:SetValue(GAMEMODE.CVars.HUDScale:GetFloat())
+    self.Scale.Slider:SetDecimals(2)
 
     self.Scale.Slider.OnValueChanged = function(this, value)
-        value = math.Round(value)
+        -- Round to 0.25
+        value = 0.25 * math.Round(value / 0.25)
         this:SetValue(value)
         -- Update HUD and text
-        GAMEMODE.CVars.HUDScale:SetInt(value)
+        GAMEMODE.CVars.HUDScale:SetFloat(value)
     end
 
     -- Checkboxs
@@ -271,7 +272,7 @@ function PANEL:AddSlider(offsetx, offsety)
     panel.Slider.TextArea:Hide()
 
     -- Make slider fancier
-    panel.Slider.Paint = function(this, w, h)
+    panel.Slider.Slider.Paint = function(this, w, h)
         surface.SetDrawColor(self:GetTint())
         surface.DrawLine(7, h / 2, w - 7, h / 2)
         local space = (w - 16) / (panel.Slider:GetMax() - 1)
