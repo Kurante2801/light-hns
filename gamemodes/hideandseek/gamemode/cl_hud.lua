@@ -83,8 +83,12 @@ GM.HUDs[2] = {
         if ply:Team() == TEAM_SPECTATOR then
             this:ShadowedText("Press F2 to join the game!", "HNSHUD.TahomaSmall", ceil(namePos * scale) + 1, floor(ScrH() - 17 * scale), tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
         else
-            draw.RoundedBox(0, floor(40 * scale) + 1, floor(ScrH() - 20 * scale) + 1, this.BarWide, ceil(12 * scale), Color(0, 0, 0, 175))
-            draw.RoundedBox(0, floor(41 * scale) + 1, floor(ScrH() - 19 * scale) + 1, floor((this.BarWide - 2 * scale) * stamina / GAMEMODE.CVars.MaxStamina:GetInt()), floor(10 * scale), ColorAlpha(tint, math.sin(CurTime() * 4) * 60 + 120))
+            local padding = ceil(1 * scale)
+            local x, y = floor(40.25 * scale), ScrH() - ceil(19.75 * scale)
+            local w, h = this.BarWide, ceil(12 * scale)
+
+            draw.RoundedBox(0, x, y, w, h, Color(0, 0, 0, 175))
+            draw.RoundedBox(0, x + padding, y + padding, (w - padding * 2) * stamina / GAMEMODE.CVars.MaxStamina:GetInt(), h - padding * 2, tint)
         end
 
         -- Avatar (drawn last to support steam frames)

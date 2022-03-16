@@ -44,7 +44,7 @@ function PANEL:Init()
         end
 
         -- Resort
-        self:UpdatePlayers(GAMEMODE.CVars.HUDScale:GetInt())
+        self:UpdatePlayers(GAMEMODE.CVars.HUDScale:GetFloat())
     end
 
     self.SortVertical = self:Add("DButton")
@@ -100,7 +100,7 @@ function PANEL:Init()
     for i, ply in ipairs(player.GetAll()) do
         local button = self.SP:Add("HNS.ScoreboardPlayer")
         button:SetPlayer(ply)
-        button:SetScale(GAMEMODE.CVars.HUDScale:GetInt())
+        button:SetScale(GAMEMODE.CVars.HUDScale:GetFloat())
         button.Blur = self.Blur
         button.Star = self.Star
         table.insert(self.Players, button)
@@ -136,7 +136,7 @@ function PANEL:Init()
 end
 
 function PANEL:Paint(w, h)
-    local scale = GAMEMODE.CVars.HUDScale:GetInt()
+    local scale = GAMEMODE.CVars.HUDScale:GetFloat()
     local blurx, blury = self:LocalToScreen(0, 0)
 
     -- Top blur
@@ -174,7 +174,7 @@ end
 
 -- Resize when HUD scale is changed
 function PANEL:UpdateDimentions()
-    local scale = GAMEMODE.CVars.HUDScale:GetInt()
+    local scale = GAMEMODE.CVars.HUDScale:GetFloat()
     -- Padding
     self:DockPadding(0, 48 * scale, 0, 0)
     -- Makes the width smaller than ScrW at all times
@@ -332,12 +332,12 @@ function PANEL:Think()
         button.Blur = self.Blur
         button.Star = self.Star
         button:SetPlayer(ply)
-        button:SetScale(GAMEMODE.CVars.HUDScale:GetInt())
+        button:SetScale(GAMEMODE.CVars.HUDScale:GetFloat())
         table.insert(self.Players, button)
 
         -- We do this in a timer so it updates properly
         timer.Simple(1, function()
-            self:UpdatePlayers(GAMEMODE.CVars.HUDScale:GetInt())
+            self:UpdatePlayers(GAMEMODE.CVars.HUDScale:GetFloat())
         end)
 
         ::foundply::
