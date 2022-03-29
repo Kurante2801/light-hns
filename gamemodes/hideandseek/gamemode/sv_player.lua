@@ -55,6 +55,7 @@ function GM:PlayerSpawn(ply)
         self:PlayerSpawnAsSpectator(ply)
         ply:SetNoDraw(false) -- We hide spectators on PrePlayerDraw
         ply:AllowFlashlight(false)
+        hook.Run("HASSpawnAsSpectator", ply) 
 
         return true
     end
