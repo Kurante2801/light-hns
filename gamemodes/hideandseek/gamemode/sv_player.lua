@@ -102,6 +102,7 @@ function GM:PlayerSpawn(ply)
 
     -- We give hands again just in case PlayerLoadout doesn't fucking work
     timer.Simple(0.1, function()
+        ply:StripWeapons()
         ply:Give("has_hands")
     end)
 
