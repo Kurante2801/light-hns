@@ -4,13 +4,13 @@ local COLOR_WHITE = Color(255, 255, 255)
 local COLOR_GRAY = Color(215, 215, 215)
 
 function PANEL:Init()
-    self:SetScale(GAMEMODE.CVars.HUDScale:GetInt())
+    self:SetScale(GAMEMODE.CVars.HUDScale:GetFloat())
     self:DockPadding(0, 0, 0, 0)
     self.Players = {}
 end
 
 function PANEL:Think()
-    local scale = GAMEMODE.CVars.HUDScale:GetInt()
+    local scale = GAMEMODE.CVars.HUDScale:GetFloat()
     if self.Scale ~= scale then
         self:SetScale(scale)
     end
@@ -45,7 +45,7 @@ function PANEL:Think()
         return
     end
 
-    local scale = GAMEMODE.CVars.HUDScale:GetInt()
+    local scale = GAMEMODE.CVars.HUDScale:GetFloat()
 
     -- Resize when scale changes
     if scale ~= self.Scale then
@@ -89,7 +89,7 @@ end
 function PANEL:SetPlayer(ply)
     self.Player = ply
     self.Avatar:SetPlayer(ply, 32)
-    self:SetScale(GAMEMODE.CVars.HUDScale:GetInt())
+    self:SetScale(GAMEMODE.CVars.HUDScale:GetFloat())
 
     self.CanGraph = ply ~= LocalPlayer() or GAMEMODE.CVars.VoiceLoopback:GetBool()
 end
@@ -106,7 +106,7 @@ end
 function PANEL:Paint(w, h)
     if not IsValid(self.Player) then return end
 
-    local scale = GAMEMODE.CVars.HUDScale:GetInt()
+    local scale = GAMEMODE.CVars.HUDScale:GetFloat()
 
     local blurx, blury = self:LocalToScreen(0, 0)
     render.SetScissorRect(blurx, blury, blurx + w, blury + h, true)
