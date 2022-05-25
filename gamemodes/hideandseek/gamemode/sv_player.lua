@@ -438,6 +438,13 @@ cvars.AddChangeCallback("has_lasthidertrail", function(_, _, new)
     end
 end)
 
+cvars.AddChangeCallback("has_maxstamina", function(_, _, new)
+    for _, ply in ipairs(player.GetAll()) do
+        ply:SetStamina(tonumber(new) or 0)
+    end
+end)
+
+
 hook.Add("Tick", "HNS.PlayerStuckPrevention", function()
     -- Stuck prevention
     for _, ply in ipairs(GAMEMODE.PlayersCache) do
