@@ -95,7 +95,7 @@ GM.HUDs[2] = {
         this.Avatar:PaintManual()
     end,
     AvatarFunc = function(this, scale, ply)
-        local size = floor(32 * 1.22 * scale)
+        local size = floor(32 * 1.2 * scale)
         local frame_offset = floor((size - floor(32 * scale)) * 0.5)
 
         this.Avatar = vgui.Create("HNS.Avatar")
