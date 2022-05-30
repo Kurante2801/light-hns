@@ -95,9 +95,12 @@ GM.HUDs[2] = {
         this.Avatar:PaintManual()
     end,
     AvatarFunc = function(this, scale, ply)
+        local size = floor(32 * 1.22 * scale)
+        local frame_offset = floor((size - floor(32 * scale)) * 0.5)
+
         this.Avatar = vgui.Create("HNS.Avatar")
-        this.Avatar:SetPos(floor(8 * scale), floor(ScrH() - 40 * scale))
-        this.Avatar:SetSize(floor(32 * scale), floor(32 * scale))
+        this.Avatar:SetPos(floor(8 * scale) - frame_offset, floor(ScrH() - 40 * scale) - frame_offset)
+        this.Avatar:SetSize(size, size)
         this.Avatar.Player = ply or LocalPlayer()
         this.Avatar:SetPlayer(this.Avatar.Player, floor(32 * scale))
         this.Avatar:SetPaintedManually(true)

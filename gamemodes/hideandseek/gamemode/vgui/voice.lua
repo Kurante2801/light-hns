@@ -1,3 +1,5 @@
+local floor = math.floor
+local ceil = math.ceil
 local PANEL = {}
 
 local COLOR_WHITE = Color(255, 255, 255)
@@ -95,11 +97,14 @@ function PANEL:SetPlayer(ply)
 end
 
 function PANEL:SetScale(scale)
+    local size = floor(16 * 1.21 * scale)
+    local frame_offset = floor((size - floor(16 * scale)) * 0.5)
+
     self.Scale = scale
     self:SetTall(24 * scale)
     self:DockMargin(0, 2 * scale, 0, 0)
-    self.Avatar:SetPos(4 * scale, 4 * scale)
-    self.Avatar:SetSize(16 * scale, 16 * scale)
+    self.Avatar:SetPos(4 * scale - frame_offset, 4 * scale - frame_offset)
+    self.Avatar:SetSize(size, size)
     self.Avatar:SetPlayer(self.Player, 16 * scale)
 end
 

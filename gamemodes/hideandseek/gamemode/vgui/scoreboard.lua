@@ -1,4 +1,6 @@
+local floor = math.floor
 local sorts = {"Entity ID", "Points", "Name"}
+
 
 -- Menu that shows all players when you press TAB
 local PANEL = {}
@@ -406,10 +408,14 @@ function PANEL:SetPlayer(ply)
 end
 
 function PANEL:SetScale(scale)
+    local size = floor(16 * 1.21 * scale)
+    local frame_offset = floor((size - floor(16 * scale)) * 0.5)
+
+
     self.Scale = scale
     self:SetTall(24 * scale)
-    self.Avatar:SetPos(4 * scale, 4 * scale)
-    self.Avatar:SetSize(16 * scale, 16 * scale)
+    self.Avatar:SetPos(floor(4 * scale) - frame_offset, floor(4 * scale) - frame_offset)
+    self.Avatar:SetSize(size, size)
     self.Avatar:SetPlayer(self.Player, 16 * scale)
 end
 

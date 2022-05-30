@@ -1,7 +1,9 @@
+-- Panel size should be: x * 1.22 where x is one of 16, 32, 64, 128, etc
 local PANEL = {}
 
+PANEL.PaddingMultiplier = 1.22
+
 function PANEL:Init()
-    self:NoClipping(true)
     self.Avatar = self:Add("AvatarImage")
     self.Avatar:Dock(FILL)
     self.Avatar:SetPaintedManually(true)
@@ -13,7 +15,7 @@ function PANEL:Paint(w, h)
     if self.Material then
         surface.SetDrawColor(255, 255, 255, 255)
         surface.SetMaterial(self.Material)
-        surface.DrawTexturedRect(-self.OffsetX, -self.OffsetY, self.FrameW, self.FrameH)
+        surface.DrawTexturedRect(0, 0, w, h)
     end
 end
 
@@ -39,7 +41,6 @@ function PANEL:RequestFrame()
     -- Already cached
     if GAMEMODE.AvatarFrames[ply:SteamID64()] then
         self.Material = GAMEMODE.AvatarFrames[ply:SteamID64()]
-        self:HandleDimensions()
         return
     elseif GAMEMODE.AvatarFrames[ply:SteamID64()] == false then
         return
@@ -50,7 +51,6 @@ function PANEL:RequestFrame()
     if file.Exists("hns_avatarframes_cache", "DATA") and file.Exists(path, "DATA") then
         GAMEMODE.AvatarFrames[ply:SteamID64()] = Material("data/" .. path)
         self.Material = GAMEMODE.AvatarFrames[ply:SteamID64()]
-        self:HandleDimensions()
         return
     end
 
@@ -76,27 +76,14 @@ function PANEL:RequestFrame()
 
             GAMEMODE.AvatarFrames[ply:SteamID64()] = Material("data/" .. path)
             self.Material = GAMEMODE.AvatarFrames[ply:SteamID64()]
-            self:HandleDimensions()
         end)
     end)
 end
 
-function PANEL:HandleDimensions()
-    local w, h = self:GetSize()
-    local x, y = w, h
-
-    w, h = math.floor(w * 1.22), math.floor(h * 1.22)
-    -- Force power of two, frames may look ugly otherwise
-    if w % 2 ~= 0 then
-        w = w + 1
-    end
-
-    if h % 2 ~= 0 then
-        h = h + 1
-    end
-
-    self.OffsetX, self.OffsetY = (w - x) / 2, (h - y) / 2
-    self.FrameW, self.FrameH = w, h
+function PANEL:PerformLayout(w, h)
+    self.PaddingX = (w - w / self.PaddingMultiplier) * 0.5
+    self.PaddingY = (h - h / self.PaddingMultiplier) * 0.5
+    self:DockPadding(self.PaddingX, self.PaddingY,self.PaddingX, self.PaddingY)
 end
 
 function PANEL:SetPlayer(ply, size)
