@@ -1,5 +1,11 @@
 local floor = math.floor
 local ceil = math.ceil
+local max = math.max
+
+local COLOR_WHITE = Color(255, 255, 255)
+local COLOR_BLACK = Color(0, 0, 0)
+local COLOR_SHADOW = Color(0, 0, 0, 125)
+local COLOR_SHADOW2 = Color(0, 0, 0, 175)
 
 function GM:StringToMinutesSeconds(time)
     local seconds = time % 60
@@ -48,63 +54,92 @@ GM.HUDs[1] = {
 GM.HUDs[2] = {
     Name = "Fafy",
     Draw = function(this, ply, tint, stamina, timeLeft, roundText, blindTime, scale)
-        -- Avatar Frame offset
-        local namePos = this.Avatar.Material and 44 or 42
+        local screen_padding = floor(8 * scale)
+        local avatar_size = floor(32 * scale)
+
         -- Setting font with surface to get length
         surface.SetFont("HNSHUD.VerdanaMedium")
-        this.BarWide, this.TextTall = surface.GetTextSize(ply:Name())
-        this.BarWide = ceil(math.max(100 * scale, this.BarWide + 3 * scale))
-        -- Drawing name shadow now that we used surface.SetFont
-        surface.SetTextColor(0, 0, 0)
-        surface.SetTextPos(ceil(namePos * scale) + 1, ceil(ScrH() - 35 * scale - this.TextTall / 2) + 1)
-        surface.DrawText(ply:Name())
-        -- Avatar border
-        draw.RoundedBox(0, floor(8 * scale) - 1, floor(ScrH() - 40 * scale) - 1, ceil(32 * scale) + 2, ceil(32 * scale) + 2, tint)
-        draw.RoundedBox(0, ceil(8 * scale), ceil(ScrH() - 40 * scale), floor(32 * scale), floor(32 * scale), Color(0, 0, 0))
-        -- Player name
-        draw.RoundedBox(0, ceil(40 * scale) + 1, floor(ScrH() - 40 * scale) - 1, this.BarWide, floor(12 * scale), Color(0, 0, 0, 125))
-        draw.SimpleText(ply:Name(), "HNSHUD.VerdanaMedium", ceil(namePos * scale), ceil(ScrH() - 35 * scale), tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-        -- Player team
-        this:ShadowedText(team.GetName(ply:Team()), "HNSHUD.TahomaSmall", ceil(namePos * scale) + 1, ceil(ScrH() - 25 * scale) + 1, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-        -- Round and timer bars
-        draw.RoundedBox(0, floor(8 * scale) - 1, floor(8 * scale) - 1, ceil(70 * scale), ceil(20 * scale), Color(0, 0, 0, 125))
-        draw.RoundedBox(0, floor(8 * scale) - 1, floor(30 * scale), ceil(70 * scale), ceil(10 * scale), Color(0, 0, 0, 125))
-        -- Round and timer texts
-        this:ShadowedText(timeLeft, "HNSHUD.VerdanaLarge", floor(43 * scale) - 1, floor(17 * scale) + 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-        this:ShadowedText(roundText, "HNSHUD.TahomaSmall", floor(43 * scale) - 1, floor(35 * scale) - 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+        local barW, textH = surface.GetTextSize(ply:Name())
+        barW = ceil(max(100 * scale, barW + 3 * scale))
 
-        if GAMEMODE.SeekerBlinded then
-            draw.RoundedBox(0, floor(ScrW() / 2 - 60 * scale), floor(8 * scale) - 1, ceil(120 * scale), ceil(24 * scale), Color(0, 0, 0, 125))
-            this:ShadowedText((ply:Team() == TEAM_SEEK and "You" or team.NumPlayers(2) == 1 and "The seeker" or "The seekers") .. " will be unblinded in...", "HNSHUD.TahomaSmall", ScrW() / 2, ceil(13 * scale), COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-            this:ShadowedText(blindTime, "HNSHUD.VerdanaLarge", ScrW() / 2, ceil(24 * scale) - 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-        end
+        -- Avatar Frame offset
+        local nameX = ceil((this.AvatarFrame.Material and 44 or 42) * scale)
+        local nameY = ceil(ScrH() - 35 * scale - textH / 2)
+
+        -- Drawing name shadow now that we used surface.SetFont
+        local shadow_offset = max(1, floor(0.5 * scale))
+
+        surface.SetTextColor(0, 0, 0)
+        surface.SetTextPos(nameX + shadow_offset, nameY + shadow_offset)
+        surface.DrawText(ply:Name())
+
+        -- Avatar
+        draw.RoundedBox(0, screen_padding, ScrH() - screen_padding - avatar_size - 2, avatar_size + 2, avatar_size + 2, tint)
+        draw.RoundedBox(0, screen_padding + 1, ScrH() - screen_padding - avatar_size - 1, avatar_size, avatar_size, COLOR_BLACK)
+        this.Avatar:PaintManual()
+
+        -- Name bar
+        local barH = ceil(12 * scale)
+        draw.RoundedBox(0, screen_padding + avatar_size + 2, ScrH() - screen_padding - avatar_size - 2, barW, barH, COLOR_SHADOW)
+        this:ShadowedText(ply:Name(), "HNSHUD.VerdanaMedium", nameX, nameY, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+
+        -- Team name
+        this:ShadowedText(team.GetName(ply:Team()), "HNSHUD.TahomaSmall", nameX, ceil(ScrH() - 26 * scale), tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 
         -- Stamina bar
         if ply:Team() == TEAM_SPECTATOR then
-            this:ShadowedText("Press F2 to join the game!", "HNSHUD.TahomaSmall", ceil(namePos * scale) + 1, floor(ScrH() - 17 * scale), tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+            this:ShadowedText("Press F2 to join the game!", "HNSHUD.TahomaSmall", nameX, ScrH() - ceil(19 * scale), tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
         else
-            local padding = ceil(1 * scale)
-            local x, y = ceil(40.25 * scale), ScrH() - ceil(19.75 * scale)
-            local w, h = this.BarWide, ceil(12 * scale)
+            barH = ceil(13 * scale)
+            draw.RoundedBox(0, screen_padding + avatar_size + 2, ScrH() - screen_padding - barH, barW, barH, COLOR_SHADOW2)
 
-            draw.RoundedBox(0, x, y, w, h, Color(0, 0, 0, 175))
-            draw.RoundedBox(0, x + padding, y + padding, (w - padding * 2) * stamina / GAMEMODE.CVars.MaxStamina:GetInt(), h - padding * 2, tint)
+            local stamina_padding = max(1, ceil(1.25 * scale))
+            draw.RoundedBox(0, screen_padding + avatar_size + 2 + stamina_padding, ScrH() - screen_padding - barH + stamina_padding, (barW - stamina_padding * 2) * stamina / GAMEMODE.CVars.MaxStamina:GetInt(), barH - stamina_padding * 2, ColorAlpha(tint, math.sin(CurTime() * 6) * 20 + 220))
         end
 
-        -- Avatar (drawn last to support steam frames)
-        this.Avatar:PaintManual()
+        -- Round time
+        barW = ceil(70 * scale)
+        barH = ceil(20 * scale)
+        draw.RoundedBox(0, screen_padding, screen_padding, barW, barH, COLOR_SHADOW)
+        this:ShadowedText(timeLeft, "HNSHUD.VerdanaLarge", screen_padding + barW * 0.5, screen_padding + barH * 0.5, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+
+        -- Round text
+        draw.RoundedBox(0, screen_padding, screen_padding + barH + ceil(2 * scale), barW, floor(10 * scale), COLOR_SHADOW)
+        this:ShadowedText(roundText, "HNSHUD.TahomaSmall", screen_padding + barW * 0.5, screen_padding + barH + floor(7 * scale), COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+
+        -- Blind text
+        if GAMEMODE.SeekerBlinded then
+            barW = ceil(120 * scale)
+            barH = ceil(24 * scale)
+            draw.RoundedBox(0, ScrW() * 0.5 - barW * 0.5, screen_padding, barW, barH, COLOR_SHADOW)
+            this:ShadowedText((ply:Team() == TEAM_SEEK and "You" or team.NumPlayers(2) == 1 and "The seeker" or "The seekers") .. " will be unblinded in...", "HNSHUD.TahomaSmall", ScrW() * 0.5, ceil(13 * scale), COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+            this:ShadowedText(blindTime, "HNSHUD.VerdanaLarge", ScrW() * 0.5, ceil(24 * scale) - 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+        end
+
+        -- Avatar Frame
+        this.AvatarFrame:PaintManual()
     end,
     AvatarFunc = function(this, scale, ply)
-        local size = floor(32 * 1.2 * scale)
-        local frame_offset = floor((size - floor(32 * scale)) * 0.5)
+        local screen_padding = floor(8 * scale)
+        local avatar_size = floor(32 * scale)
 
-        this.Avatar = vgui.Create("HNS.Avatar")
-        this.Avatar:SetPos(floor(8 * scale) - frame_offset, floor(ScrH() - 40 * scale) - frame_offset)
-        this.Avatar:SetSize(size, size)
+        this.Avatar = vgui.Create("AvatarImage")
+        this.Avatar:SetPos(screen_padding + 1, ScrH() - screen_padding - avatar_size - 1)
+        this.Avatar:SetSize(avatar_size, avatar_size)
         this.Avatar.Player = ply or LocalPlayer()
-        this.Avatar:SetPlayer(this.Avatar.Player, floor(32 * scale))
+        this.Avatar:SetPlayer(ply or LocalPlayer(), ceil(32 * scale))
         this.Avatar:SetPaintedManually(true)
         this.Avatar:MoveToBack()
+
+        local frame_size = ceil(32 * 1.22 * scale)
+        local frame_padding = ceil((frame_size - avatar_size) * 0.5)
+        this.AvatarFrame = vgui.Create("HNS.AvatarFrame")
+        this.AvatarFrame:SetPos(screen_padding + 1 - frame_padding, ScrH() - screen_padding - avatar_size - 1 - frame_padding)
+        this.AvatarFrame:SetSize(frame_size, frame_size)
+        this.AvatarFrame.Player = ply or LocalPlayer()
+        this.AvatarFrame:SetPlayer(ply or LocalPlayer(), ceil(32 * scale))
+        this.AvatarFrame:SetPaintedManually(true)
+        this.AvatarFrame:MoveToBack()
     end,
     ShadowedText = function(this, text, font, x, y, color, aX, aY, shadow, oX, oY)
         draw.SimpleText(text, font, (x or 0) + (oX or 1), (y or 0) + (oY or 1), shadow or Color(0, 0, 0), aX, aY)
@@ -212,7 +247,7 @@ function GM:HUDPaint()
 
     -- Stuck prevention
     if ply:GetCollisionGroup() == COLLISION_GROUP_WEAPON then
-        draw.SimpleTextOutlined("Stuck Prevention Enabled", "HNSHUD.VerdanaMedium", ScrW() / 2, ScrH() / 2 + 60 * scale, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0, 0, 0, 125))
+        draw.SimpleTextOutlined("Stuck Prevention Enabled", "HNSHUD.VerdanaMedium", ScrW() / 2, ScrH() / 2 + 60 * scale, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, COLOR_SHADOW)
     end
 
     -- Remove leftover avatars
@@ -223,6 +258,11 @@ function GM:HUDPaint()
         if hud.Avatar then
             hud.Avatar:Remove()
             hud.Avatar = nil
+        end
+
+        if hud.AvatarFrame then
+            hud.AvatarFrame:Remove()
+            hud.AvatarFrame = nil
         end
     end
 

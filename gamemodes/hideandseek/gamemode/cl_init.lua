@@ -36,6 +36,7 @@ include("vgui/welcome.lua")
 include("vgui/teamselection.lua")
 include("vgui/achievements.lua")
 include("vgui/voice.lua")
+include("vgui/avatar_frame.lua")
 include("vgui/avatar.lua")
 include("sh_achievements_table.lua")
 
