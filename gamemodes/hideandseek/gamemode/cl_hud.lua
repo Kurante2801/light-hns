@@ -62,7 +62,7 @@ GM.HUDs[2] = {
         draw.RoundedBox(0, floor(8 * scale) - 1, floor(ScrH() - 40 * scale) - 1, ceil(32 * scale) + 2, ceil(32 * scale) + 2, tint)
         draw.RoundedBox(0, ceil(8 * scale), ceil(ScrH() - 40 * scale), floor(32 * scale), floor(32 * scale), Color(0, 0, 0))
         -- Player name
-        draw.RoundedBox(0, floor(40 * scale + 1), floor(ScrH() - 40 * scale) - 1, this.BarWide, floor(12 * scale), Color(0, 0, 0, 125))
+        draw.RoundedBox(0, ceil(40 * scale) + 1, floor(ScrH() - 40 * scale) - 1, this.BarWide, floor(12 * scale), Color(0, 0, 0, 125))
         draw.SimpleText(ply:Name(), "HNSHUD.VerdanaMedium", ceil(namePos * scale), ceil(ScrH() - 35 * scale), tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
         -- Player team
         this:ShadowedText(team.GetName(ply:Team()), "HNSHUD.TahomaSmall", ceil(namePos * scale) + 1, ceil(ScrH() - 25 * scale) + 1, tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
@@ -84,7 +84,7 @@ GM.HUDs[2] = {
             this:ShadowedText("Press F2 to join the game!", "HNSHUD.TahomaSmall", ceil(namePos * scale) + 1, floor(ScrH() - 17 * scale), tint, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
         else
             local padding = ceil(1 * scale)
-            local x, y = floor(40.25 * scale), ScrH() - ceil(19.75 * scale)
+            local x, y = ceil(40.25 * scale), ScrH() - ceil(19.75 * scale)
             local w, h = this.BarWide, ceil(12 * scale)
 
             draw.RoundedBox(0, x, y, w, h, Color(0, 0, 0, 175))
