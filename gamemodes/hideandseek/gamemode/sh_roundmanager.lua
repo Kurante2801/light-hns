@@ -47,7 +47,7 @@ if SERVER then
                 end
             elseif self.RoundState == ROUND_WAIT then
                 -- Check for any players
-                if team.NumPlayers(TEAM_HIDE) + team.NumPlayers(TEAM_SEEK) > 1 then
+                if team.NumPlayers(TEAM_HIDE) + team.NumPlayers(TEAM_SEEK) >= GAMEMODE.CVars.MinPlayers:GetInt() then
                     self:RoundRestart()
                 end
             end
@@ -105,7 +105,7 @@ if SERVER then
         end
 
         -- Check for enough players
-        if team.NumPlayers(TEAM_HIDE) > 1 then
+        if team.NumPlayers(TEAM_HIDE) >= GAMEMODE.CVars.MinPlayers:GetInt() then
             -- Start round
             self.RoundState = ROUND_ACTIVE
             self.RoundCount = self.RoundCount + 1

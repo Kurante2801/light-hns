@@ -90,7 +90,7 @@
 			"name"		"has_scob_url"
 			"text"		"Link the scoreboard button will open (top left button too)"
 			"type"		"Text"
-			"default"	"https://github.com/Fafy2801/light-hns"
+			"default"	"https://github.com/Kurante2801/light-hns"
 		}
 		15 {
 			"name"		"has_hiderflashlight"
@@ -137,6 +137,12 @@
 		22 {
 			"name"		"has_staminawait"
 			"text"		"How many seconds to wait before filling stamina."
+			"type"		"Numeric"
+			"default"	"2"
+		}
+		23 {
+			"name"		"has_minplayers"
+			"text"		"Minimum players to start a round."
 			"type"		"Numeric"
 			"default"	"2"
 		}
