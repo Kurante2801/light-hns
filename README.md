@@ -67,6 +67,8 @@ This gamemode WILL CONFLICT with [classic Hide and Seek](https://steamcommunity.
 
 `has_staminawait` _Number_ = How many seconds to wait before filling stamina.
 
+`has_minplayers` _Number_ = Minimum players required to start a round.
+
 ## Additional info
 
 This gamemode was created to be exclusive to the GFL community, but now is free for everyone to use, that's why you may see server references, bad commit names or me just being a dick on the comments on older commits.
