@@ -43,3 +43,8 @@ function GM:GetPlayerTeamColor(ply)
         return self:GetTeamShade(TEAM_SEEK, ply:GetNWString("has_seekercolor", "Default"))
     end
 end
+
+-- I didn't know this function existed, which is why the previous functions exist
+function GM:GetTeamColor(ply)
+    return self:GetPlayerTeamColor(ply) or team.GetColor(ply:Team())
+end
