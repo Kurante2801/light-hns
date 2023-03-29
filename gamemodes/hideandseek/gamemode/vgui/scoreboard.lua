@@ -75,12 +75,17 @@ function PANEL:Init()
 
     self.SP.VBar.Paint = function(this, w, h)
         -- Blur
-        local blurx, blury = this:LocalToScreen(0, 0)
-        render.SetScissorRect(blurx, blury, blurx + w, blury + h, true)
-        surface.SetMaterial(self.Blur)
-        surface.SetDrawColor(255, 255, 255, 255)
-        surface.DrawTexturedRect(-blurx, -blury, ScrW(), ScrH())
-        render.SetScissorRect(0, 0, 0, 0, false)
+        if GAMEMODE.SeekerBlinded and LocalPlayer():Team() == TEAM_SEEK then
+            surface.SetDrawColor(0, 0, 0, 125)
+            surface.DrawRect(0, 0, w, h)
+        else
+            local blurx, blury = this:LocalToScreen(0, 0)
+            render.SetScissorRect(blurx, blury, blurx + w, blury + h, true)
+            surface.SetMaterial(self.Blur)
+            surface.SetDrawColor(255, 255, 255, 255)
+            surface.DrawTexturedRect(-blurx, -blury, ScrW(), ScrH())
+            render.SetScissorRect(0, 0, 0, 0, false)
+        end
         -- Fill and outline
         surface.SetDrawColor(0, 0, 0, 125)
         surface.DrawRect(0, 0, w, h)
@@ -142,11 +147,16 @@ function PANEL:Paint(w, h)
     local blurx, blury = self:LocalToScreen(0, 0)
 
     -- Top blur
-    render.SetScissorRect(blurx, blury, blurx + w, blury + 32 * scale, true)
-    surface.SetMaterial(self.Blur)
-    surface.SetDrawColor(255, 255, 255, 255)
-    surface.DrawTexturedRect(-blurx, -blury, ScrW(), ScrH())
-    render.SetScissorRect(0, 0, 0, 0, false)
+    if GAMEMODE.SeekerBlinded and LocalPlayer():Team() == TEAM_SEEK then
+        surface.SetDrawColor(0, 0, 0, 125)
+        surface.DrawRect(0, 0, w, 32 * scale)
+    else
+        render.SetScissorRect(blurx, blury, blurx + w, blury + 32 * scale, true)
+        surface.SetMaterial(self.Blur)
+        surface.SetDrawColor(255, 255, 255, 255)
+        surface.DrawTexturedRect(-blurx, -blury, ScrW(), ScrH())
+        render.SetScissorRect(0, 0, 0, 0, false)
+    end
     -- Top bar and outline
     surface.SetDrawColor(0, 0, 0, 125)
     surface.DrawRect(0, 0, w, 32 * scale)
@@ -159,13 +169,18 @@ function PANEL:Paint(w, h)
     self:ShadowedText("Players: ", "HNSHUD.RobotoThin", 114 * scale, 25 * scale, Color(215, 215, 215), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
     self:ShadowedText(player.GetCount() .. "/" .. game.MaxPlayers(), "HNSHUD.RobotoThin", 144 * scale, 25 * scale, Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
     -- Player list header
-    render.SetScissorRect(blurx, blury + 34 * scale, blurx + w, blury + 46 * scale, true)
-    surface.SetMaterial(self.Blur)
-    surface.SetDrawColor(255, 255, 255, 255)
-    surface.DrawTexturedRect(-blurx, -blury, ScrW(), ScrH())
-    render.SetScissorRect(0, 0, 0, 0, false)
-    surface.SetDrawColor(0, 0, 0, 125)
-    surface.DrawRect(0, 34 * scale, w, 12 * scale)
+    if GAMEMODE.SeekerBlinded and LocalPlayer():Team() == TEAM_SEEK then
+        surface.SetDrawColor(0, 0, 0, 125)
+        surface.DrawRect(0, 34 * scale, w, 12 * scale)
+    else
+        render.SetScissorRect(blurx, blury + 34 * scale, blurx + w, blury + 46 * scale, true)
+        surface.SetMaterial(self.Blur)
+        surface.SetDrawColor(255, 255, 255, 255)
+        surface.DrawTexturedRect(-blurx, -blury, ScrW(), ScrH())
+        render.SetScissorRect(0, 0, 0, 0, false)
+        surface.SetDrawColor(0, 0, 0, 125)
+        surface.DrawRect(0, 34 * scale, w, 12 * scale)
+    end
     surface.SetDrawColor(150, 150, 150, 255)
     surface.DrawOutlinedRect(0, 34 * scale, w, 12 * scale)
     -- Teams count (on the header)
@@ -310,6 +325,8 @@ end
 
 -- Add missing players
 function PANEL:Think()
+    -- Fix players being able to see through scoreboard on seeker blind
+ 
     -- Loop through players
     for _, ply in ipairs(player.GetAll()) do
         if not IsValid(ply) or ply:Team() == 0 then continue end
@@ -368,11 +385,16 @@ function PANEL:Paint(w, h)
     -- Blur
     local blurx, blury = self:LocalToScreen(0, 0)
     local scale = self.Scale
-    render.SetScissorRect(blurx, blury, blurx + w, blury + h, true)
-    surface.SetMaterial(self.Blur)
-    surface.SetDrawColor(255, 255, 255, 255)
-    surface.DrawTexturedRect(-blurx, -blury, ScrW(), ScrH())
-    render.SetScissorRect(0, 0, 0, 0, false)
+    if GAMEMODE.SeekerBlinded and LocalPlayer():Team() == TEAM_SEEK then
+        surface.SetDrawColor(0, 0, 0, 125)
+        surface.DrawRect(0, 0, w, h)
+    else
+        render.SetScissorRect(blurx, blury, blurx + w, blury + h, true)
+        surface.SetMaterial(self.Blur)
+        surface.SetDrawColor(255, 255, 255, 255)
+        surface.DrawTexturedRect(-blurx, -blury, ScrW(), ScrH())
+        render.SetScissorRect(0, 0, 0, 0, false)
+    end
     -- Background and outline
     surface.SetDrawColor(0, 0, 0, 125)
     surface.DrawRect(0, 0, w, h)
