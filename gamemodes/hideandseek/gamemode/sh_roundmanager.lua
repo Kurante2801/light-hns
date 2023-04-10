@@ -79,6 +79,7 @@ if SERVER then
     end
 
     function GM:RoundRestart()
+        hook.Run("HASPreRoundStarted")
         -- Restart map
         game.CleanUpMap()
 
