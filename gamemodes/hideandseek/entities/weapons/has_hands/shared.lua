@@ -64,7 +64,7 @@ end
 SWEP.SecondaryAttack = SWEP.PrimaryAttack
 
 function SWEP:Deploy()
-    self.TauntDelay = 0
+    self.TauntDelay = self.TauntDelay or 0
     return true
 end
 
