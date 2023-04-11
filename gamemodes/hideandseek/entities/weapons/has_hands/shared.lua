@@ -65,11 +65,6 @@ SWEP.SecondaryAttack = SWEP.PrimaryAttack
 
 function SWEP:Deploy()
     self.TauntDelay = self.TauntDelay or 0
-    return true
-end
-
-function SWEP:Holster()
-    return true
 end
 
 if SERVER then

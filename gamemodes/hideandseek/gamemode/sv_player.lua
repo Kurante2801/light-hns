@@ -55,13 +55,13 @@ function GM:PlayerSpawn(ply)
         self:PlayerSpawnAsSpectator(ply)
         ply:SetNoDraw(false) -- We hide spectators on PrePlayerDraw
         ply:AllowFlashlight(false)
-        hook.Run("HASSpawnAsSpectator", ply) 
+        hook.Run("HASSpawnAsSpectator", ply)
 
         return true
     end
 
     -- Calling base spawn for stuff fixing
-    self.BaseClass:PlayerSpawn(ply)
+    self.BaseClass.PlayerSpawn(self, ply)
     -- Set current gender
     ply.Gender = ply:GetInfoNum("has_gender", 0) == 1
 

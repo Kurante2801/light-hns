@@ -83,26 +83,17 @@ if SERVER then
         -- Restart map
         game.CleanUpMap()
 
-        -- Remove weapons and vehicles
+        -- Remove vehicles
         for _, ent in ipairs(ents.GetAll()) do
-            if (ent:IsWeapon() and ent:GetClass() ~= "has_hands") or ent:IsVehicle() then
+            if ent:IsVehicle() then
                 ent:Remove()
             end
         end
 
-        for _, ply in ipairs(player.GetAll()) do
-            -- Turn seekers into hiders
-            if ply:Team() == TEAM_SEEK then
-                ply:SetTeam(TEAM_HIDE)
-            end
-
-            -- Spawn hiders (will skip spectators)
-            if ply:Team() == TEAM_HIDE then
-                ply:Spawn()
-            end
-
-            -- Refill stamina
-            ply:SetStamina(GAMEMODE.CVars.MaxStamina:GetInt())
+        -- Turn seekers into hiders and remove weapons
+        for _, ply in ipairs(team.GetPlayers(TEAM_SEEK)) do
+            ply:SetTeam(TEAM_HIDE)
+            ply:StripWeapons()
         end
 
         -- Check for enough players
@@ -122,7 +113,7 @@ if SERVER then
 
             self.FirstCaught = nil
             seeker:SetTeam(TEAM_SEEK)
-            seeker:Spawn()
+
             -- Log
             print(string.format("[LHNS] Starting round %s. The first seeker is %s (%s)", self.RoundCount, seeker:Name(), seeker:SteamID()))
 
@@ -146,6 +137,12 @@ if SERVER then
             -- Advert
             self:BroadcastChat(COLOR_WHITE, "[", COLOR_HNS_TAG, "HNS", COLOR_WHITE, "] There's not enough players to start the round...")
             print("[LHNS] There's not enough players to begin round " .. self.RoundCount .. "!")
+        end
+
+        for _, ply in ipairs(player.GetAll()) do
+            if ply:Team() == TEAM_HIDE or ply:Team() == TEAM_SEEK then
+                ply:Spawn()
+            end
         end
 
         hook.Run("HASRoundStarted")
