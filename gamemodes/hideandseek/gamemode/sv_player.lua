@@ -128,9 +128,16 @@ function GM:PlayerDisconnected(ply)
     self:RoundCheck()
 end
 
+function GM:DoPlayerDeath(ply, attacker, info)
+    ply.DieFrags = ply:Frags()
+    self.BaseClass.DoPlayerDeath(self, ply, attacker, info)
+end
+
 function GM:PlayerDeath(ply)
-    -- Award 1 frag because players lose 1 frag on death
-    ply:AddFrags(1)
+    if ply.DieFrags then
+        ply:SetFrags(ply.DieFrags)
+        ply.DieFrags = nil
+    end
 end
 
 function GM:CanPlayerSuicide(ply)
