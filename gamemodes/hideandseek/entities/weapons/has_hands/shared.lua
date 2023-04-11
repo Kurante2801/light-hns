@@ -63,16 +63,17 @@ end
 
 SWEP.SecondaryAttack = SWEP.PrimaryAttack
 
+function SWEP:Deploy()
+    self.TauntDelay = 0
+    return true
+end
+
+function SWEP:Holster()
+    return true
+end
+
 if SERVER then
     AddCSLuaFile("shared.lua")
-
-    -- Hide hands and reset a delay for taunts
-    function SWEP:Deploy()
-        local owner = self:GetOwner()
-        owner:DrawViewModel(false)
-        owner:DrawWorldModel(false)
-        self.TauntDelay = 0
-    end
 
     function SWEP:Think()
         local owner = self:GetOwner()
@@ -205,5 +206,15 @@ elseif CLIENT then
 
             return true
         end
+    end
+
+    function SWEP:ShouldDrawViewModel()
+        return false
+    end
+
+    function SWEP:DrawWorldModel()
+    end
+
+    function SWEP:DrawWorldModelTranslucent()
     end
 end
