@@ -142,7 +142,7 @@ end
 
 function GM:CanPlayerSuicide(ply)
     -- Allow seekers to suicide
-    return ply:Team() == TEAM_SEEK
+    return ply:Team() == TEAM_SEEK or self.RoundState ~= ROUND_ACTIVE
 end
 
 -- Abusable doors
