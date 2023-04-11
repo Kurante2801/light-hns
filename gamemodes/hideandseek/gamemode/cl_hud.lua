@@ -314,12 +314,16 @@ function GM:HUDPaint()
 end
 
 -- Using hook to allow other HUD elements from other addons to be seen
-hook.Add("HUDPaint", "HNS.BlindTime", function()
-    -- Blind (combined with render hook)
-    if GAMEMODE.SeekerBlinded and LocalPlayer():Team() == TEAM_SEEK then
+function GM:PreDrawHUD()
+     -- Blind (combined with render hook)
+    if self.SeekerBlinded and LocalPlayer():Team() == TEAM_SEEK then
+        cam.Start2D()
+        cam.IgnoreZ(true)
         draw.RoundedBox(0, 0, 0, ScrW(), ScrH(), Color(0, 0, 0))
+        cam.IgnoreZ(false)
+        cam.End2D()
     end
-end, HOOK_HIGH)
+end
 
 -- Hook will run first, so other addons paint ON TOP of the black screen, thus being visible
 -- Hide elements
