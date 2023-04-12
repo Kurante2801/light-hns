@@ -90,9 +90,12 @@ if SERVER then
             end
         end
 
-        -- Turn seekers into hiders and remove weapons
+        -- Turn seekers into hiders
         for _, ply in ipairs(team.GetPlayers(TEAM_SEEK)) do
             ply:SetTeam(TEAM_HIDE)
+        end
+        -- Remove weapons
+        for _, ply in ipairs(team.GetPlayers(TEAM_HIDE)) do
             ply:StripWeapons()
         end
 
