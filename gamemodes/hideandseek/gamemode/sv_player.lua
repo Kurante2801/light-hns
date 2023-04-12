@@ -275,6 +275,10 @@ function GM:HASPlayerCaught(seeker, ply)
     self.FirstCaught = ply
 end
 
+function GM:CanPlayerDamage(ply, ent)
+    return ent:GetClass() == "func_breakable" or ent:GetClass() == "func_breakable_surf"
+end
+
 local using = nil
 
 hook.Add("Move", "HNS.SprintPrevention", function(ply, data)
